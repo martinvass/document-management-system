@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: html_header}"></head>
+<body>
+
+<div class="container">
+    <div class="auth-container">
+        <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+        <h2 class="text-center">Sign Up</h2>
+        <form id="signUpForm" method="post"
+              role="form"
+              th:object="${user}"
+              th:action="@{/auth/sign-up}">
+            <div class="mb-3">
+                <label for="firstName" class="form-label">First name</label>
+                <input th:field="*{profile.firstName}" type="text" class="form-control" id="firstName" name="firstName" placeholder="Enter your first name">
+            </div>
+            <div class="mb-3">
+                <label for="lastName" class="form-label">Last name</label>
+                <input th:field="*{profile.lastName}" type="text" class="form-control" id="lastName" name="lastName" placeholder="Enter your last name">
+            </div>
+            <div class="mb-3">
+                <label for="username" class="form-label">Username</label>
+                <input th:field="*{profile.username}" type="text" class="form-control" id="username" name="username" placeholder="Enter your username">
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input th:field="*{profile.email}" type="text" class="form-control" id="email" name="email" placeholder="Enter your email">
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input th:field="*{password}" type="password" class="form-control" id="password" name="password" placeholder="Enter your password">
+            </div>
+            <button id="signUpBtn" type="submit" class="btn btn-primary btn-block">Submit</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>
