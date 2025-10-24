@@ -60,7 +60,7 @@ public class AuthController {
             return "/auth/sign-up";
         }
 
-        model.addAttribute("message", "Sikeres regisztráció! Kérlek, erősítsd meg az e-mail címedet.");
+        model.addAttribute("message", "Registration successful! Please confirm your email address.");
         return "redirect:/auth/login";
     }
 
@@ -68,24 +68,22 @@ public class AuthController {
     public String verifyAccount(@RequestParam("token") String token, Model model) {
         var result = authService.verifyUser(token);
 
-        System.out.println("token: " + token);
-        System.out.println("result: " + result.name());
         switch (result) {
             case SUCCESS -> {
-                model.addAttribute("message", "Fiók sikeresen aktiválva! Most már bejelentkezhetsz.");
+                model.addAttribute("message", "Account successfully activated! You can now log in.");
                 return "auth/login";
             }
             case EXPIRED -> {
-                model.addAttribute("error", "Az aktiváló link lejárt. Kérj újat.");
+                model.addAttribute("error", "The activation link has expired. Request a new one.");
                 return "auth/verification-failed";
             }
             case INVALID -> {
-                model.addAttribute("error", "Érvénytelen aktiváló link.");
+                model.addAttribute("error", "Invalid activation token.");
                 return "auth/verification-failed";
             }
         }
 
-        model.addAttribute("error", "Ismeretlen hiba történt.");
+        model.addAttribute("error", "An unknown error has occurred.");
         return "auth/verification-failed";
     }
 }

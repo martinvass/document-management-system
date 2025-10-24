@@ -1,36 +1,92 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="hu">
 <head th:replace="~{fragments/header :: html_header}">
-    <title>Aktiválás sikertelen</title>
+    <title>Account Activation Failed</title>
+    <style>
+        :root {
+            --color-bg: #E1F0DA;
+            --color-card: #D4E7C5;
+            --color-accent: #BFD8AF;
+            --color-accent-dark: #99BC85;
+            --color-text: #2A3727;
+            --color-error: #A15C5C;
+            --radius: 12px;
+        }
+
+        body {
+            background-color: var(--color-bg);
+            font-family: 'Inter', sans-serif;
+            color: var(--color-text);
+            margin: 0;
+        }
+
+        .card {
+            background-color: var(--color-card) !important;
+            border: 1px solid var(--color-accent) !important;
+            border-radius: var(--radius) !important;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08) !important;
+        }
+
+        .text-danger {
+            color: var(--color-error) !important;
+        }
+
+        .btn-secondary {
+            background-color: var(--color-accent) !important;
+            border: none !important;
+            color: #fff !important;
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--color-accent-dark) !important;
+        }
+
+        .text-muted {
+            color: #3d4b3d !important;
+        }
+
+        a.text-decoration-none {
+            color: var(--color-accent-dark) !important;
+        }
+
+        a.text-decoration-none:hover {
+            text-decoration: underline !important;
+        }
+
+        .footer {
+            color: #4d554d;
+        }
+
+        .footer a {
+            color: var(--color-accent-dark);
+        }
+    </style>
 </head>
 <body>
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-6">
-            <div class="card shadow-sm border-danger rounded-3">
+            <div class="card shadow-sm rounded-3">
                 <div class="card-body text-center p-4">
                     <div class="mb-3">
                         <i class="bi bi-x-circle text-danger" style="font-size: 3rem;"></i>
                     </div>
-                    <h2 class="text-danger mb-3">Aktiválás sikertelen</h2>
+                    <h2 class="text-danger mb-3">Account Activation Failed</h2>
                     <p class="text-muted" th:text="${error}">
-                        Ismeretlen hiba történt az aktiválás során.
+                        Invalid activation token.
                     </p>
 
                     <div class="mt-4 d-flex justify-content-center gap-3">
-                        <a class="btn btn-outline-danger">
-                            <i class="bi bi-envelope"></i> Új aktiváló link kérése
-                        </a>
-                        <a th:href="@{/}" class="btn btn-secondary">
-                            <i class="bi bi-house-door"></i> Vissza a főoldalra
+                        <a class="btn btn-secondary">
+                            <i class="bi bi-envelope"></i>&nbsp;Request New Activation Link
                         </a>
                     </div>
                 </div>
             </div>
 
-            <div class="text-center mt-4">
-                <p class="text-muted small">
-                    Ha a probléma továbbra is fennáll, vedd fel velünk a kapcsolatot:
+            <div class="text-center mt-4 footer">
+                <p class="small">
+                    If the problem persists, please contact us at:
                     <a href="mailto:dms.app.test@gmail.com" class="text-decoration-none">dms.app.test@gmail.com</a>
                 </p>
             </div>

@@ -1,0 +1,117 @@
+:root {
+    /* Soft sage green palette */
+    --color-bg: #E1F0DA;          /* háttérszín – nagyon világos zöld */
+    --color-card: #D4E7C5;        /* kártyák / auth-container */
+    --color-accent: #BFD8AF;      /* gombok / fókusz / kiemelés */
+    --color-accent-dark: #99BC85; /* gomb hover / erősebb árnyalat */
+    --color-text: #2A3727;        /* természetes sötétzöldes szöveg */
+    --radius: 12px;
+    --transition: 0.25s ease;
+    --font: 'Inter', sans-serif;
+}
+
+body {
+    font-family: var(--font), serif;
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.auth-container {
+    background-color: var(--color-card);
+    padding: 2.5rem 3rem;
+    border-radius: var(--radius);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+    width: 380px;
+    transition: var(--transition);
+}
+
+.auth-container:hover {
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
+}
+
+.auth-title {
+    text-align: center;
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    color: var(--color-text);
+    font-weight: 600;
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid var(--color-accent);
+    border-radius: var(--radius);
+    margin-bottom: 1rem;
+    background-color: #fff;
+    font-size: 1rem;
+    color: var(--color-text);
+    transition: var(--transition);
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--color-accent-dark);
+    box-shadow: 0 0 0 2px rgba(153, 188, 133, 0.3);
+}
+
+.btn-primary {
+    width: 100%;
+    background-color: var(--color-accent);
+    color: #fff;
+    border: none;
+    padding: 0.9rem;
+    font-size: 1rem;
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.btn-primary:hover {
+    background-color: var(--color-accent-dark);
+}
+
+a {
+    color: var(--color-accent-dark);
+    text-decoration: none;
+    font-weight: 500;
+    transition: var(--transition);
+}
+
+a:hover {
+    color: var(--color-text);
+}
+
+.text-center {
+    text-align: center;
+}
+
+.alert {
+    padding: 1rem 1.2rem;
+    border-radius: var(--radius);
+    margin-bottom: 1.2rem;
+    font-size: 0.95rem;
+    text-align: center;
+    border: 1px solid transparent;
+    transition: var(--transition);
+}
+
+.success-alert {
+    background-color: #e7f6e0;
+    border-color: var(--color-accent);
+    color: var(--color-text);
+    font-weight: 500;
+}
+
+.error-alert {
+    background-color: #f6dede;
+    border-color: #c56a6a;
+    color: #541c1c;
+    font-weight: 500;
+}
