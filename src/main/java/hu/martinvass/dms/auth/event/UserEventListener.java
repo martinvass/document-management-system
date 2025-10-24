@@ -57,8 +57,6 @@ public class UserEventListener {
                     String.format("Logged in: %s | IP: %s", user.getUsername(), webDetails.getRemoteAddress())
             );
         }
-
-        System.out.println("ad");
     }
 
     @EventListener

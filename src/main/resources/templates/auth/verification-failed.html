@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="hu">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head th:replace="~{fragments/header :: html_header}">
     <title>Account Activation Failed</title>
     <style>
         :root {
-            --color-bg: #E1F0DA;
-            --color-card: #D4E7C5;
-            --color-accent: #BFD8AF;
-            --color-accent-dark: #99BC85;
-            --color-text: #2A3727;
-            --color-error: #A15C5C;
+            --color-bg: #FEFAE0;
+            --color-card: #A9B388;
+            --color-accent: #5F6F52;
+            --color-accent-dark: #3E4634;
+            --color-secondary: #B99470;
+            --color-text: #2B2B2B;
             --radius: 12px;
         }
 
@@ -28,7 +28,7 @@
         }
 
         .text-danger {
-            color: var(--color-error) !important;
+            color: var(--color-secondary) !important;
         }
 
         .btn-secondary {
@@ -42,7 +42,7 @@
         }
 
         .text-muted {
-            color: #3d4b3d !important;
+            color: #333 !important;
         }
 
         a.text-decoration-none {
@@ -54,11 +54,11 @@
         }
 
         .footer {
-            color: #4d554d;
+            color: #555;
         }
 
         .footer a {
-            color: var(--color-accent-dark);
+            color: var(--color-secondary);
         }
     </style>
 </head>
@@ -73,7 +73,7 @@
                     </div>
                     <h2 class="text-danger mb-3">Account Activation Failed</h2>
                     <p class="text-muted" th:text="${error}">
-                        Invalid activation token.
+                        Invalid activation link or expired token.
                     </p>
 
                     <div class="mt-4 d-flex justify-content-center gap-3">

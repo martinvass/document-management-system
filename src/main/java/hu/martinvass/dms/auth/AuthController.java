@@ -2,6 +2,7 @@ package hu.martinvass.dms.auth;
 
 import hu.martinvass.dms.user.AppUser;
 import hu.martinvass.dms.user.exception.UserAlreadyExistsException;
+import hu.martinvass.dms.utils.SecurityUtils;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  * Controller class responsible for handling authentication-related operations.
@@ -40,6 +42,11 @@ public class AuthController {
      */
     @GetMapping("auth/login")
     private String login(Model model) {
+        // We prevent logged-in users from accessing the login page
+        if (SecurityUtils.isAuthenticated()) {
+            return "redirect:/";
+        }
+
         model.addAttribute("page", "login");
         model.addAttribute("title", "DMS - Login");
         return "auth/login";
@@ -53,6 +60,11 @@ public class AuthController {
      */
     @GetMapping("auth/sign-up")
     private String signUp(Model model) {
+        // We prevent logged-in users from accessing the sign-up page
+        if (SecurityUtils.isAuthenticated()) {
+            return "redirect:/";
+        }
+
         model.addAttribute("page", "sign-up");
         model.addAttribute("title", "DMS - Sign Up");
         model.addAttribute("user", new AppUser());
@@ -64,41 +76,52 @@ public class AuthController {
      * Handles the registration form submission.
      *
      * @param user The AppUser object containing registration information.
+     * @param redirectAttributes Interface to carry attributes through redirection
+     * @param model The model to add attributes for rendering the view.
      * @return A redirection URL based on the registration result.
      */
     @PostMapping("auth/sign-up")
-    private String handleSignUp(@ModelAttribute AppUser user, Model model) {
+    private String handleSignUp(@ModelAttribute AppUser user, RedirectAttributes redirectAttributes, Model model) {
         try {
             authService.registerUser(user);
         } catch (UserAlreadyExistsException e) {
             model.addAttribute("error", e.getMessage());
-            return "/auth/sign-up";
+            model.addAttribute("user", user);
+            return "auth/sign-up";
         }
 
-        model.addAttribute("message", "Registration successful! Please confirm your email address.");
+        redirectAttributes.addFlashAttribute("message", "Registration successful! Please confirm your email address.");
         return "redirect:/auth/login";
     }
 
     @GetMapping("auth/verify")
-    public String verifyAccount(@RequestParam("token") String token, Model model) {
+    public String verifyAccount(@RequestParam("token") String token, RedirectAttributes redirectAttributes, Model model) {
         var result = authService.verifyUser(token);
 
         switch (result) {
             case SUCCESS -> {
-                model.addAttribute("message", "Account successfully activated! You can now log in.");
-                return "auth/login";
+                redirectAttributes.addFlashAttribute("message", "Account successfully activated! You can now log in.");
+                return "redirect:/auth/login";
             }
             case EXPIRED -> {
-                model.addAttribute("error", "The activation link has expired. Request a new one.");
-                return "auth/verification-failed";
+                redirectAttributes.addFlashAttribute("error", "The activation link has expired. Request a new one.");
+                return "redirect:/auth/verification-failed";
             }
             case INVALID -> {
-                model.addAttribute("error", "Invalid activation token.");
-                return "auth/verification-failed";
+                redirectAttributes.addFlashAttribute("error", "Invalid activation token.");
+                return "redirect:/auth/verification-failed";
             }
         }
 
-        model.addAttribute("error", "An unknown error has occurred.");
+        redirectAttributes.addFlashAttribute("error", "An unknown error has occurred.");
+        return "redirect:/auth/verification-failed";
+    }
+
+    @GetMapping("auth/verification-failed")
+    public String handleVerificationFailed(Model model) {
+        model.addAttribute("page", "verification-failed");
+        model.addAttribute("title", "DMS - Verification Failed");
+
         return "auth/verification-failed";
     }
 }

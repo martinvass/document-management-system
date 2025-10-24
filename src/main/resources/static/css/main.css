@@ -1,10 +1,11 @@
 :root {
-    /* Soft sage green palette */
-    --color-bg: #E1F0DA;          /* háttérszín – nagyon világos zöld */
-    --color-card: #D4E7C5;        /* kártyák / auth-container */
-    --color-accent: #BFD8AF;      /* gombok / fókusz / kiemelés */
-    --color-accent-dark: #99BC85; /* gomb hover / erősebb árnyalat */
-    --color-text: #2A3727;        /* természetes sötétzöldes szöveg */
+    /* Earthy corporate palette */
+    --color-bg: #FEFAE0;          /* háttér – krémszín */
+    --color-card: #A9B388;        /* kártyák / auth-container */
+    --color-accent: #5F6F52;      /* gombok / kiemelések */
+    --color-accent-dark: #3E4634; /* hover árnyalat */
+    --color-text: #2B2B2B;        /* alap szöveg */
+    --color-secondary: #B99470;   /* CTA vagy hibaüzenet kiemelés */
     --radius: 12px;
     --transition: 0.25s ease;
     --font: 'Inter', sans-serif;
@@ -38,7 +39,7 @@ body {
     text-align: center;
     font-size: 1.8rem;
     margin-bottom: 1.5rem;
-    color: var(--color-text);
+    color: var(--color-accent-dark);
     font-weight: 600;
 }
 
@@ -56,8 +57,8 @@ body {
 
 .form-control:focus {
     outline: none;
-    border-color: var(--color-accent-dark);
-    box-shadow: 0 0 0 2px rgba(153, 188, 133, 0.3);
+    border-color: var(--color-secondary);
+    box-shadow: 0 0 0 2px rgba(185, 148, 112, 0.3);
 }
 
 .btn-primary {
@@ -78,14 +79,14 @@ body {
 }
 
 a {
-    color: var(--color-accent-dark);
+    color: var(--color-secondary);
     text-decoration: none;
     font-weight: 500;
     transition: var(--transition);
 }
 
 a:hover {
-    color: var(--color-text);
+    color: var(--color-accent-dark);
 }
 
 .text-center {
@@ -103,15 +104,15 @@ a:hover {
 }
 
 .success-alert {
-    background-color: #e7f6e0;
+    background-color: #eef5e6;
     border-color: var(--color-accent);
-    color: var(--color-text);
+    color: var(--color-accent-dark);
     font-weight: 500;
 }
 
 .error-alert {
-    background-color: #f6dede;
-    border-color: #c56a6a;
-    color: #541c1c;
+    background-color: #f7e4dc;
+    border-color: var(--color-secondary);
+    color: #5a2e1e;
     font-weight: 500;
 }

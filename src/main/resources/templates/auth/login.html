@@ -9,6 +9,16 @@
     <div th:if="${message}" class="alert success-alert" th:text="${message}"></div>
     <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
 
+    <div th:if="${param.error != null}" class="alert alert-danger text-center">
+    <span th:switch="${param.error[0]}">
+        <span th:case="'not_verified'">Your account has not been activated yet. Please confirm your email address!</span>
+        <span th:case="'bad_credentials'">Incorrect username or password.</span>
+        <span th:case="'locked'">Your account is locked.</span>
+        <span th:case="'unknown'">An unknown error has occurred. Please try again later.</span>
+        <span th:case="*">Unexpected error code: <span th:text="${param.error[0]}"/></span>
+    </span>
+    </div>
+
     <form th:action="@{/auth/login}" method="post">
         <input type="text" name="username" placeholder="Username" class="form-control" required>
         <input type="password" name="password" placeholder="Password" class="form-control" required>

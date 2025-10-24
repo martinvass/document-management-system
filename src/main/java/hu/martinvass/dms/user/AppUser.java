@@ -90,6 +90,6 @@ public class AppUser implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return status == AccountStatus.ACTIVE;
+        return status == AccountStatus.ACTIVE && verified;
     }
 }

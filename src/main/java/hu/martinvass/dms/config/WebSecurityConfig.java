@@ -1,6 +1,7 @@
 package hu.martinvass.dms.config;
 
 import hu.martinvass.dms.auth.AuthService;
+import hu.martinvass.dms.auth.handler.CustomAuthFailureHandler;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,6 +24,7 @@ public class WebSecurityConfig {
 
     private SessionConfig sessionConfig;
 
+    private final CustomAuthFailureHandler authFailureHandler;
     private final AuthService authService;
     private final Argon2PasswordEncoder passwordEncoder;
 
@@ -32,11 +34,11 @@ public class WebSecurityConfig {
             "/js/**",
             "/auth/login",
             "/auth/sign-up",
-            "/auth/verify"
+            "/auth/verify",
+            "/auth/verification-failed"
     };
 
     private final String LOGIN_URL = "/auth/login";
-    private final String LOGIN_FAIL_URL = LOGIN_URL + "?error=true";
     private final String DEFAULT_SUCCESS_URL = "/home";
 
     /**
@@ -58,7 +60,7 @@ public class WebSecurityConfig {
                         .loginPage(LOGIN_URL)
                         .loginProcessingUrl(LOGIN_URL)
                         .defaultSuccessUrl(DEFAULT_SUCCESS_URL, true)
-                        .failureUrl(LOGIN_FAIL_URL)
+                        .failureHandler(authFailureHandler)
                         .permitAll()
                 )
                 .logout(logout -> logout

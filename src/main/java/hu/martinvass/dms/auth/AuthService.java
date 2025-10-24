@@ -113,7 +113,16 @@ public class AuthService implements UserDetailsService {
                 .findByProfile_Username(user.getUsername())
                 .isPresent();
 
-        if (userExistsByEmail || userExistsByUsername)
-            throw new UserAlreadyExistsException();
+        if (userExistsByEmail || userExistsByUsername) {
+            var message = new StringBuilder("User already exists with ");
+
+            if (userExistsByUsername) message.append("username");
+            if (userExistsByEmail) {
+                if (userExistsByUsername) message.append(" and ");
+                message.append("email");
+            }
+
+            throw new UserAlreadyExistsException(message.toString());
+        }
     }
 }
