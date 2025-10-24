@@ -11,7 +11,7 @@ public class AuditService {
 
     private final ApplicationEventPublisher eventPublisher;
 
-    public void log(String action, Long userId, String details) {
+    public void log(AuditEventAction action, Long userId, String details) {
         eventPublisher.publishEvent(new AuditEvent(action, userId, details));
     }
 }

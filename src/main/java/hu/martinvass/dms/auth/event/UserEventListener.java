@@ -1,5 +1,6 @@
 package hu.martinvass.dms.auth.event;
 
+import hu.martinvass.dms.audit.AuditEventAction;
 import hu.martinvass.dms.audit.AuditService;
 import hu.martinvass.dms.auth.verification.VerificationToken;
 import hu.martinvass.dms.auth.verification.VerificationTokenRepository;
@@ -41,7 +42,7 @@ public class UserEventListener {
         sendActivationEmailAsync(email, token.getToken());
 
         // Audit log
-        auditService.log("USER_REGISTERED", user.getId(), "User registered: " + email);
+        auditService.log(AuditEventAction.USER_REGISTERED, user.getId(), "User registered: " + email);
     }
 
     @EventListener
@@ -52,7 +53,7 @@ public class UserEventListener {
         if (principal instanceof AppUser user && details instanceof WebAuthenticationDetails webDetails) {
             // Audit log
             auditService.log(
-                    "USER_LOGGED_IN",
+                    AuditEventAction.USER_LOGGED_IN,
                     user.getId(),
                     String.format("Logged in: %s | IP: %s", user.getUsername(), webDetails.getRemoteAddress())
             );
@@ -75,9 +76,9 @@ public class UserEventListener {
         boolean exists = appUserRepository.findByProfile_Username(username).isPresent();
 
         if (exists) {
-            auditService.log("USER_LOGIN_FAILED", null, "Bad password: " + username + " | IP: " + ip);
+            auditService.log(AuditEventAction.USER_LOGIN_FAILED, null, "Bad password: " + username + " | IP: " + ip);
         } else {
-            auditService.log("UNKNOWN_USER_LOGIN_ATTEMPT", null, "Username not found: " + username + " | IP: " + ip);
+            auditService.log(AuditEventAction.UNKNOWN_USER_LOGIN_ATTEMPT, null, "Username not found: " + username + " | IP: " + ip);
         }
     }
 

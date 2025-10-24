@@ -21,7 +21,8 @@ public class AuditLogEntry {
     )
     private Long id;
 
-    private String action;
+    @Enumerated(EnumType.STRING)
+    private AuditEventAction action;
     private Long userId;
 
     @Column(length = 2000)
@@ -31,7 +32,7 @@ public class AuditLogEntry {
 
     public AuditLogEntry() {}
 
-    public AuditLogEntry(String action, Long userId, String details) {
+    public AuditLogEntry(AuditEventAction action, Long userId, String details) {
         this.action = action;
         this.userId = userId;
         this.details = details;
