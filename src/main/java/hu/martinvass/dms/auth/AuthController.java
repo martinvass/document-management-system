@@ -20,6 +20,19 @@ public class AuthController {
     private final AuthService authService;
 
     /**
+     * Handler method for the home page.
+     *
+     * @param model The model to add attributes for rendering the view.
+     * @return The name of the view template for the home page.
+     */
+    @GetMapping("/")
+    private String index(Model model) {
+        model.addAttribute("title", "DMS - Document Management System");
+        model.addAttribute("page", "landing");
+        return "index";
+    }
+
+    /**
      * Handles the login page request.
      *
      * @param model The model to add attributes for rendering the view.
@@ -27,6 +40,7 @@ public class AuthController {
      */
     @GetMapping("auth/login")
     private String login(Model model) {
+        model.addAttribute("page", "login");
         model.addAttribute("title", "DMS - Login");
         return "auth/login";
     }
@@ -39,6 +53,7 @@ public class AuthController {
      */
     @GetMapping("auth/sign-up")
     private String signUp(Model model) {
+        model.addAttribute("page", "sign-up");
         model.addAttribute("title", "DMS - Sign Up");
         model.addAttribute("user", new AppUser());
 

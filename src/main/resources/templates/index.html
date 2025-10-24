@@ -1,1 +1,69 @@
-landing
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragments/header :: html_header}"></head>
+<body>
+
+<header class="hero-section text-center text-white d-flex flex-column justify-content-center align-items-center">
+    <h1 class="display-4 fw-bold">Document Management System</h1>
+    <p class="lead">Secure, structured, and fast document handling for companies.</p>
+    <a href="/auth/login" class="btn btn-outline-light btn-lg mt-3">Log in</a>
+</header>
+
+<section class="features py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">Key Features</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm border-0 text-center">
+                    <div class="card-body">
+                        <i class="fas fa-code-branch fa-3x text-success mb-3"></i>
+                        <h5 class="card-title">Document Storage</h5>
+                        <p class="card-text">Searchable, structured document storage with tags and metadata.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm border-0 text-center">
+                    <div class="card-body">
+                        <i class="fas fa-user-shield fa-3x text-success mb-3"></i>
+                        <h5 class="card-title">Access Control & Audit Logs</h5>
+                        <p class="card-text">Role-based access management with full audit trail of all actions.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm border-0 text-center">
+                    <div class="card-body">
+                        <i class="fas fa-paper-plane fa-3x text-success mb-3"></i>
+                        <h5 class="card-title">Invitations</h5>
+                        <p class="card-text">Easily grow your company team through email invitation links.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mx-auto">
+                <div class="card h-100 shadow-sm border-0 text-center">
+                    <div class="card-body">
+                        <i class="fas fa-cogs fa-3x text-success mb-3"></i>
+                        <h5 class="card-title">Admin Dashboard</h5>
+                        <p class="card-text">Manage users, roles, document policies and company settings in one place.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="cta text-center py-5">
+    <h2>Get Started Today!</h2>
+    <p>Register your company and take your document management to the next level.</p>
+    <a href="/auth/sign-up" class="btn btn-outline-light btn-lg">Sign Up</a>
+</section>
+
+<footer class="text-center py-4 text-muted">
+    <p>&copy; 2025 Document Management System</p>
+</footer>
+
+<div th:replace="~{fragments/scripts :: footer_scripts}"></div>
+
+</body>
+</html>

@@ -1,0 +1,49 @@
+:root {
+    /* Soft sage green palette */
+    --color-bg: #E1F0DA;          /* háttérszín – nagyon világos zöld */
+    --color-card: #D4E7C5;        /* kártyák / auth-container */
+    --color-accent: #BFD8AF;      /* gombok / fókusz / kiemelés */
+    --color-accent-dark: #99BC85; /* gomb hover / erősebb árnyalat */
+    --color-text: #2A3727;        /* természetes sötétzöldes szöveg */
+    --radius: 12px;
+    --transition: 0.25s ease;
+    --font: 'Inter', sans-serif;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #E1F0DA;
+    color: #333;
+}
+
+.hero-section {
+    height: 100vh;
+    padding: 60px 20px;
+    color: #fff;
+    background: #BFD8AF linear-gradient(to bottom, #E1F0DA, #D4E7C5, #BFD8AF, #99BC85);
+}
+
+.features {
+    background-color: #F6FFF0;
+}
+
+.features .card {
+    background-color: #E1F0DA;
+    transition: transform 0.2s ease-in-out;
+}
+
+.features .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.cta {
+    background-color: #99BC85;
+    color: white;
+}
+
+.btn-outline-light:hover {
+    background-color: white;
+    color: #99BC85;
+    border-color: white;
+}
