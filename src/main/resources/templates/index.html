@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
+<!-- HTML Head -->
 <head th:replace="~{fragments/header :: html_header(title='DMS - Document Management System', additionalLinks=~{this::page_links})}">
     <th:block th:fragment="page_links">
         <link rel="stylesheet" th:href="@{/css/landing.css}">
@@ -67,6 +68,7 @@
     <p>&copy; 2025 Document Management System</p>
 </footer>
 
+<!-- Footer scripts -->
 <div th:replace="~{fragments/scripts :: footer_scripts}"></div>
 
 </body>

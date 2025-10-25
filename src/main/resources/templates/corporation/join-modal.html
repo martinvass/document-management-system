@@ -1,0 +1,30 @@
+<div th:fragment="corpJoinModal(joinDto)" class="modal fade" id="corpJoinModal" tabindex="-1"
+     aria-labelledby="joinCorpModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
+        <div class="modal-content corporation-modal">
+            <div class="modal-header corporation-header">
+                <h5 class="modal-title fw-bold" id="joinCorpModalLabel">Join Corporation</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <form th:action="@{/company/join}" th:object="${joinDto}" method="post" enctype="multipart/form-data"
+                  class="needs-validation" novalidate>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="name" class="form-label fw-bold">Invitation Code</label>
+                        <input type="text"
+                               th:field="*{code}"
+                               id="name"
+                               class="form-control corporation-input"
+                               required>
+                        <div class="invalid-feedback">Please enter an invitation code!</div>
+                    </div>
+                </div>
+
+                <div class="modal-footer corporation-footer">
+                    <button type="submit" class="btn submit-btn"><i class="fas fa-paper-plane"></i>&nbsp;Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -40,7 +40,7 @@ public class Corporation {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_by", nullable = false)
-    private Profile createdBy;
+    private Profile owner;
 
     @Column(name = "created_at", nullable = false)
     private Date createdAt = new Date(System.currentTimeMillis());

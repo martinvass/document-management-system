@@ -24,22 +24,20 @@ public class AuthController {
     /**
      * Handler method for the home page.
      *
-     * @param model The model to add attributes for rendering the view.
      * @return The name of the view template for the home page.
      */
     @GetMapping("/")
-    private String index(Model model) {
+    private String index() {
         return "index";
     }
 
     /**
      * Handles the login page request.
      *
-     * @param model The model to add attributes for rendering the view.
      * @return The view name for the login page.
      */
     @GetMapping("auth/login")
-    private String login(Model model) {
+    private String login() {
         // We prevent logged-in users from accessing the login page
         if (SecurityUtils.isAuthenticated()) {
             return "redirect:/";
@@ -88,7 +86,7 @@ public class AuthController {
     }
 
     @GetMapping("auth/verify")
-    public String verifyAccount(@RequestParam("token") String token, RedirectAttributes redirectAttributes, Model model) {
+    public String verifyAccount(@RequestParam("token") String token, RedirectAttributes redirectAttributes) {
         var result = authService.verifyUser(token);
 
         switch (result) {

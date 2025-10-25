@@ -1,14 +1,11 @@
 package hu.martinvass.dms.auth;
 
 import hu.martinvass.dms.auth.event.UserRegisteredEvent;
-import hu.martinvass.dms.email.EmailService;
 import hu.martinvass.dms.auth.verification.VerificationResult;
-import hu.martinvass.dms.auth.verification.VerificationToken;
 import hu.martinvass.dms.auth.verification.VerificationTokenRepository;
 import hu.martinvass.dms.user.AppUser;
 import hu.martinvass.dms.user.exception.UserAlreadyExistsException;
 import hu.martinvass.dms.user.repository.AppUserRepository;
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.Optional;
@@ -82,6 +80,7 @@ public class AuthService implements UserDetailsService {
      * @param username The username of the user to find.
      * @return An Optional containing the found AppUser, or an empty Optional if not found.
      */
+    @Transactional(readOnly = true)
     public Optional<AppUser> findByUsername(String username) {
         return appUserRepository.findByProfile_Username(username);
     }
@@ -92,10 +91,12 @@ public class AuthService implements UserDetailsService {
      * @param email The email of the user to find.
      * @return An Optional containing the found AppUser, or an empty Optional if not found.
      */
+    @Transactional(readOnly = true)
     public Optional<AppUser> findByEmail(String email) {
         return appUserRepository.findByProfile_Email(email);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return appUserRepository.findByProfile_Username(username)
@@ -104,6 +105,7 @@ public class AuthService implements UserDetailsService {
                                 String.format(USER_NOT_FOUND_MSG, username)));
     }
 
+    @Transactional(readOnly = true)
     private void validateUser(AppUser user) throws UserAlreadyExistsException {
         var userExistsByEmail = appUserRepository
                 .findByProfile_Email(user.getProfile().getEmail())

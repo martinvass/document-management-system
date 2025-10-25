@@ -1,6 +1,8 @@
 package hu.martinvass.dms.user.controller;
 
 import hu.martinvass.dms.auth.AuthService;
+import hu.martinvass.dms.corporation.data.CreateCorporationDTO;
+import hu.martinvass.dms.corporation.data.JoinCorporationDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,6 +21,9 @@ public class UserController {
         var user = authService.findByUsername(principal.getName());
 
         model.addAttribute("user", user.get());
+        model.addAttribute("createDto", new CreateCorporationDTO());
+        model.addAttribute("joinDto", new JoinCorporationDTO());
+
         return "home";
     }
 }
