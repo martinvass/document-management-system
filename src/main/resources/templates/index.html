@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
-<head th:replace="~{fragments/header :: html_header}"></head>
+<head th:replace="~{fragments/header :: html_header(title='DMS - Document Management System', additionalLinks=~{this::page_links})}">
+    <th:block th:fragment="page_links">
+        <link rel="stylesheet" th:href="@{/css/landing.css}">
+    </th:block>
+</head>
 <body>
 
 <header class="hero-section text-center text-white d-flex flex-column justify-content-center align-items-center">

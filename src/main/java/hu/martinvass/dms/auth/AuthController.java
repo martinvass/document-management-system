@@ -29,8 +29,6 @@ public class AuthController {
      */
     @GetMapping("/")
     private String index(Model model) {
-        model.addAttribute("title", "DMS - Document Management System");
-        model.addAttribute("page", "landing");
         return "index";
     }
 
@@ -47,8 +45,6 @@ public class AuthController {
             return "redirect:/";
         }
 
-        model.addAttribute("page", "login");
-        model.addAttribute("title", "DMS - Login");
         return "auth/login";
     }
 
@@ -65,10 +61,7 @@ public class AuthController {
             return "redirect:/";
         }
 
-        model.addAttribute("page", "sign-up");
-        model.addAttribute("title", "DMS - Sign Up");
         model.addAttribute("user", new AppUser());
-
         return "auth/sign-up";
     }
 
@@ -119,9 +112,6 @@ public class AuthController {
 
     @GetMapping("auth/verification-failed")
     public String handleVerificationFailed(Model model) {
-        model.addAttribute("page", "verification-failed");
-        model.addAttribute("title", "DMS - Verification Failed");
-
         return "auth/verification-failed";
     }
 }
