@@ -1,6 +1,7 @@
 package hu.martinvass.dms.audit.event;
 
 import hu.martinvass.dms.audit.AuditEventAction;
+import hu.martinvass.dms.user.AppUser;
 import lombok.Getter;
 
 import java.util.Date;
@@ -9,13 +10,13 @@ import java.util.Date;
 public class AuditEvent {
 
     private final AuditEventAction action;
-    private final Long userId;
+    private final AppUser user;
     private final String details;
     private final Date timestamp;
 
-    public AuditEvent(AuditEventAction action, Long userId, String details) {
+    public AuditEvent(AuditEventAction action, AppUser user, String details) {
         this.action = action;
-        this.userId = userId;
+        this.user = user;
         this.details = details;
         this.timestamp = new Date(System.currentTimeMillis());
     }

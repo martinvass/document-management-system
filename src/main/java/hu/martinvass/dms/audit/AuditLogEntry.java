@@ -1,12 +1,16 @@
 package hu.martinvass.dms.audit;
 
+import hu.martinvass.dms.corporation.Corporation;
+import hu.martinvass.dms.user.AppUser;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Setter;
 
 import java.util.Date;
 
 @Entity(name = "audit_logs")
 @AllArgsConstructor
+@Setter
 public class AuditLogEntry {
 
     @SequenceGenerator(
@@ -22,8 +26,19 @@ public class AuditLogEntry {
     private Long id;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private AuditScope scope;
+
+    @Enumerated(EnumType.STRING)
     private AuditEventAction action;
-    private Long userId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private AppUser user;
+
+    @ManyToOne
+    @JoinColumn(name = "corp_id")
+    private Corporation corporation;
 
     @Column(length = 2000)
     private String details;
@@ -32,9 +47,9 @@ public class AuditLogEntry {
 
     public AuditLogEntry() {}
 
-    public AuditLogEntry(AuditEventAction action, Long userId, String details) {
+    public AuditLogEntry(AuditEventAction action, AppUser user, String details) {
         this.action = action;
-        this.userId = userId;
+        this.user = user;
         this.details = details;
     }
 }

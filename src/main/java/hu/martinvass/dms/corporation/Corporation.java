@@ -1,5 +1,6 @@
 package hu.martinvass.dms.corporation;
 
+import hu.martinvass.dms.user.AppUser;
 import hu.martinvass.dms.user.Profile;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -7,7 +8,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -42,8 +45,8 @@ public class Corporation {
     @Column(name = "created_at", nullable = false)
     private Date createdAt = new Date(System.currentTimeMillis());
 
-    @OneToMany(mappedBy = "corporation")
-    private Set<CorporationMember> members;
+    @OneToMany(mappedBy = "corporation", cascade = CascadeType.ALL)
+    private List<AppUser> members = new ArrayList<>();
 
     public Corporation() {}
 }

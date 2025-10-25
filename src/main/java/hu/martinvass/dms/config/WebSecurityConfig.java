@@ -2,6 +2,7 @@ package hu.martinvass.dms.config;
 
 import hu.martinvass.dms.auth.AuthService;
 import hu.martinvass.dms.auth.handler.CustomAuthFailureHandler;
+import hu.martinvass.dms.auth.handler.CustomLogoutHandler;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,7 +25,9 @@ public class WebSecurityConfig {
 
     private SessionConfig sessionConfig;
 
+    private final CustomLogoutHandler logoutHandler;
     private final CustomAuthFailureHandler authFailureHandler;
+
     private final AuthService authService;
     private final Argon2PasswordEncoder passwordEncoder;
 
@@ -66,6 +69,7 @@ public class WebSecurityConfig {
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl(LOGIN_URL + "?logout")
+                        .logoutSuccessHandler(logoutHandler)
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
                         .permitAll()

@@ -42,7 +42,7 @@ public class UserEventListener {
         sendActivationEmailAsync(email, token.getToken());
 
         // Audit log
-        auditService.log(AuditEventAction.USER_REGISTERED, user.getId(), "User registered: " + email);
+        auditService.log(AuditEventAction.USER_REGISTERED, user, "User registered: " + email);
     }
 
     @EventListener
@@ -54,7 +54,7 @@ public class UserEventListener {
             // Audit log
             auditService.log(
                     AuditEventAction.USER_LOGGED_IN,
-                    user.getId(),
+                    user,
                     String.format("Logged in: %s | IP: %s", user.getUsername(), webDetails.getRemoteAddress())
             );
         }

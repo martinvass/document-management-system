@@ -21,3 +21,7 @@ body {
     border-radius: 4px;
     transition: 0.3s;
 }
+
+.container h2 {
+    font-weight: bold;
+}

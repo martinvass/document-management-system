@@ -1,5 +1,7 @@
 package hu.martinvass.dms.user;
 
+import hu.martinvass.dms.corporation.Corporation;
+import hu.martinvass.dms.corporation.CorporationRole;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -42,8 +44,15 @@ public class AppUser implements UserDetails {
     @Column(nullable = false)
     private String password;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "corp_id")
+    private Corporation corporation;
+
     @Enumerated(EnumType.STRING)
-    private AppUserRole role = AppUserRole.NO_ROLE;
+    private CorporationRole corporationRole;
+
+    @Enumerated(EnumType.STRING)
+    private GlobalRole role = GlobalRole.NO_ROLE;
 
     @Column(nullable = false)
     private boolean verified = false;
@@ -91,5 +100,18 @@ public class AppUser implements UserDetails {
     @Override
     public boolean isEnabled() {
         return status == AccountStatus.ACTIVE && verified;
+    }
+
+    public boolean isInCorporation() {
+        return this.corporation != null;
+    }
+
+    public boolean isCorporationAdmin() {
+        return this.corporation != null
+                && this.corporationRole == CorporationRole.ADMIN;
+    }
+
+    public boolean isSystemAdmin() {
+        return this.role == GlobalRole.SYSTEM_ADMIN;
     }
 }
