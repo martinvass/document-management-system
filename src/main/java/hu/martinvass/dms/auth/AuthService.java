@@ -106,7 +106,7 @@ public class AuthService implements UserDetailsService {
     }
 
     @Transactional(readOnly = true)
-    private void validateUser(AppUser user) throws UserAlreadyExistsException {
+    public void validateUser(AppUser user) throws UserAlreadyExistsException {
         var userExistsByEmail = appUserRepository
                 .findByProfile_Email(user.getProfile().getEmail())
                 .isPresent();

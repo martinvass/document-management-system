@@ -8,4 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 @Repository
 public interface CorporationRepository extends JpaRepository<Corporation, Long> {
+
+    boolean existsByName(String name);
 }

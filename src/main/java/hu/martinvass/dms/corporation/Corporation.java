@@ -1,7 +1,6 @@
 package hu.martinvass.dms.corporation;
 
 import hu.martinvass.dms.user.AppUser;
-import hu.martinvass.dms.user.Profile;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +10,6 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -40,8 +38,9 @@ public class Corporation {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_by", nullable = false)
-    private Profile owner;
+    private AppUser owner;
 
+    @Builder.Default
     @Column(name = "created_at", nullable = false)
     private Date createdAt = new Date(System.currentTimeMillis());
 
