@@ -1,0 +1,23 @@
+<div class="container-fluid" th:fragment="sidebar(content)">
+    <div class="row">
+        <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse" style="background-color: #A9B388; min-height: 100vh;">
+            <div class="position-sticky pt-3 px-3">
+                <h6 class="text-white text-uppercase mb-3">Corporation</h6>
+
+                <div th:if="${!user.isInCorporation()}">
+                    <a class="btn w-100 mb-2 text-white" style="background-color: #B99470;">
+                        <i class="fas fa-square-plus me-1"></i>&nbsp;Create
+                    </a>
+                    <a class="btn w-100 text-white" style="background-color: #B99470;">
+                        <i class="fas fa-arrow-right-to-bracket me-1"></i>&nbsp;Join
+                    </a>
+                </div>
+            </div>
+        </nav>
+
+        <div class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4"
+              style="background-color: #FEFAE0; min-height: 100vh;">
+            <div th:insert="${content}"></div>
+        </div>
+    </div>
+</div>

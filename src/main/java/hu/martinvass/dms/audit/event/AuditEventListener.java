@@ -1,7 +1,7 @@
 package hu.martinvass.dms.audit.event;
 
 import hu.martinvass.dms.audit.AuditLogEntry;
-import hu.martinvass.dms.audit.AuditLogRepository;
+import hu.martinvass.dms.audit.repository.AuditLogRepository;
 import hu.martinvass.dms.audit.AuditScope;
 import lombok.AllArgsConstructor;
 import org.springframework.context.event.EventListener;

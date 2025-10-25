@@ -18,7 +18,7 @@ public class UserController {
     public String home(Model model, Principal principal) {
         var user = authService.findByUsername(principal.getName());
 
-        model.addAttribute("user", user);
+        model.addAttribute("user", user.get());
         return "home";
     }
 }

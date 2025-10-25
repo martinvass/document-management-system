@@ -1,5 +1,8 @@
-package hu.martinvass.dms.audit;
+package hu.martinvass.dms.audit.service;
 
+import hu.martinvass.dms.audit.AuditEventAction;
+import hu.martinvass.dms.audit.AuditLogEntry;
+import hu.martinvass.dms.audit.repository.AuditLogRepository;
 import hu.martinvass.dms.audit.event.AuditEvent;
 import hu.martinvass.dms.user.AppUser;
 import lombok.AllArgsConstructor;

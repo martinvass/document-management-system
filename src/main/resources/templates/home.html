@@ -7,55 +7,15 @@
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #5F6F52;">
-    <div class="container-fluid">
-        <a class="navbar-brand fw-bold" href="#">DMS</a>
+<nav th:replace="~{fragments/dashboard/navigation :: navigation_bar}"></nav>
 
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#profileDropdown">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div class="collapse navbar-collapse justify-content-end" id="profileDropdown">
-            <ul class="navbar-nav">
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle text-white" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
-                        <i class="fas fa-user me-1"></i>
-                        <span th:text="${#authentication.name}">User</span>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item">View Profile</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li>
-                            <form th:action="@{/logout}" method="post">
-                                <button type="submit" class="dropdown-item text-danger">Log Out</button>
-                            </form>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>
-
-<div class="container-fluid">
-    <div class="row">
-        <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse" style="background-color: #A9B388; min-height: 100vh;">
-            <div class="position-sticky pt-3 px-3">
-                <h6 class="text-white text-uppercase mb-3">Company</h6>
-
-                <a class="btn w-100 mb-2 text-white" style="background-color: #B99470;">
-                    <i class="fas fa-plus me-1"></i>&nbsp;Create
-                </a>
-                <a class="btn w-100 text-white" style="background-color: #B99470;">
-                    <i class="fas fa-link me-1"></i>&nbsp;Join
-                </a>
-            </div>
-        </nav>
-
-        <div class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4" style="background-color: #FEFAE0; min-height: 100vh;">
-            <div class="container">
-                <h2 th:text="'Welcome, ' + ${user.get().profile.username} + '!'">Welcome, User</h2>
-            </div>
+<div th:replace="~{fragments/dashboard/sidebar :: sidebar(content=~{::content})}">
+    <div th:fragment="content">
+        <div class="container">
+            <h2 th:text="'Welcome, ' + ${user.profile.username} + '!'">Welcome</h2>
+            <p th:if="${!user.isInCorporation()}">
+                You are not currently a member of any corporation.
+            </p>
         </div>
     </div>
 </div>

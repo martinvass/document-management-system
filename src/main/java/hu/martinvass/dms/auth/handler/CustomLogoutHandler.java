@@ -1,7 +1,7 @@
 package hu.martinvass.dms.auth.handler;
 
 import hu.martinvass.dms.audit.AuditEventAction;
-import hu.martinvass.dms.audit.AuditService;
+import hu.martinvass.dms.audit.service.AuditService;
 import hu.martinvass.dms.auth.AuthService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,6 +27,9 @@ public class CustomLogoutHandler extends SimpleUrlLogoutSuccessHandler implement
             HttpServletResponse response,
             Authentication authentication
     ) throws IOException, ServletException {
+        if (authentication == null)
+            response.sendRedirect("/auth/login");
+
         var url = request.getHeader("Referer");
         var user = authService.findByUsername(authentication.getName());
 
@@ -37,6 +40,6 @@ public class CustomLogoutHandler extends SimpleUrlLogoutSuccessHandler implement
                 String.format("Logged out: %s | From: %s", appUser.getUsername(), url)
         ));
 
-        super.onLogoutSuccess(request, response, authentication);
+        response.sendRedirect("/auth/login?logout");
     }
 }

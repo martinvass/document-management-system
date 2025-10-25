@@ -1,5 +1,7 @@
-package hu.martinvass.dms.audit;
+package hu.martinvass.dms.audit.repository;
 
+import hu.martinvass.dms.audit.AuditLogEntry;
+import hu.martinvass.dms.audit.AuditScope;
 import hu.martinvass.dms.corporation.Corporation;
 import org.springframework.data.jpa.repository.JpaRepository;
 
