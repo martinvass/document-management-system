@@ -11,6 +11,10 @@
 <!-- Navigation bar -->
 <nav th:replace="~{fragments/dashboard/navigation :: navigation_bar}"></nav>
 
+<!-- Alerts -->
+<div th:if="${message}" th:replace="~{fragments/toasts-messages :: alert_success(message=${message})}"></div>
+<div th:if="${error}" th:replace="~{fragments/toasts-messages :: alert_error(message=${error})}"></div>
+
 <!-- Sidebar + Main content -->
 <div th:replace="~{fragments/dashboard/sidebar :: sidebar(content=~{::content})}">
     <div th:fragment="content">
@@ -18,6 +22,10 @@
             <h2 th:text="'Welcome, ' + ${user.profile.username} + '!'">Welcome</h2>
             <p th:if="${!user.isInCorporation()}">
                 You are not currently a member of any corporation. Please join an existing corporation or create a new one to proceed.
+            </p>
+
+            <p th:if="${activeProfileId == -1} and ${user.isInCorporation()}">
+                Please select a corporation profile to proceed.
             </p>
         </div>
     </div>
@@ -29,5 +37,6 @@
 
 <!-- Footer scripts -->
 <div th:replace="~{fragments/scripts :: footer_scripts}"></div>
+
 </body>
 </html>

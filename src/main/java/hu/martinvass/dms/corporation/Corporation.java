@@ -1,13 +1,13 @@
 package hu.martinvass.dms.corporation;
 
 import hu.martinvass.dms.user.AppUser;
+import hu.martinvass.dms.profile.CorporationProfile;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -44,8 +44,8 @@ public class Corporation {
     @Column(name = "created_at", nullable = false)
     private Date createdAt = new Date(System.currentTimeMillis());
 
-    @OneToMany(mappedBy = "corporation", cascade = CascadeType.ALL)
-    private List<AppUser> members = new ArrayList<>();
+    @OneToMany(mappedBy = "corporation", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CorporationProfile> members = List.of();
 
     public Corporation() {}
 }

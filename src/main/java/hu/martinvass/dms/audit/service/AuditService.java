@@ -19,7 +19,7 @@ public class AuditService {
     private final ApplicationEventPublisher eventPublisher;
 
     public void log(AuditEventAction action, AppUser user, String details) {
-        eventPublisher.publishEvent(new AuditEvent(action, user, details));
+        //eventPublisher.publishEvent(new AuditEvent(action, user, details));
     }
 
     public List<AuditLogEntry> getLogEntries(AppUser user) {
@@ -29,9 +29,9 @@ public class AuditService {
         }
 
         // Company-level accessing
-        if (user.isCorporationAdmin()) {
-            return auditLogRepository.findByCorporationOrderByTimestampDesc(user.getCorporation()).orElse(List.of());
-        }
+//        if (user.isCorporationAdmin()) {
+//            return auditLogRepository.findByCorporationOrderByTimestampDesc(user.getCorporation()).orElse(List.of());
+//        }
 
         // Default
         return List.of();

@@ -2,6 +2,7 @@ package hu.martinvass.dms.corporation;
 
 import hu.martinvass.dms.corporation.data.CreateCorporationDTO;
 import hu.martinvass.dms.corporation.service.CorporationService;
+import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -19,14 +20,15 @@ public class CorporationController {
     @PostMapping("corporation/create")
     public String handleCreate(@ModelAttribute("createDto") CreateCorporationDTO dto,
                                Principal principal,
-                               RedirectAttributes redirectAttributes) {
+                               RedirectAttributes redirectAttributes,
+                               HttpSession session) {
         try {
-            corporationService.createCorporation(dto, principal.getName());
-            redirectAttributes.addFlashAttribute("message", "Corporation created");
+            corporationService.createCorporation(dto, principal.getName(), session);
+            redirectAttributes.addFlashAttribute("message", "Corporation created.");
 
             // TODO: redirect to company dashboard or something
             return "redirect:/home";
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
             return "redirect:/home";
         }

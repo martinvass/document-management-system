@@ -25,8 +25,8 @@ public class AuditEventListener {
 
         entry.setScope(companyScope ? AuditScope.COMPANY : AuditScope.GLOBAL);
 
-        if (companyScope)
-            entry.setCorporation(event.getUser().getCorporation());
+//        if (companyScope)
+//            entry.setCorporation(event.getUser().getCorporation());
 
         repository.save(entry);
     }

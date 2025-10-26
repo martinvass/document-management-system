@@ -1,7 +1,7 @@
 package hu.martinvass.dms.user;
 
-import hu.martinvass.dms.corporation.Corporation;
 import hu.martinvass.dms.corporation.CorporationRole;
+import hu.martinvass.dms.profile.CorporationProfile;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,9 +11,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
+import java.util.*;
 
 /**
  * Class representing an application user implementing Spring Security's UserDetails interface.
@@ -44,12 +42,8 @@ public class AppUser implements UserDetails {
     @Column(nullable = false)
     private String password;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "corp_id")
-    private Corporation corporation;
-
-    @Enumerated(EnumType.STRING)
-    private CorporationRole corporationRole;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CorporationProfile> profiles = List.of();
 
     @Enumerated(EnumType.STRING)
     private GlobalRole role = GlobalRole.NO_ROLE;
@@ -62,6 +56,9 @@ public class AppUser implements UserDetails {
 
     @Column(name = "created_at", nullable = false)
     private Date creationDate = new Date(System.currentTimeMillis());
+
+    @Transient
+    private CorporationProfile activeProfile;
 
     public AppUser() {}
 
@@ -103,12 +100,12 @@ public class AppUser implements UserDetails {
     }
 
     public boolean isInCorporation() {
-        return this.corporation != null;
+        return profiles.stream().anyMatch(p -> p.getCorporation() != null);
     }
 
     public boolean isCorporationAdmin() {
-        return this.corporation != null
-                && this.corporationRole == CorporationRole.ADMIN;
+        return activeProfile != null
+                && activeProfile.getRole() == CorporationRole.ADMIN;
     }
 
     public boolean isSystemAdmin() {

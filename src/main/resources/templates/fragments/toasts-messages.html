@@ -1,0 +1,49 @@
+<div th:fragment="alert_success(message)"
+     th:if="${message}"
+     class="toast-container position-fixed top-0 end-0 p-3"
+     style="z-index: 1080;">
+
+    <div id="successToast"
+         class="toast align-items-center toast-success-custom"
+         role="alert"
+         aria-live="assertive"
+         aria-atomic="true"
+         data-bs-autohide="true"
+         data-bs-delay="7500">
+        <div class="toast-header">
+            <strong class="me-auto toast-message">Success!</strong>
+            <small class="text-body-secondary toast-message">just now</small>
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="toast"
+                    aria-label="Close"></button>
+        </div>
+
+        <div class="toast-body" th:text="${message}"></div>
+    </div>
+</div>
+
+<div th:fragment="alert_error(message)"
+     th:if="${message}"
+     class="toast-container position-fixed top-0 end-0 p-3"
+     style="z-index: 1080;">
+
+    <div id="errorToast"
+         class="toast align-items-center toast-error-custom"
+         role="alert"
+         aria-live="assertive"
+         aria-atomic="true"
+         data-bs-autohide="true"
+         data-bs-delay="7500">
+        <div class="toast-header">
+            <strong class="me-auto toast-message">Error!</strong>
+            <small class="text-body-secondary toast-message">just now</small>
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="toast"
+                    aria-label="Close"></button>
+        </div>
+
+        <div class="toast-body" th:text="${message}"></div>
+    </div>
+</div>

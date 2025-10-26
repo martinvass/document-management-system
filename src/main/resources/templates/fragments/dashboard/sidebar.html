@@ -4,14 +4,20 @@
             <div class="position-sticky pt-3 px-3">
                 <h6 class="text-white text-uppercase mb-3">Corporation</h6>
 
-                <div th:if="${!user.isInCorporation()}">
-                    <a href="#" data-bs-toggle="modal" data-bs-target="#corpCreateModal" class="btn w-100 mb-2 text-white sidebar-btn">
-                        <i class="fas fa-square-plus me-1"></i>&nbsp;Create
-                    </a>
-                    <a href="#" data-bs-toggle="modal" data-bs-target="#corpJoinModal" class="btn w-100 text-white sidebar-btn">
-                        <i class="fas fa-arrow-right-to-bracket me-1"></i>&nbsp;Join
-                    </a>
-                </div>
+                <a href="#" data-bs-toggle="modal" data-bs-target="#corpCreateModal" class="btn w-100 mb-2 text-white sidebar-btn">
+                    <i class="fas fa-square-plus me-1"></i>&nbsp;Create
+                </a>
+                <a href="#" data-bs-toggle="modal" data-bs-target="#corpJoinModal" class="btn w-100 text-white sidebar-btn">
+                    <i class="fas fa-arrow-right-to-bracket me-1"></i>&nbsp;Join
+                </a>
+<!--                <div th:if="${!user.isInCorporation()}">-->
+<!--                    <a href="#" data-bs-toggle="modal" data-bs-target="#corpCreateModal" class="btn w-100 mb-2 text-white sidebar-btn">-->
+<!--                        <i class="fas fa-square-plus me-1"></i>&nbsp;Create-->
+<!--                    </a>-->
+<!--                    <a href="#" data-bs-toggle="modal" data-bs-target="#corpJoinModal" class="btn w-100 text-white sidebar-btn">-->
+<!--                        <i class="fas fa-arrow-right-to-bracket me-1"></i>&nbsp;Join-->
+<!--                    </a>-->
+<!--                </div>-->
             </div>
         </nav>
 

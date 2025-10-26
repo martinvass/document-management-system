@@ -4,4 +4,15 @@
     <script src="https://kit.fontawesome.com/61a424255f.js" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script th:src="@{/js/main.js}"></script>
+
+    <script th:if="${message} or ${error}">
+        document.addEventListener('DOMContentLoaded', function () {
+            ['successToast', 'errorToast'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    new bootstrap.Toast(el).show();
+                }
+            });
+        });
+    </script>
 </div>
