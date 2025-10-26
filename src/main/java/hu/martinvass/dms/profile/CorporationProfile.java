@@ -29,7 +29,7 @@ public class CorporationProfile {
     @JoinColumn(name = "profile_id", nullable = false)
     private Profile profile;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     @JoinColumn(name = "corporation_id")
     private Corporation corporation;
 

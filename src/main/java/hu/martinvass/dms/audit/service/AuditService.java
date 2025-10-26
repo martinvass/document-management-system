@@ -2,8 +2,8 @@ package hu.martinvass.dms.audit.service;
 
 import hu.martinvass.dms.audit.AuditEventAction;
 import hu.martinvass.dms.audit.AuditLogEntry;
-import hu.martinvass.dms.audit.repository.AuditLogRepository;
 import hu.martinvass.dms.audit.event.AuditEvent;
+import hu.martinvass.dms.audit.repository.AuditLogRepository;
 import hu.martinvass.dms.user.AppUser;
 import lombok.AllArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
@@ -19,7 +19,7 @@ public class AuditService {
     private final ApplicationEventPublisher eventPublisher;
 
     public void log(AuditEventAction action, AppUser user, String details) {
-        //eventPublisher.publishEvent(new AuditEvent(action, user, details));
+        eventPublisher.publishEvent(new AuditEvent(action, user, details));
     }
 
     public List<AuditLogEntry> getLogEntries(AppUser user) {
@@ -29,9 +29,9 @@ public class AuditService {
         }
 
         // Company-level accessing
-//        if (user.isCorporationAdmin()) {
-//            return auditLogRepository.findByCorporationOrderByTimestampDesc(user.getCorporation()).orElse(List.of());
-//        }
+        if (user.isCorporationAdmin()) {
+            return auditLogRepository.findByCorporationOrderByTimestampDesc(user.getActiveProfile().getCorporation()).orElse(List.of());
+        }
 
         // Default
         return List.of();

@@ -1,8 +1,8 @@
 package hu.martinvass.dms.audit.event;
 
 import hu.martinvass.dms.audit.AuditLogEntry;
-import hu.martinvass.dms.audit.repository.AuditLogRepository;
 import hu.martinvass.dms.audit.AuditScope;
+import hu.martinvass.dms.audit.repository.AuditLogRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -21,12 +21,12 @@ public class AuditEventListener {
                 event.getDetails()
         );
 
-        boolean companyScope = event.getUser() != null && event.getUser().isInCorporation();
+        boolean companyScope = event.getUser() != null && event.getUser().isInCorporation() && event.getUser().getActiveProfile() != null;
 
         entry.setScope(companyScope ? AuditScope.COMPANY : AuditScope.GLOBAL);
 
-//        if (companyScope)
-//            entry.setCorporation(event.getUser().getCorporation());
+        if (companyScope && event.getUser().getActiveProfile() != null)
+            entry.setCorporation(event.getUser().getActiveProfile().getCorporation());
 
         repository.save(entry);
     }

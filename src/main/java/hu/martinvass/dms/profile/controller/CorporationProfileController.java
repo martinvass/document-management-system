@@ -23,7 +23,7 @@ public class CorporationProfileController {
                                 HttpSession session,
                                 RedirectAttributes ra) {
         try {
-            corporationProfileService.switchActiveProfile(dto.getProfileId(), principal.getName(), session);
+            corporationProfileService.switchActiveProfile(dto.profileId(), principal.getName(), session);
             ra.addFlashAttribute("message", "Switched active profile successfully!");
         } catch (Exception e) {
             ra.addFlashAttribute("error", e.getMessage());

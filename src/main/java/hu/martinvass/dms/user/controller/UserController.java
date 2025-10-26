@@ -23,7 +23,7 @@ public class UserController {
     private final AuthService authService;
 
     @GetMapping("/home")
-    public String home(@ActiveUserProfile CorporationProfile activeProfile, Model model, Principal principal, HttpSession session) {
+    public String home(@ActiveUserProfile CorporationProfile activeProfile, Model model, Principal principal) {
         var user = authService.findByUsername(principal.getName())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + principal.getName()));
 
