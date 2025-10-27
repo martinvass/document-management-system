@@ -2,7 +2,13 @@
     <div class="row">
         <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse custom-sidebar">
             <div class="position-sticky pt-3 px-3">
-                <h6 class="text-white text-uppercase mb-3">Corporation</h6>
+
+                <div class="d-flex align-items-center mb-4">
+                    <div>
+                        <h6 class="mb-0 fw-bold" th:if="${activeProfile}" th:text="${activeProfile.corporation.name}"></h6>
+                        <small class="text-secondary" th:if="${activeProfile}" th:text="${user.profile.username}"></small>
+                    </div>
+                </div>
 
                 <a href="#" data-bs-toggle="modal" data-bs-target="#corpCreateModal" class="btn w-100 mb-2 text-white sidebar-btn">
                     <i class="fas fa-square-plus me-1"></i>&nbsp;Create
@@ -10,14 +16,92 @@
                 <a href="#" data-bs-toggle="modal" data-bs-target="#corpJoinModal" class="btn w-100 text-white sidebar-btn">
                     <i class="fas fa-arrow-right-to-bracket me-1"></i>&nbsp;Join
                 </a>
-<!--                <div th:if="${!user.isInCorporation()}">-->
-<!--                    <a href="#" data-bs-toggle="modal" data-bs-target="#corpCreateModal" class="btn w-100 mb-2 text-white sidebar-btn">-->
-<!--                        <i class="fas fa-square-plus me-1"></i>&nbsp;Create-->
-<!--                    </a>-->
-<!--                    <a href="#" data-bs-toggle="modal" data-bs-target="#corpJoinModal" class="btn w-100 text-white sidebar-btn">-->
-<!--                        <i class="fas fa-arrow-right-to-bracket me-1"></i>&nbsp;Join-->
-<!--                    </a>-->
-<!--                </div>-->
+
+                <div th:if="${activeProfile}">
+                    <hr class="border-secondary my-3">
+
+                    <h7 class="text-white text-uppercase mb-3">Corporation</h7>
+
+                    <ul class="nav flex-column">
+                        <li class="nav-item mb-1">
+                            <a href="#" class="nav-link text-white d-flex align-items-center">
+                                <i class="fas fa-file-alt"></i>
+                                <span class="ms-2">Documents</span>
+                            </a>
+                        </li>
+                        <li class="nav-item mb-1">
+                            <a href="#" class="nav-link text-white d-flex align-items-center">
+                                <i class="fas fa-tags"></i>
+                                <span class="ms-2">Tags</span>
+                            </a>
+                        </li>
+                        <li class="nav-item mb-1">
+                            <a href="#" class="nav-link text-white d-flex align-items-center">
+                                <i class="fas fa-star"></i>
+                                <span class="ms-2">Favorites</span>
+                            </a>
+                        </li>
+                        <li class="nav-item mb-1">
+                            <a href="#" class="nav-link text-white d-flex align-items-center">
+                                <i class="fas fa-users"></i>
+                                <span class="ms-2">Team</span>
+                            </a>
+                        </li>
+                    </ul>
+
+                    <div th:if="${activeProfile.isCorporationAdmin()}">
+                        <hr class="border-secondary my-3">
+
+                        <h7 class="text-white text-uppercase mb-3">Privacy</h7>
+
+                        <ul class="nav flex-column">
+                            <li class="nav-item mb-1">
+                                <a th:href="@{/corporation/admin/invitations}" class="nav-link text-white d-flex align-items-center">
+                                    <i class="fas fa-envelope-open-text"></i>
+                                    <span class="ms-2">Invitations</span>
+                                </a>
+                            </li>
+                            <li class="nav-item mb-1">
+                                <a href="#" class="nav-link text-white d-flex align-items-center">
+                                    <i class="fas fa-user-friends"></i>
+                                    <span class="ms-2">Team Members</span>
+                                </a>
+                            </li>
+                            <li class="nav-item mb-1">
+                                <a href="#" class="nav-link text-white d-flex align-items-center">
+                                    <i class="fas fa-user-shield"></i>
+                                    <span class="ms-2">Permissions</span>
+                                </a>
+                            </li>
+                        </ul>
+
+                        <hr class="border-secondary my-3">
+
+                        <h7 class="text-white text-uppercase mb-3">Admin</h7>
+
+                        <ul class="nav flex-column">
+                            <li class="nav-item mb-1">
+                                <a href="#" class="nav-link text-white d-flex align-items-center">
+                                    <i class="fas fa-cogs"></i>
+                                    <span class="ms-2">Settings</span>
+                                </a>
+                            </li>
+                            <li class="nav-item mb-1">
+                                <a href="#" class="nav-link text-white d-flex align-items-center">
+                                    <i class="fas fa-hdd"></i>
+                                    <span class="ms-2">Storage & Limits</span>
+                                </a>
+                            </li>
+                            <li class="nav-item mb-1">
+                                <a href="#" class="nav-link text-white d-flex align-items-center">
+                                    <i class="fas fa-clipboard-list"></i>
+                                    <span class="ms-2">Audit log</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
             </div>
         </nav>
 

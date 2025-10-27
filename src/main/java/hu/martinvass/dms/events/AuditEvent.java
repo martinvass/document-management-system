@@ -1,4 +1,4 @@
-package hu.martinvass.dms.audit.event;
+package hu.martinvass.dms.events;
 
 import hu.martinvass.dms.audit.AuditEventAction;
 import hu.martinvass.dms.user.AppUser;

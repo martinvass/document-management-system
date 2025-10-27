@@ -1,14 +1,12 @@
 package hu.martinvass.dms.user.controller;
 
+import hu.martinvass.dms.annotations.ActiveUserProfile;
 import hu.martinvass.dms.auth.AuthService;
-import hu.martinvass.dms.config.resolver.ActiveUserProfile;
 import hu.martinvass.dms.corporation.data.CreateCorporationDTO;
 import hu.martinvass.dms.corporation.data.JoinCorporationDTO;
 import hu.martinvass.dms.profile.CorporationProfile;
 import hu.martinvass.dms.profile.repository.CorporationProfileRepository;
-import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,8 +22,7 @@ public class UserController {
 
     @GetMapping("/home")
     public String home(@ActiveUserProfile CorporationProfile activeProfile, Model model, Principal principal) {
-        var user = authService.findByUsername(principal.getName())
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + principal.getName()));
+        var user = authService.findByUsername(principal.getName());
 
         var profiles = corporationProfileRepository.findByUserId(user.getId());
 

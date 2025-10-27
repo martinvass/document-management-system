@@ -1,4 +1,4 @@
-package hu.martinvass.dms.auth.event;
+package hu.martinvass.dms.events;
 
 import hu.martinvass.dms.user.AppUser;
 import lombok.Getter;

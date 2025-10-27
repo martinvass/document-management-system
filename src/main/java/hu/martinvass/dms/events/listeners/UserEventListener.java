@@ -1,7 +1,8 @@
-package hu.martinvass.dms.auth.event;
+package hu.martinvass.dms.events.listeners;
 
 import hu.martinvass.dms.audit.AuditEventAction;
 import hu.martinvass.dms.audit.service.AuditService;
+import hu.martinvass.dms.events.UserRegisteredEvent;
 import hu.martinvass.dms.auth.verification.VerificationToken;
 import hu.martinvass.dms.auth.verification.VerificationTokenRepository;
 import hu.martinvass.dms.email.EmailService;

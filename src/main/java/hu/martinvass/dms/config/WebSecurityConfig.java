@@ -12,6 +12,7 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -75,7 +76,7 @@ public class WebSecurityConfig {
                 )
                 .exceptionHandling(e -> e.accessDeniedPage("/access-denied"))
                 .sessionManagement(s -> s.maximumSessions(1).sessionRegistry(sessionConfig.sessionRegistry()).maxSessionsPreventsLogin(true).expiredUrl("/auth/login?expired"))
-                .httpBasic(Customizer.withDefaults())
+                .httpBasic(AbstractHttpConfigurer::disable)
                 .build();
     }
 

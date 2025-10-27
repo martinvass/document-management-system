@@ -1,6 +1,6 @@
 package hu.martinvass.dms.auth;
 
-import hu.martinvass.dms.auth.event.UserRegisteredEvent;
+import hu.martinvass.dms.events.UserRegisteredEvent;
 import hu.martinvass.dms.auth.verification.VerificationResult;
 import hu.martinvass.dms.auth.verification.VerificationTokenRepository;
 import hu.martinvass.dms.user.AppUser;
@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
-import java.util.Optional;
 
 /**
  * Service implementation for managing application users.
@@ -76,24 +75,20 @@ public class AuthService implements UserDetailsService {
 
     /**
      * Finds an application user by their username.
-     *
-     * @param username The username of the user to find.
-     * @return An Optional containing the found AppUser, or an empty Optional if not found.
      */
     @Transactional(readOnly = true)
-    public Optional<AppUser> findByUsername(String username) {
-        return appUserRepository.findByProfile_Username(username);
+    public AppUser findByUsername(String username) {
+        return appUserRepository.findByProfile_Username(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
     }
 
     /**
      * Finds an application user by their email.
-     *
-     * @param email The email of the user to find.
-     * @return An Optional containing the found AppUser, or an empty Optional if not found.
      */
     @Transactional(readOnly = true)
-    public Optional<AppUser> findByEmail(String email) {
-        return appUserRepository.findByProfile_Email(email);
+    public AppUser findByEmail(String email) {
+        return appUserRepository.findByProfile_Email(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
     }
 
     @Transactional(readOnly = true)

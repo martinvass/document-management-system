@@ -34,11 +34,11 @@ public class CustomLogoutHandler extends SimpleUrlLogoutSuccessHandler implement
         var user = authService.findByUsername(authentication.getName());
 
         // User logout audit log
-        user.ifPresent(appUser -> auditService.log(
+        auditService.log(
                 AuditEventAction.USER_LOGOUT,
-                appUser,
-                String.format("Logged out: %s | From: %s", appUser.getUsername(), url)
-        ));
+                user,
+                String.format("Logged out: %s | From: %s", user.getUsername(), url)
+        );
 
         response.sendRedirect("/auth/login?logout");
     }

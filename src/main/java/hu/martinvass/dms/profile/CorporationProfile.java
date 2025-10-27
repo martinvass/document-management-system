@@ -36,4 +36,8 @@ public class CorporationProfile {
     @Enumerated(EnumType.STRING)
     @Column(name = "role_in_corp")
     private CorporationRole role;
+
+    public boolean isCorporationAdmin() {
+        return role == CorporationRole.ADMIN;
+    }
 }

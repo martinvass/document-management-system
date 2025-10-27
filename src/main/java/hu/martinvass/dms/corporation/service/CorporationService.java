@@ -4,7 +4,7 @@ import hu.martinvass.dms.profile.ProfileSessionService;
 import hu.martinvass.dms.corporation.Corporation;
 import hu.martinvass.dms.corporation.CorporationRole;
 import hu.martinvass.dms.corporation.data.CreateCorporationDTO;
-import hu.martinvass.dms.corporation.event.CorporationCreatedEvent;
+import hu.martinvass.dms.events.CorporationCreatedEvent;
 import hu.martinvass.dms.corporation.repository.CorporationRepository;
 import hu.martinvass.dms.user.AppUser;
 import hu.martinvass.dms.profile.CorporationProfile;

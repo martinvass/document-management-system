@@ -1,4 +1,4 @@
-package hu.martinvass.dms.corporation.event;
+package hu.martinvass.dms.events;
 
 import hu.martinvass.dms.corporation.Corporation;
 import hu.martinvass.dms.user.AppUser;

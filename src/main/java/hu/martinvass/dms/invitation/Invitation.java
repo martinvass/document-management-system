@@ -5,7 +5,6 @@ import hu.martinvass.dms.corporation.CorporationRole;
 import hu.martinvass.dms.user.Profile;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,7 +14,6 @@ import java.util.Date;
 @Getter
 @Setter
 @AllArgsConstructor
-@Builder
 public class Invitation {
 
     @SequenceGenerator(
@@ -34,9 +32,8 @@ public class Invitation {
     @JoinColumn(name = "corp_id", nullable = false)
     private Corporation corporation;
 
-    @ManyToOne
-    @JoinColumn(name = "invited_id")
-    private Profile invitedProfile;
+    @Column(name = "invited")
+    private String invitedEmail;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "invited_by", nullable = false)
@@ -48,11 +45,11 @@ public class Invitation {
     @Column(nullable = false, unique = true)
     private String code;
 
+    @Enumerated(EnumType.STRING)
+    private InvitationStatus status;
+
     @Column(name = "expires_at")
     private Date expiresAt;
-
-    @Column(nullable = false)
-    private Boolean accepted = false;
 
     @Column(name = "accepted_at")
     private Date acceptedAt;

@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="hu" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: html_header(title='DMS - Home', additionalLinks=~{this::page_links})}">
+    <th:block th:fragment="page_links">
+        <link rel="stylesheet" th:href="@{/css/home.css}">
+
+        <style>
+            :root {
+                --color-primary: #5F6F52;
+                --color-secondary: #A9B388;
+                --color-background: #FEFAE0;
+                --color-accent: #B99470;
+                --color-text: #2C2C2C;
+                --card-color: #E9E3C4;
+            }
+
+            h3.fw-bold {
+                color: var(--color-primary);
+            }
+
+            small.text-muted {
+                color: #6b6b6b !important;
+            }
+
+            .card {
+                border: none;
+                border-radius: 12px;
+                background-color: var(--card-color);
+                box-shadow: 0 3px 10px rgba(95, 111, 82, 0.15);
+            }
+
+            .card-body {
+                border-radius: 12px;
+                background-color: var(--card-color);
+            }
+
+            .card h6 {
+                color: var(--color-primary);
+            }
+
+            .card .fw-bold {
+                color: var(--color-secondary);
+            }
+
+            .table {
+                border-collapse: collapse;
+                width: 100%;
+                background-color: var(--card-color);
+                --bs-table-bg: var(--card-color);
+                border-radius: 12px;
+                overflow: hidden;
+                box-shadow: 0 3px 10px rgba(95, 111, 82, 0.1);
+            }
+
+            .table thead th {
+                background-color: var(--color-secondary) !important;
+                color: var(--color-text);
+            }
+
+            .table th, .table td {
+                padding: 12px 16px;
+                vertical-align: middle;
+            }
+
+            .table-hover tbody tr:hover {
+                background-color: rgba(169, 179, 136, 0.25);
+            }
+
+            .badge {
+                border-radius: 8px;
+                padding: 6px 10px;
+                font-weight: 500;
+            }
+
+            .badge.bg-warning {
+                background-color: #f7ecb5 !important;
+                color: #5a550c;
+            }
+
+            .badge.bg-success {
+                background-color: #9cc39c !important;
+                color: #1d351d;
+            }
+
+            .badge.bg-danger {
+                background-color: #e0b4a4 !important;
+                color: #662f24;
+            }
+
+            .btn-primary {
+                background-color: var(--color-primary);
+                border: none;
+                color: #fff;
+                transition: background 0.2s ease;
+            }
+
+            .btn-primary:hover {
+                background-color: #4f5f44;
+            }
+
+            .btn-outline-secondary {
+                border-color: var(--color-primary);
+                color: var(--color-primary);
+            }
+
+            .btn-outline-secondary:hover {
+                background-color: var(--color-primary);
+                color: #fff;
+            }
+
+            .btn-outline-danger {
+                border-color: #8d3d2e;
+                color: #8d3d2e;
+            }
+
+            .btn-outline-danger:hover {
+                background-color: #8d3d2e;
+                color: #fff;
+            }
+
+            .btn-outline-info {
+                border-color: var(--color-accent);
+                color: var(--color-accent);
+            }
+
+            .btn-outline-info:hover {
+                background-color: var(--color-accent);
+                color: #fff;
+            }
+
+            .search-wrapper {
+                position: relative;
+                display: flex;
+                align-items: center;
+                width: 300px;
+                background-color: #f3eed9;
+                border-radius: 14px;
+                padding: 10px 14px;
+                box-shadow: 2px 2px 6px rgba(95, 111, 82, 0.25),
+                -2px -2px 6px rgba(255, 255, 255, 0.5);
+                transition: all 0.25s ease-in-out;
+            }
+
+            .search-wrapper:hover,
+            .search-wrapper:focus-within {
+                box-shadow: 3px 3px 8px rgba(95, 111, 82, 0.3),
+                -3px -3px 8px rgba(255, 255, 255, 0.5);
+            }
+
+            .search-wrapper i {
+                color: #5f6f52;
+                margin-right: 10px;
+                font-size: 1.1rem;
+                opacity: 0.8;
+            }
+
+            .search-wrapper input {
+                flex: 1;
+                border: none;
+                outline: none;
+                background: transparent;
+                font-size: 0.95rem;
+                color: #5f6f52;
+                font-weight: 500;
+                letter-spacing: 0.3px;
+            }
+
+            .search-wrapper input::placeholder {
+                color: rgba(95, 111, 82, 0.7);
+                font-weight: 400;
+            }
+        </style>
+    </th:block>
+</head>
+<body>
+
+<nav th:replace="~{fragments/dashboard/navigation :: navigation_bar}"></nav>
+
+<div th:if="${message}" th:replace="~{fragments/toasts-messages :: alert_success(message=${message})}"></div>
+<div th:if="${error}" th:replace="~{fragments/toasts-messages :: alert_error(message=${error})}"></div>
+
+<div th:replace="~{fragments/dashboard/sidebar :: sidebar(content=~{::content})}">
+    <div th:fragment="content">
+        <div class="container-fluid py-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h3 class="fw-bold mb-0">Invitation Management</h3>
+                    <small class="text-muted">Manage user invitations for
+                        <span th:text="${activeProfile.corporation.name}">Corporation Name</span>
+                    </small>
+                </div>
+                <button class="btn btn-primary shadow-sm" data-bs-target="#createInviteModal" data-bs-toggle="modal">
+                    New Invitation
+                </button>
+            </div>
+
+            <div class="row g-3 mb-4">
+                <div class="col-md-4">
+                    <div class="card shadow-sm">
+                        <div class="card-body text-center">
+                            <h6 class="text-muted mb-1">Pending Invites</h6>
+                            <h2 class="fw-bold text-warning mb-0" th:text="${stats.pendingCount}">0</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card shadow-sm">
+                        <div class="card-body text-center">
+                            <h6 class="text-muted mb-1">Accepted</h6>
+                            <h2 class="fw-bold text-success mb-0" th:text="${stats.acceptedCount}">0</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card shadow-sm">
+                        <div class="card-body text-center">
+                            <h6 class="text-muted mb-1">Revoked</h6>
+                            <h2 class="fw-bold text-danger mb-0" th:text="${stats.revokedCount}">0</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="d-flex gap-2">
+                    <select class="form-select form-select-sm" style="width: 160px;">
+                        <option>Status: All</option>
+                        <option>Pending</option>
+                        <option>Accepted</option>
+                        <option>Revoked</option>
+                    </select>
+                    <select class="form-select form-select-sm" style="width: 160px;">
+                        <option>Role: All</option>
+                        <option th:each="r : ${availableRoles}" th:text="${r}"></option>
+                    </select>
+                </div>
+                <div class="d-flex justify-content-end">
+                    <div class="search-wrapper ms-auto">
+                        <i class="fas fa-search"></i>
+                        <input placeholder="Search email or code..." type="text"/>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm" style="background-color: #D7D3B3">
+                <div class="card-body">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead>
+                        <tr>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Code</th>
+                            <th>Status</th>
+                            <th>Created</th>
+                            <th>Expires</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="invite : ${invitations}">
+                                <td th:text="${invite.invitedEmail}">example@domain.com</td>
+                                <td th:text="${invite.role}">EMPLOYEE</td>
+                                <td><code th:text="${invite.code}">INV-XXXXXX</code></td>
+
+                                <td>
+                                    <span th:switch="${invite.status.name()}">
+                                        <span class="badge bg-warning text-dark" th:case="'PENDING'">Pending</span>
+                                        <span class="badge bg-success" th:case="'ACCEPTED'">Accepted</span>
+                                        <span class="badge bg-danger" th:case="'REVOKED'">Revoked</span>
+                                        <span class="badge bg-secondary" th:case="'EXPIRED'">Expired</span>
+                                    </span>
+                                </td>
+
+                                <td th:text="${#dates.format(invite.createdAt, 'yyyy-MM-dd HH:mm')}">2025-10-25</td>
+                                <td th:text="${invite.expiresAt != null ? #dates.format(invite.expiresAt, 'yyyy-MM-dd') : '-'}">
+                                    —
+                                </td>
+
+                                <td>
+                                    <div th:switch="${invite.status.name()}">
+                                        <div th:case="'PENDING'">
+                                            <button class="btn btn-sm btn-outline-secondary"
+                                                    onclick="navigator.clipboard.writeText(this.getAttribute('data-code'));"
+                                                    th:data-code="${invite.code}">
+                                                Copy
+                                            </button>
+                                            <form class="d-inline"
+                                                  method="post" th:action="@{'/corporation/admin/invitations/' + ${invite.id} + '/revoke'}">
+                                                <button class="btn btn-sm btn-outline-danger">Revoke</button>
+                                            </form>
+                                        </div>
+
+                                        <div th:case="'ACCEPTED'">
+                                            <button class="btn btn-sm btn-outline-info">View User</button>
+                                        </div>
+
+                                        <div th:case="*">—</div>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <tr th:if="${#lists.isEmpty(invitations)}">
+                                <td class="text-center text-muted py-3" colspan="7">No invitations found.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div aria-hidden="true" class="modal fade" id="createInviteModal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Create New Invitation</h5>
+                        <button class="btn-close btn-close-white" data-bs-dismiss="modal" type="button"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="post"
+                              th:action="@{/corporation/admin/invitations/create}" th:object="${createInvitationDto}">
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Email address</label>
+                                <input class="form-control" placeholder="user@domain.com" th:field="*{email}"
+                                       type="email">
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Role</label>
+                                <select class="form-select" th:field="*{role}">
+                                    <option value="">-- Select Role --</option>
+                                    <option th:each="r : ${availableRoles}" th:text="${r}" th:value="${r}"></option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Expiration Date</label>
+                                <input class="form-control" required th:attr="min=${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}"
+                                       th:field="*{expiresAt}" type="date">
+                            </div>
+
+                            <button class="btn btn-primary w-100" type="submit">Generate Invitation</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/scripts :: footer_scripts}"></div>
+
+</body>
+</html>

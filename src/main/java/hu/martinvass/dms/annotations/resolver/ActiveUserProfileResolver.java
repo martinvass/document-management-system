@@ -1,5 +1,6 @@
-package hu.martinvass.dms.config.resolver;
+package hu.martinvass.dms.annotations.resolver;
 
+import hu.martinvass.dms.annotations.ActiveUserProfile;
 import hu.martinvass.dms.profile.CorporationProfile;
 import hu.martinvass.dms.profile.repository.CorporationProfileRepository;
 import jakarta.servlet.http.HttpServletRequest;
