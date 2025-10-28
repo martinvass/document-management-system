@@ -1,4 +1,4 @@
-package hu.martinvass.dms.corporation.data;
+package hu.martinvass.dms.data;
 
 import lombok.Getter;
 import lombok.Setter;

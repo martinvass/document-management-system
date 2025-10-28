@@ -2,8 +2,8 @@ package hu.martinvass.dms.user.controller;
 
 import hu.martinvass.dms.annotations.ActiveUserProfile;
 import hu.martinvass.dms.auth.AuthService;
-import hu.martinvass.dms.corporation.data.CreateCorporationDTO;
-import hu.martinvass.dms.corporation.data.JoinCorporationDTO;
+import hu.martinvass.dms.data.CreateCorporationDTO;
+import hu.martinvass.dms.data.JoinCorporationDTO;
 import hu.martinvass.dms.profile.CorporationProfile;
 import hu.martinvass.dms.profile.repository.CorporationProfileRepository;
 import lombok.AllArgsConstructor;

@@ -2,6 +2,8 @@ package hu.martinvass.dms.invitation;
 
 import hu.martinvass.dms.corporation.Corporation;
 import hu.martinvass.dms.corporation.CorporationRole;
+import hu.martinvass.dms.data.CreateInvitationDTO;
+import hu.martinvass.dms.profile.CorporationProfile;
 import hu.martinvass.dms.user.Profile;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -9,6 +11,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.UUID;
 
 @Entity(name = "invitations")
 @Getter
@@ -58,4 +61,18 @@ public class Invitation {
     private Date createdAt = new Date(System.currentTimeMillis());
 
     public Invitation() {}
+
+    public static Invitation fromDto(CreateInvitationDTO data, CorporationProfile profile) {
+        var invitation = new Invitation();
+
+        invitation.setCorporation(profile.getCorporation());
+        invitation.setInvitedEmail(data.getEmail());
+        invitation.setInvitedBy(profile.getProfile());
+        invitation.setRole(data.getRole());
+        invitation.setCode(UUID.randomUUID().toString().substring(0, 8).toUpperCase());
+        invitation.setStatus(InvitationStatus.PENDING);
+        invitation.setExpiresAt(data.getExpiresAt());
+
+        return invitation;
+    }
 }

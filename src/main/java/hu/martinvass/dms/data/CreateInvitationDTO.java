@@ -1,4 +1,4 @@
-package hu.martinvass.dms.invitation.data;
+package hu.martinvass.dms.data;
 
 import hu.martinvass.dms.corporation.CorporationRole;
 import jakarta.validation.constraints.Email;

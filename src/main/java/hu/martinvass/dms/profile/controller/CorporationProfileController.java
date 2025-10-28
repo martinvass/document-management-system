@@ -1,6 +1,6 @@
 package hu.martinvass.dms.profile.controller;
 
-import hu.martinvass.dms.profile.data.SwitchProfileDTO;
+import hu.martinvass.dms.data.SwitchProfileDTO;
 import hu.martinvass.dms.profile.service.CorporationProfileService;
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;

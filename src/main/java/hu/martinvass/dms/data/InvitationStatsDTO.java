@@ -1,4 +1,4 @@
-package hu.martinvass.dms.invitation.data;
+package hu.martinvass.dms.data;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

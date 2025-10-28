@@ -3,173 +3,7 @@
 <head th:replace="~{fragments/header :: html_header(title='DMS - Home', additionalLinks=~{this::page_links})}">
     <th:block th:fragment="page_links">
         <link rel="stylesheet" th:href="@{/css/home.css}">
-
-        <style>
-            :root {
-                --color-primary: #5F6F52;
-                --color-secondary: #A9B388;
-                --color-background: #FEFAE0;
-                --color-accent: #B99470;
-                --color-text: #2C2C2C;
-                --card-color: #E9E3C4;
-            }
-
-            h3.fw-bold {
-                color: var(--color-primary);
-            }
-
-            small.text-muted {
-                color: #6b6b6b !important;
-            }
-
-            .card {
-                border: none;
-                border-radius: 12px;
-                background-color: var(--card-color);
-                box-shadow: 0 3px 10px rgba(95, 111, 82, 0.15);
-            }
-
-            .card-body {
-                border-radius: 12px;
-                background-color: var(--card-color);
-            }
-
-            .card h6 {
-                color: var(--color-primary);
-            }
-
-            .card .fw-bold {
-                color: var(--color-secondary);
-            }
-
-            .table {
-                border-collapse: collapse;
-                width: 100%;
-                background-color: var(--card-color);
-                --bs-table-bg: var(--card-color);
-                border-radius: 12px;
-                overflow: hidden;
-                box-shadow: 0 3px 10px rgba(95, 111, 82, 0.1);
-            }
-
-            .table thead th {
-                background-color: var(--color-secondary) !important;
-                color: var(--color-text);
-            }
-
-            .table th, .table td {
-                padding: 12px 16px;
-                vertical-align: middle;
-            }
-
-            .table-hover tbody tr:hover {
-                background-color: rgba(169, 179, 136, 0.25);
-            }
-
-            .badge {
-                border-radius: 8px;
-                padding: 6px 10px;
-                font-weight: 500;
-            }
-
-            .badge.bg-warning {
-                background-color: #f7ecb5 !important;
-                color: #5a550c;
-            }
-
-            .badge.bg-success {
-                background-color: #9cc39c !important;
-                color: #1d351d;
-            }
-
-            .badge.bg-danger {
-                background-color: #e0b4a4 !important;
-                color: #662f24;
-            }
-
-            .btn-primary {
-                background-color: var(--color-primary);
-                border: none;
-                color: #fff;
-                transition: background 0.2s ease;
-            }
-
-            .btn-primary:hover {
-                background-color: #4f5f44;
-            }
-
-            .btn-outline-secondary {
-                border-color: var(--color-primary);
-                color: var(--color-primary);
-            }
-
-            .btn-outline-secondary:hover {
-                background-color: var(--color-primary);
-                color: #fff;
-            }
-
-            .btn-outline-danger {
-                border-color: #8d3d2e;
-                color: #8d3d2e;
-            }
-
-            .btn-outline-danger:hover {
-                background-color: #8d3d2e;
-                color: #fff;
-            }
-
-            .btn-outline-info {
-                border-color: var(--color-accent);
-                color: var(--color-accent);
-            }
-
-            .btn-outline-info:hover {
-                background-color: var(--color-accent);
-                color: #fff;
-            }
-
-            .search-wrapper {
-                position: relative;
-                display: flex;
-                align-items: center;
-                width: 300px;
-                background-color: #f3eed9;
-                border-radius: 14px;
-                padding: 10px 14px;
-                box-shadow: 2px 2px 6px rgba(95, 111, 82, 0.25),
-                -2px -2px 6px rgba(255, 255, 255, 0.5);
-                transition: all 0.25s ease-in-out;
-            }
-
-            .search-wrapper:hover,
-            .search-wrapper:focus-within {
-                box-shadow: 3px 3px 8px rgba(95, 111, 82, 0.3),
-                -3px -3px 8px rgba(255, 255, 255, 0.5);
-            }
-
-            .search-wrapper i {
-                color: #5f6f52;
-                margin-right: 10px;
-                font-size: 1.1rem;
-                opacity: 0.8;
-            }
-
-            .search-wrapper input {
-                flex: 1;
-                border: none;
-                outline: none;
-                background: transparent;
-                font-size: 0.95rem;
-                color: #5f6f52;
-                font-weight: 500;
-                letter-spacing: 0.3px;
-            }
-
-            .search-wrapper input::placeholder {
-                color: rgba(95, 111, 82, 0.7);
-                font-weight: 400;
-            }
-        </style>
+        <link rel="stylesheet" th:href="@{/css/dashboard.css}">
     </th:block>
 </head>
 <body>
@@ -190,6 +24,7 @@
                     </small>
                 </div>
                 <button class="btn btn-primary shadow-sm" data-bs-target="#createInviteModal" data-bs-toggle="modal">
+                    <i class="fas fa-square-plus me-1" aria-hidden="true"></i>
                     New Invitation
                 </button>
             </div>
@@ -242,19 +77,19 @@
                 </div>
             </div>
 
-            <div class="card border-0 shadow-sm" style="background-color: #D7D3B3">
+            <div class="card border-0 shadow-sm">
                 <div class="card-body">
                     <table class="table table-hover align-middle mb-0">
                         <thead>
-                        <tr>
-                            <th>Email</th>
-                            <th>Role</th>
-                            <th>Code</th>
-                            <th>Status</th>
-                            <th>Created</th>
-                            <th>Expires</th>
-                            <th>Actions</th>
-                        </tr>
+                            <tr>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Code</th>
+                                <th>Status</th>
+                                <th>Created</th>
+                                <th>Expires</th>
+                                <th>Actions</th>
+                            </tr>
                         </thead>
                         <tbody>
                             <tr th:each="invite : ${invitations}">
@@ -304,6 +139,33 @@
                             </tr>
                         </tbody>
                     </table>
+
+                    <div class="floating-pagination-modern">
+                        <ul class="pagination-modern">
+                            <li th:classappend="${invitations.first} ? 'disabled'">
+                                <a th:if="${!invitations.first}"
+                                   th:href="@{/corporation/admin/invitations(page=${currentPage - 1})}">
+                                    prev
+                                </a>
+                                <span th:if="${invitations.first}">prev</span>
+                            </li>
+
+                            <li th:each="pageNum : ${#numbers.sequence(1, invitations.totalPages)}"
+                                th:classappend="${pageNum == currentPage} ? 'active'">
+                                <a th:text="${pageNum}"
+                                   th:href="@{/corporation/admin/invitations(page=${pageNum})}">
+                                </a>
+                            </li>
+
+                            <li th:classappend="${invitations.last} ? 'disabled'">
+                                <a th:if="${!invitations.last}"
+                                   th:href="@{/corporation/admin/invitations(page=${currentPage + 1})}">
+                                    next
+                                </a>
+                                <span th:if="${invitations.last}">next</span>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
@@ -347,6 +209,10 @@
         </div>
     </div>
 </div>
+
+<!-- Create & Join corporation modal -->
+<div th:replace="~{corporation/create-modal :: corpCreateModal(${createDto})}"></div>
+<div th:replace="~{corporation/join-modal :: corpJoinModal(${joinDto})}"></div>
 
 <div th:replace="~{fragments/scripts :: footer_scripts}"></div>
 
