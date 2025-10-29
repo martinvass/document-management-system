@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -56,10 +57,18 @@ public class InvitationService {
         return invitationRepository.findByCorporationId(corporationId, pageable);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public Invitation findByCode(String code) {
-        return invitationRepository.findByCode(code)
+        var invitation = invitationRepository.findByCode(code)
                 .orElseThrow(() -> new IllegalArgumentException("Invitation not found"));
+
+        if (invitation.getExpiresAt() != null && invitation.getExpiresAt().before(new Date())
+                && invitation.getStatus() == InvitationStatus.PENDING) {
+            invitation.setStatus(InvitationStatus.EXPIRED);
+            invitationRepository.save(invitation);
+        }
+
+        return invitation;
     }
 
     @Transactional(readOnly = true)
@@ -110,5 +119,16 @@ public class InvitationService {
 
         // Mark invitation as accepted
         markAsAccepted(invitation);
+    }
+
+    @Scheduled(cron = "0 0 * * * *")
+    public void expireInvitations() {
+        Date now = new Date();
+        List<Invitation> expired = invitationRepository.findAllByStatusAndExpiresAtBefore(
+                InvitationStatus.PENDING, now
+        );
+
+        expired.forEach(inv -> inv.setStatus(InvitationStatus.EXPIRED));
+        invitationRepository.saveAll(expired);
     }
 }

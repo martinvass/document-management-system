@@ -31,6 +31,11 @@ public class AuthController {
         return "index";
     }
 
+    @GetMapping("/access-denied")
+    private String accessDenied() {
+        return "access-denied";
+    }
+
     /**
      * Handles the login page request.
      *

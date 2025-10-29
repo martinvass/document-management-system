@@ -1,11 +1,10 @@
 :root {
-    /* Earthy corporate palette */
-    --color-bg: #FEFAE0;          /* háttér – krémszín */
-    --color-card: #A9B388;        /* kártyák / auth-container */
-    --color-accent: #5F6F52;      /* gombok / kiemelések */
-    --color-accent-dark: #3E4634; /* hover árnyalat */
-    --color-text: #2B2B2B;        /* alap szöveg */
-    --color-secondary: #B99470;   /* CTA vagy hibaüzenet kiemelés */
+    --color-bg: #FEFAE0;
+    --color-card: #A9B388;
+    --color-accent: #5F6F52;
+    --color-accent-dark: #3E4634;
+    --color-text: #2B2B2B;
+    --color-secondary: #B99470;
     --radius: 12px;
     --transition: 0.25s ease;
     --font: 'Inter', sans-serif;

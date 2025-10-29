@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="en">
 <!-- HTML Head -->
 <head th:replace="~{fragments/header :: html_header(title='DMS - Document Management System', additionalLinks=~{this::page_links})}">
     <th:block th:fragment="page_links">
@@ -11,7 +11,8 @@
 <header class="hero-section text-center text-white d-flex flex-column justify-content-center align-items-center">
     <h1 class="display-4 fw-bold">Document Management System</h1>
     <p class="lead">Secure, structured, and fast document handling for companies.</p>
-    <a href="/auth/login" class="btn btn-outline-light btn-lg mt-3">Log in</a>
+    <a sec:authorize="isAuthenticated()" href="/home" class="btn btn-outline-light btn-lg mt-3">Go To Dashboard</a>
+    <a sec:authorize="!isAuthenticated()" href="/auth/login" class="btn btn-outline-light btn-lg mt-3">Log in</a>
 </header>
 
 <section class="features py-5">
@@ -61,7 +62,8 @@
 <section class="cta text-center py-5">
     <h2>Get Started Today!</h2>
     <p>Register your company and take your document management to the next level.</p>
-    <a href="/auth/sign-up" class="btn btn-outline-light btn-lg">Sign Up</a>
+    <a sec:authorize="isAuthenticated()" href="/home" class="btn btn-outline-light btn-lg">Go To Dashboard</a>
+    <a sec:authorize="!isAuthenticated()" href="/auth/sign-up" class="btn btn-outline-light btn-lg">Sign Up</a>
 </section>
 
 <footer class="text-center py-4 text-muted">

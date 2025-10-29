@@ -58,7 +58,7 @@ public class CorporationAdminController {
         var requestedPage = Math.max(1, page);
         Page<Invitation> invitations = invitationService.findByCorporation(
                 activeProfile.getCorporation().getId(),
-                PageRequest.of(requestedPage - 1, 2)
+                PageRequest.of(requestedPage - 1, 5)
         );
 
         var currentPage = PageUtils.safePageIndex(requestedPage, invitations);

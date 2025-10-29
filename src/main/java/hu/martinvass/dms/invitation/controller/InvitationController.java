@@ -27,25 +27,29 @@ public class InvitationController {
     @RequireCorpAdmin
     public String createInvitation(@Valid @ModelAttribute CreateInvitationDTO data,
                                    @ActiveUserProfile CorporationProfile profile,
-                                   BindingResult result) {
+                                   BindingResult result,
+                                   RedirectAttributes attributes) {
         if (result.hasErrors()) {
-            return "redirect:/corporation/admin/invitations?error";
+            attributes.addFlashAttribute("error", "There were errors in your fields.");
+            return "redirect:/corporation/admin/invitations";
         }
 
         this.invitationService.createInvitation(data, profile);
 
+        attributes.addFlashAttribute("message", "Invitation created");
         return "redirect:/corporation/admin/invitations";
     }
 
     @PostMapping("/corporation/admin/invitations/{id}/revoke")
     @RequireCorpAdmin
-    public String revokeInvitation(@PathVariable Long id) {
-        // TODO: error handling: messages
+    public String revokeInvitation(@PathVariable Long id, RedirectAttributes attributes) {
         try {
             invitationService.revokeInvitation(id);
 
+            attributes.addFlashAttribute("message", "Invitation revoked");
             return "redirect:/corporation/admin/invitations";
         } catch (Exception e) {
+            attributes.addFlashAttribute("error", e.getMessage());
             return "redirect:/corporation/admin/invitations";
         }
     }
@@ -53,7 +57,8 @@ public class InvitationController {
     @GetMapping("/invite/{code}")
     public String showInvitation(@PathVariable String code,
                                  Model model,
-                                 Principal principal) {
+                                 Principal principal,
+                                 RedirectAttributes attributes) {
         try {
             var invitation = invitationService.findByCode(code);
             var expired = invitationService.isExpired(invitation);
@@ -68,8 +73,8 @@ public class InvitationController {
 
             return "invite_accept";
         } catch (IllegalArgumentException e) {
-            // TODO: manage error
-            return "";
+            attributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/home";
         }
     }
 
@@ -78,14 +83,15 @@ public class InvitationController {
                                    Principal principal,
                                    RedirectAttributes attributes) {
         try {
-            // TODO: toasts messages using attributes
             var user = authService.findByUsername(principal.getName());
 
             invitationService.acceptInvitation(code, user);
+
+            attributes.addFlashAttribute("message", "Invitation successfully accepted");
             return "redirect:/home";
         } catch (Exception e) {
-            // TODO: manage error
-            return "";
+            attributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/home";
         }
     }
 }

@@ -1,14 +1,5 @@
-:root {
-    --color-primary: #5F6F52;
-    --color-secondary: #A9B388;
-    --color-background: #FEFAE0;
-    --color-accent: #B99470;
-    --color-text: #2C2C2C;
-    --card-color: #E9E3C4;
-}
-
 h3.fw-bold {
-    color: var(--color-primary);
+    color: #5F6F52;
 }
 
 small.text-muted {
@@ -18,36 +9,36 @@ small.text-muted {
 .card {
     border: none;
     border-radius: 12px;
-    background-color: var(--card-color);
+    background-color: #E9E3C4;
     box-shadow: 0 3px 10px rgba(95, 111, 82, 0.15);
 }
 
 .card-body {
     border-radius: 12px;
-    background-color: var(--card-color);
+    background-color: #E9E3C4;
 }
 
 .card h6 {
-    color: var(--color-primary);
+    color: #5F6F52;
 }
 
 .card .fw-bold {
-    color: var(--color-secondary);
+    color: #A9B388;
 }
 
 .table {
     border-collapse: collapse;
     width: 100%;
-    background-color: var(--card-color);
-    --bs-table-bg: var(--card-color);
+    background-color: #E9E3C4;
+    --bs-table-bg: #E9E3C4;
     border-radius: 12px;
     overflow: hidden;
     box-shadow: 0 3px 10px rgba(95, 111, 82, 0.1);
 }
 
 .table thead th {
-    background-color: var(--color-secondary) !important;
-    color: var(--color-text);
+    background-color: #A9B388 !important;
+    color: #2C2C2C;
 }
 
 .table th, .table td {
@@ -81,7 +72,7 @@ small.text-muted {
 }
 
 .btn-primary {
-    background-color: var(--color-primary);
+    background-color: #5F6F52;
     border: none;
     color: #fff;
     transition: background 0.2s ease;
@@ -92,12 +83,12 @@ small.text-muted {
 }
 
 .btn-outline-secondary {
-    border-color: var(--color-primary);
-    color: var(--color-primary);
+    border-color: #5F6F52;
+    color: #5F6F52;
 }
 
 .btn-outline-secondary:hover {
-    background-color: var(--color-primary);
+    background-color: #5F6F52;
     color: #fff;
 }
 
@@ -112,12 +103,12 @@ small.text-muted {
 }
 
 .btn-outline-info {
-    border-color: var(--color-accent);
-    color: var(--color-accent);
+    border-color: #B99470;
+    color: #B99470;
 }
 
 .btn-outline-info:hover {
-    background-color: var(--color-accent);
+    background-color: #B99470;
     color: #fff;
 }
 
@@ -205,7 +196,7 @@ small.text-muted {
 }
 
 .pagination-modern .active a {
-    background-color: var(--color-secondary);
+    background-color: #A9B388;
     color: #fff;
     font-weight: 600;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);

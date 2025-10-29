@@ -26,7 +26,7 @@ public class CorporationController {
                                HttpSession session) {
         try {
             corporationService.createCorporation(dto, principal.getName(), session);
-            redirectAttributes.addFlashAttribute("message", "Corporation created.");
+            redirectAttributes.addFlashAttribute("message", "Corporation created");
 
             // TODO: redirect to company dashboard or something
             return "redirect:/home";

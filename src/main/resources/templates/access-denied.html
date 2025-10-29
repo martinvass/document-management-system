@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: html_header(title='Access Denied', additionalLinks=~{this::page_links})}">
+    <th:block th:fragment="page_links">
+    </th:block>
+</head>
+<body>
+
+<div class="container text-center" style="margin-top: 100px; margin-bottom: 150px;">
+    <h1 class="text-danger">Access Denied</h1>
+    <p class="lead">You do not have permission to access this page!</p>
+    <a class="btn btn-primary" th:href="@{/}" role="button">Back to Home</a>
+</div>
+
+</body>
+</html>
