@@ -1,42 +1,310 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="hu">
-<!-- HTML Head -->
-<head th:replace="~{fragments/header :: html_header(title='DMS - Home', additionalLinks=~{this::page_links})}">
+<head th:replace="~{fragments/header :: html_header(title='DMS - Dashboard', additionalLinks=~{this::page_links})}">
     <th:block th:fragment="page_links">
         <link rel="stylesheet" th:href="@{/css/home.css}">
+
+        <style>
+            .text-olive {
+                color:#5F6F52;
+            }
+
+            .shadow-section {
+                background-color: #E9E3C4;
+                box-shadow: 4px 4px 8px rgba(95,111,82,0.25), -4px -4px 8px rgba(255,255,255,0.5);
+                border-radius: 16px;
+            }
+
+            .quick-access {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
+            .qa-link {
+                color: #5F6F52;
+                border-radius: 12px;
+                padding: 0.7rem 1.2rem;
+                text-decoration: none;
+                font-weight: 500;
+                box-shadow: 2px 2px 5px rgba(95,111,82,0.15), -2px -2px 5px rgba(255,255,255,0.7);
+                transition: all 0.2s ease;
+            }
+
+            .qa-blue {
+                background-color: #DCEBFF;
+            }
+            .qa-green {
+                background-color: #DFF5E1;
+            }
+            .qa-orange {
+                background-color: #FFEBC6;
+            }
+            .qa-link:hover {
+                filter: brightness(0.95);
+                transform: translateY(-1px);
+                box-shadow: 3px 3px 8px rgba(95,111,82,0.25);
+            }
+
+            .highlight-tile {
+                background-color: #E9E3C4;
+                border-radius: 16px;
+                padding: 1rem;
+                box-shadow: 3px 3px 7px rgba(95,111,82,0.25), -3px -3px 7px rgba(255,255,255,0.5);
+                transition: all 0.25s ease;
+            }
+            .highlight-tile.small-tile {
+                padding: 0.8rem;
+                aspect-ratio: 1;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .highlight-tile.small-tile i {
+                font-size:1.4rem;
+            }
+
+            .highlight-tile.small-tile h6 {
+                font-size:0.9rem;
+            }
+
+            .highlight-tile.small-tile h4 {
+                font-size:1.3rem;
+            }
+
+            .highlight-tile:hover {
+                transform:translateY(-2px);
+                box-shadow:4px 4px 10px rgba(95,111,82,0.3), -4px -4px 10px rgba(255,255,255,0.6);
+            }
+
+            .recent-list {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+            }
+
+            .recent-list li {
+                display: flex;
+                align-items: center;
+                padding: 0.6rem 0;
+                border-bottom: 1px dashed rgba(0,0,0,0.07);
+            }
+
+            .file-icon {
+                width: 40px; height:40px;
+                border-radius: 8px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 18px;
+                margin-right: 12px;
+            }
+
+            .file-icon i {
+                color: #5F6F52;
+                opacity: 0.9;
+            }
+
+            .file-pdf {
+                background-color: #FADCDC;
+            }
+
+            .file-doc {
+                background-color: #DEE8FF;
+            }
+
+            .file-xls {
+                background-color: #DFF5E1;
+            }
+
+            .file-contract {
+                background-color: #FFF3D0;
+            }
+
+            .recent-list .info {
+                color: #5F6F52;
+            }
+
+            .chart-container {
+                background-color: #E9E3C4;
+                position: relative;
+                width: 100%;
+            }
+
+            .timeline {
+                list-style: none;
+                margin: 0;
+                border-left: 2px solid #D7D3B3;
+                padding: 0 0 0 20px;
+            }
+
+            .timeline li {
+                position: relative;
+                padding: 0.6rem 0 0.6rem 0.5rem;
+                color: #5F6F52;
+            }
+
+            .timeline li .dot-sm {
+                background-color: #AEE1C9;
+                position: absolute;
+                left: -9px;
+                top: 13px;
+                width: 10px;
+                height: 10px;
+                border-radius: 50%;
+            }
+            .timeline li .content em {
+                font-style: normal;
+                color: #4E5E44;
+                font-weight: 600;
+            }
+        </style>
     </th:block>
 </head>
-<body>
+<body style="background-color:#FEFAE0; font-family:'Segoe UI',sans-serif;">
 
-<!-- Navigation bar -->
+<!-- Navigation -->
 <nav th:replace="~{fragments/dashboard/navigation :: navigation_bar}"></nav>
 
-<!-- Alerts -->
-<div th:if="${message}" th:replace="~{fragments/toasts-messages :: alert_success(message=${message})}"></div>
-<div th:if="${error}" th:replace="~{fragments/toasts-messages :: alert_error(message=${error})}"></div>
-
-<!-- Sidebar + Main content -->
+<!-- Sidebar + Content -->
 <div th:replace="~{fragments/dashboard/sidebar :: sidebar(content=~{::content})}">
     <div th:fragment="content">
-        <div class="container">
-            <h2 th:text="'Welcome, ' + ${user.profile.username} + '!'">Welcome</h2>
-            <p th:if="${!user.isInCorporation()}">
-                You are not currently a member of any corporation. Please join an existing corporation or create a new one to proceed.
-            </p>
+        <p th:if="${!user.isInCorporation()}">
+            You are not currently a member of any corporation. Please join an existing corporation or create a new one to proceed.
+        </p>
 
-            <p th:if="${activeProfileId == -1} and ${user.isInCorporation()}">
-                Please select a corporation profile to proceed.
-            </p>
+        <p th:if="${activeProfileId == -1} and ${user.isInCorporation()}">
+            Please select a corporation profile to proceed.
+        </p>
+
+        <div th:if="${activeProfileId != -1} and ${user.isInCorporation()}" class="container-fluid py-4">
+
+            <!-- Welcome -->
+            <div class="welcome-section p-4 mb-4 rounded-4 shadow-section d-flex flex-column flex-md-row justify-content-between align-items-md-center">
+                <div>
+                    <h2 class="fw-bold text-olive mb-1">
+                        Welcome back, <span th:text="${user.profile.username}">Martin</span>
+                    </h2>
+                </div>
+                <div class="text-end mt-3 mt-md-0">
+                    <h6 class="text-muted mb-1"><i class="far fa-calendar-alt me-1"></i> Today</h6>
+                    <h4 class="fw-semibold text-olive" th:text="${#dates.format(new java.util.Date(), 'yyyy.MM.dd')}">2025.10.29</h4>
+                </div>
+            </div>
+
+            <!-- Quick Access -->
+            <div class="quick-access mb-5 d-flex flex-wrap gap-3">
+                <a th:href="@{/documents}" class="qa-link qa-blue"><i class="fas fa-folder-open me-2"></i>All Documents</a>
+                <a th:href="@{/documents/to-sign}" class="qa-link qa-green"><i class="fas fa-pen-nib me-2"></i>To Sign</a>
+                <a th:href="@{/documents/my}" class="qa-link qa-orange"><i class="fas fa-user me-2"></i>My Uploads</a>
+            </div>
+
+            <div class="row g-5">
+                <div class="col-lg-7">
+                    <h4 class="fw-semibold text-olive mb-3"><i class="fas fa-chart-simple me-2"></i>Statistics</h4>
+
+                    <div class="row g-4 mb-5 justify-content-center">
+                        <div class="col-md-6 col-lg-3">
+                            <div class="highlight-tile small-tile text-center">
+                                <i class="fas fa-file-alt fa-md mb-2 text-olive"></i>
+                                <h6 class="text-muted mb-0">Total Documents</h6>
+                                <h4 class="fw-bold text-olive mt-1">128</h4>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-3">
+                            <div class="highlight-tile small-tile text-center">
+                                <i class="fas fa-pen-nib fa-md mb-2 text-olive"></i>
+                                <h6 class="text-muted mb-0">Documents to Sign</h6>
+                                <h4 class="fw-bold text-olive mt-1">4</h4>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-3">
+                            <div class="highlight-tile small-tile text-center">
+                                <i class="fas fa-users fa-md mb-2 text-olive"></i>
+                                <h6 class="text-muted mb-0">Active Users</h6>
+                                <h4 class="fw-bold text-olive mt-1">23</h4>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-3">
+                            <div class="highlight-tile small-tile text-center">
+                                <i class="fas fa-building fa-md mb-2 text-olive"></i>
+                                <h6 class="text-muted mb-0">Departments</h6>
+                                <h4 class="fw-bold text-olive mt-1">6</h4>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h4 class="fw-semibold text-olive mb-3"><i class="fas fa-clock me-2"></i>Recent Documents</h4>
+                    <ul class="recent-list">
+                        <li><div class="file-icon file-pdf"><i class="far fa-file-pdf"></i></div><div class="info"><strong>Test.pdf</strong><br><small>Uploaded by Andika • 2025-10-29 • 350 KB</small></div></li>
+                        <li><div class="file-icon file-doc"><i class="far fa-file-word"></i></div><div class="info"><strong>Test.docx</strong><br><small>Uploaded by Martin • 2025-10-28 • 120 KB</small></div></li>
+                        <li><div class="file-icon file-contract"><i class="far fa-file-contract"></i></div><div class="info"><strong>Test.pdf</strong><br><small>Uploaded by Tamás • 2025-10-27 • 890 KB</small></div></li>
+                        <li><div class="file-icon file-xls"><i class="far fa-file-excel"></i></div><div class="info"><strong>Test.xlsx</strong><br><small>Uploaded by Anyád • 2025-10-26 • 240 KB</small></div></li>
+                        <li><div class="file-icon file-xls"><i class="far fa-file-excel"></i></div><div class="info"><strong>Test.xlsx</strong><br><small>Uploaded by Anyád • 2025-10-26 • 240 KB</small></div></li>
+                        <li><div class="file-icon file-xls"><i class="far fa-file-excel"></i></div><div class="info"><strong>Test.xlsx</strong><br><small>Uploaded by Anyád • 2025-10-26 • 240 KB</small></div></li>
+                        <li><div class="file-icon file-xls"><i class="far fa-file-excel"></i></div><div class="info"><strong>Test.xlsx</strong><br><small>Uploaded by Anyád • 2025-10-26 • 240 KB</small></div></li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-5">
+                    <h4 class="fw-semibold text-olive mb-3"><i class="fas fa-chart-pie me-2"></i>Document Types</h4>
+                    <div class="chart-container mb-5 p-3 rounded-4 shadow-light">
+                        <canvas id="docTypeChart" height="200"></canvas>
+                    </div>
+
+                    <h4 class="fw-semibold text-olive mb-3"><i class="fas fa-bell me-2"></i>Recent Activity</h4>
+                    <ul class="timeline">
+                        <li><span class="dot-sm"></span><div class="content"><strong>Andika</strong> uploaded <em>Teast.pdf</em> <small class="text-muted">2h ago</small></div></li>
+                        <li><span class="dot-sm"></span><div class="content"><strong>Tamás</strong> joined <em>Flexo2000 Kft.</em> <small class="text-muted">5h ago</small></div></li>
+                        <li><span class="dot-sm"></span><div class="content"><strong>Martin</strong> archived <em>Test.docx</em> <small class="text-muted">1d ago</small></div></li>
+                        <li><span class="dot-sm"></span><div class="content"><strong>Anyád</strong> uploaded <em>Test.xlsx</em> <small class="text-muted">2d ago</small></div></li>
+                    </ul>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>
 
-<!-- Create & Join corporation modal -->
+<!-- Modals -->
 <div th:replace="~{corporation/create-modal :: corpCreateModal(${createDto})}"></div>
 <div th:replace="~{corporation/join-modal :: corpJoinModal(${joinDto})}"></div>
-
-<!-- Footer scripts -->
 <div th:replace="~{fragments/scripts :: footer_scripts}"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('docTypeChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['PDF', 'Word', 'Excel', 'Contracts'],
+            datasets: [{
+                data: [45, 30, 15, 10],
+                backgroundColor: ['#f76443', '#3A86FF', '#2A9D8F', '#E9C46A'],
+                borderColor: '#FEFAE0',
+                borderWidth: 2,
+                hoverOffset: 8
+            }]
+        },
+        options: {
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        color: '#5F6F52',
+                        font: { size: 13, family: 'Segoe UI' },
+                        padding: 12
+                    }
+                }
+            },
+            cutout: '70%',
+            animation: {
+                animateScale: true
+            }
+        }
+    });
+</script>
 
 </body>
 </html>

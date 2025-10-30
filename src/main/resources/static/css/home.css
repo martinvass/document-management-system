@@ -24,6 +24,11 @@ body {
     box-shadow: none !important;
 }
 
+.nav-link i {
+    width: 22px;
+    text-align: center;
+}
+
 .navbar-brand {
     font-size: 1.4rem;
 }
