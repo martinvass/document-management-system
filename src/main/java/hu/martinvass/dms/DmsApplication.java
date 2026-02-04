@@ -3,11 +3,13 @@ package hu.martinvass.dms;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
  * The main class that serves as the entry point for the application.
  */
 @SpringBootApplication
+@EnableScheduling
 @EnableAsync
 public class DmsApplication {
 

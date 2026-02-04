@@ -163,7 +163,7 @@ small.text-muted {
 .pagination-modern {
     display: flex;
     list-style: none;
-    background-color: #E9E3C4;
+    background-color: #A9B388;
     padding: 6px 16px;
     border-radius: 9999px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
@@ -182,7 +182,7 @@ small.text-muted {
     align-items: center;
     justify-content: center;
     text-decoration: none;
-    color: #5a5a4c;
+    color: #000;
     font-size: 14px;
     padding: 6px 12px;
     border-radius: 8px;
@@ -196,8 +196,8 @@ small.text-muted {
 }
 
 .pagination-modern .active a {
-    background-color: #A9B388;
-    color: #fff;
+    background-color: #E9E3C4;
+    color: #000;
     font-weight: 600;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
@@ -205,5 +205,5 @@ small.text-muted {
 .pagination-modern .disabled span {
     opacity: 0.5;
     cursor: default;
-    color: #9a998e;
+    color: #4f4f4d;
 }
