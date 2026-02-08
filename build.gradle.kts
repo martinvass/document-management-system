@@ -44,6 +44,7 @@ dependencies {
     implementation("org.thymeleaf.extras:thymeleaf-extras-springsecurity6")
     implementation("org.bouncycastle:bcpkix-jdk15on:1.70")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("software.amazon.awssdk:s3:2.29.0")
     compileOnly("org.projectlombok:lombok")
     runtimeOnly("org.postgresql:postgresql")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")

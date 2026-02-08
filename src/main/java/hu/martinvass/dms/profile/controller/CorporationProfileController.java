@@ -1,6 +1,6 @@
 package hu.martinvass.dms.profile.controller;
 
-import hu.martinvass.dms.data.SwitchProfileDTO;
+import hu.martinvass.dms.dto.SwitchProfileDto;
 import hu.martinvass.dms.profile.service.CorporationProfileService;
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
@@ -18,7 +18,7 @@ public class CorporationProfileController {
     private final CorporationProfileService corporationProfileService;
 
     @PostMapping("/profile/switch")
-    public String switchProfile(@ModelAttribute SwitchProfileDTO dto,
+    public String switchProfile(@ModelAttribute SwitchProfileDto dto,
                                 Principal principal,
                                 HttpSession session,
                                 RedirectAttributes ra) {

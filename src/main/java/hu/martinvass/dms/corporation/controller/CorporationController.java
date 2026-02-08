@@ -1,6 +1,6 @@
 package hu.martinvass.dms.corporation.controller;
 
-import hu.martinvass.dms.data.CreateCorporationDTO;
+import hu.martinvass.dms.dto.CreateCorporationDto;
 import hu.martinvass.dms.corporation.service.CorporationService;
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
@@ -21,7 +21,7 @@ public class CorporationController {
     private final CorporationService corporationService;
 
     @PostMapping("/create")
-    public String handleCreate(@ModelAttribute("createDto") CreateCorporationDTO dto,
+    public String handleCreate(@ModelAttribute("createDto") CreateCorporationDto dto,
                                Principal principal,
                                RedirectAttributes redirectAttributes,
                                HttpSession session) {

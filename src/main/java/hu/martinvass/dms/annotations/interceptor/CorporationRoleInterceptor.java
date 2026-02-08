@@ -1,7 +1,7 @@
 package hu.martinvass.dms.annotations.interceptor;
 
 import hu.martinvass.dms.annotations.RequireCorpAdmin;
-import hu.martinvass.dms.corporation.CorporationRole;
+import hu.martinvass.dms.corporation.domain.CorporationRole;
 import hu.martinvass.dms.profile.CorporationProfile;
 import hu.martinvass.dms.profile.repository.CorporationProfileRepository;
 import jakarta.servlet.http.HttpServletRequest;

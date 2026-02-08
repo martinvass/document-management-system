@@ -1,6 +1,6 @@
 package hu.martinvass.dms.events;
 
-import hu.martinvass.dms.corporation.Corporation;
+import hu.martinvass.dms.corporation.domain.Corporation;
 import hu.martinvass.dms.user.AppUser;
 import lombok.Getter;
 

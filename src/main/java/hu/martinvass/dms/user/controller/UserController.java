@@ -2,8 +2,8 @@ package hu.martinvass.dms.user.controller;
 
 import hu.martinvass.dms.annotations.ActiveUserProfile;
 import hu.martinvass.dms.auth.AuthService;
-import hu.martinvass.dms.data.CreateCorporationDTO;
-import hu.martinvass.dms.data.JoinCorporationDTO;
+import hu.martinvass.dms.dto.CreateCorporationDto;
+import hu.martinvass.dms.dto.JoinCorporationDto;
 import hu.martinvass.dms.profile.CorporationProfile;
 import hu.martinvass.dms.profile.repository.CorporationProfileRepository;
 import lombok.AllArgsConstructor;
@@ -30,8 +30,8 @@ public class UserController {
         model.addAttribute("profiles", profiles);
         model.addAttribute("activeProfile", activeProfile);
         model.addAttribute("activeProfileId", activeProfile == null ? -1 : activeProfile.getId());
-        model.addAttribute("createDto", new CreateCorporationDTO());
-        model.addAttribute("joinDto", new JoinCorporationDTO());
+        model.addAttribute("createDto", new CreateCorporationDto());
+        model.addAttribute("joinDto", new JoinCorporationDto());
 
         return "home";
     }

@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="hu">
+<head th:replace="~{fragments/header :: html_header(title='DMS - Company Settings', additionalLinks=~{this::page_links})}">
+    <th:block th:fragment="page_links">
+        <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+        <link rel="stylesheet" th:href="@{/css/home.css}">
+        <style>
+            :root {
+                --color-bg: #FEFAE0;
+                --color-field: #E9E3C4;
+                --color-accent: #5F6F52;
+                --color-accent-dark: #3E4634;
+                --color-text: #2B2B2B;
+                --radius: 12px;
+                --transition: 0.25s ease;
+                --font: 'Inter', sans-serif;
+            }
+
+            body {
+                background: var(--color-bg);
+                font-family: var(--font);
+                color: var(--color-text);
+            }
+
+            /* Tabs */
+            .settings-tabs {
+                display: flex;
+                gap: 24px;
+                border-bottom: 1px solid rgba(0,0,0,0.08);
+                margin-bottom: 32px;
+            }
+
+            .settings-tab {
+                padding: 12px 4px;
+                font-weight: 600;
+                color: var(--color-accent-dark);
+                cursor: pointer;
+                position: relative;
+            }
+
+            .settings-tab.active {
+                color: var(--color-accent);
+            }
+
+            .settings-tab.active::after {
+                content: "";
+                position: absolute;
+                left: 0;
+                right: 0;
+                bottom: -1px;
+                height: 3px;
+                background: var(--color-accent);
+                border-radius: 3px 3px 0 0;
+            }
+
+            /* Tab animation */
+            .tab-content {
+                display: none;
+                opacity: 0;
+                transform: translateY(8px);
+                transition: opacity 0.25s ease, transform 0.25s ease;
+            }
+
+            .tab-content.active {
+                display: block;
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            /* Sections */
+            .section-title {
+                font-size: 1.1rem;
+                font-weight: 600;
+                margin-bottom: 16px;
+                color: var(--color-accent-dark);
+            }
+
+            .section-desc {
+                font-size: 0.9rem;
+                color: rgba(0,0,0,0.6);
+                margin-bottom: 24px;
+            }
+
+            /* Form */
+            .form-label {
+                font-weight: 600;
+                font-size: 0.85rem;
+                margin-bottom: 6px;
+            }
+
+            .form-control {
+                background: var(--color-field);
+                border: none;
+                border-radius: var(--radius);
+                padding: 10px 12px;
+                font-size: 0.9rem;
+            }
+
+            .form-control:focus {
+                outline: none;
+                box-shadow: 0 0 0 2px rgba(95,111,82,0.25);
+            }
+
+            .radio-group {
+                display: flex;
+                gap: 24px;
+                margin-bottom: 32px;
+            }
+
+            .radio-box {
+                background: var(--color-field);
+                padding: 16px 20px;
+                border-radius: var(--radius);
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                font-weight: 500;
+            }
+
+            .radio-box input {
+                accent-color: var(--color-accent);
+            }
+
+            #aws-fields.disabled {
+                opacity: 0.5;
+                pointer-events: none;
+            }
+
+            .actions {
+                display: flex;
+                gap: 16px;
+                margin-top: 32px;
+            }
+
+            .btn-primary {
+                background: var(--color-accent);
+                color: #fff;
+                border: none;
+                border-radius: var(--radius);
+                padding: 10px 20px;
+                font-weight: 600;
+            }
+
+            .btn-secondary {
+                background: transparent;
+                color: var(--color-accent-dark);
+                border: 1px solid var(--color-accent-dark);
+                border-radius: var(--radius);
+                padding: 10px 20px;
+                font-weight: 600;
+            }
+
+            .connection-success {
+                display: none;
+                margin-top: 16px;
+                color: #2E7D32;
+                font-weight: 600;
+                font-size: 0.9rem;
+                display: flex;
+                align-items: center;
+                gap: 6px;
+            }
+
+            .connection-failed {
+                display: none;
+                margin-top: 16px;
+                color: #ff2b2b;
+                font-weight: 600;
+                font-size: 0.9rem;
+                display: flex;
+                align-items: center;
+                gap: 6px;
+            }
+        </style>
+    </th:block>
+</head>
+<body>
+
+<nav th:replace="~{fragments/dashboard/navigation :: navigation_bar}"></nav>
+
+<div th:replace="~{fragments/dashboard/sidebar :: sidebar(content=~{::content})}">
+    <div th:fragment="content">
+        <div class="container-fluid py-4">
+
+            <h3 class="fw-bold mb-4">Settings</h3>
+
+            <!-- Tabs -->
+            <div class="settings-tabs">
+                <div class="settings-tab active" data-tab="general">General</div>
+                <div class="settings-tab" data-tab="storage">Storage</div>
+            </div>
+
+            <div class="tab-content active" id="tab-general">
+                <form th:action="@{settings/general}" method="post" th:object="${general}">
+                    <div class="section-title">General settings</div>
+
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <label class="form-label">Company name</label>
+                            <input th:field="*{name}" class="form-control">
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label">Description</label>
+                            <input th:field="*{description}" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="actions">
+                        <button class="btn-primary" type="submit">Save changes</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="tab-content" id="tab-storage">
+                <form th:action="@{settings/storage}" method="post" th:object="${storage}">
+                    <div class="section-title">Document storage</div>
+                    <div class="section-desc">
+                        Select where your company documents should be stored.
+                    </div>
+
+                    <div class="radio-group">
+                        <label class="radio-box">
+                            <input type="radio" th:field="*{storageType}" value="MANAGED"> Managed storage
+                        </label>
+                        <label class="radio-box">
+                            <input type="radio" th:field="*{storageType}" value="CUSTOM_S3"> Custom AWS S3
+                        </label>
+                    </div>
+
+                    <div id="aws-fields">
+                        <div class="section-title">AWS S3 configuration</div>
+                        <div class="section-desc">
+                            Use a dedicated IAM user with restricted permissions.
+                        </div>
+
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <label class="form-label">Region</label>
+                                <input th:field="*{s3Region}" class="form-control">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Bucket name</label>
+                                <input th:field="*{s3Bucket}" class="form-control">
+                            </div>
+                            <div class="col-md-12">
+                                <label class="form-label">Bucket prefix</label>
+                                <input th:field="*{s3Prefix}" class="form-control">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Access key ID</label>
+                                <input name="s3AccessKey" type="password" class="form-control" th:placeholder="${storage.hasStoredCredentials} ? '******** (stored)' : '********'">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Secret access key</label>
+                                <input name="s3SecretKey" type="password" class="form-control" th:placeholder="${storage.hasStoredCredentials} ? '******** (stored)' : '********'">
+                            </div>
+                        </div>
+
+                        <div class="actions">
+                            <button class="btn-primary" type="submit">Save changes</button>
+
+                            <button class="btn-secondary"
+                                    type="submit"
+                                    th:formaction="@{settings/storage/test}"
+                                    th:formmethod="post"
+                                    formnovalidate>
+                                Test connection
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+                <div th:if="${storageTestSuccess}" class="connection-success">
+                    <i class="fas fa-check-circle"></i> Connection successful
+                </div>
+
+                <div th:if="${storageTestError}" class="connection-failed">
+                    <i class="fas fa-times-circle"></i> Connection failed
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/scripts :: footer_scripts}"></div>
+
+<script>
+    const tabs = document.querySelectorAll('.settings-tab');
+    const contents = document.querySelectorAll('.tab-content');
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            tabs.forEach(t => t.classList.remove('active'));
+            contents.forEach(c => c.classList.remove('active'));
+            tab.classList.add('active');
+            document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+        });
+    });
+
+    function toggleAws() {
+        const managed = document.querySelector('input[value="MANAGED"]').checked;
+        document.getElementById('aws-fields').classList.toggle('disabled', managed);
+    }
+
+    document.querySelectorAll('input[name="storageType"]').forEach(r => {
+        r.addEventListener('change', toggleAws);
+    });
+
+    toggleAws();
+</script>
+
+</body>
+</html>

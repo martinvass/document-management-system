@@ -1,6 +1,6 @@
-package hu.martinvass.dms.data;
+package hu.martinvass.dms.dto;
 
-import hu.martinvass.dms.corporation.CorporationRole;
+import hu.martinvass.dms.corporation.domain.CorporationRole;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
@@ -10,7 +10,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.util.Date;
 
 @Data
-public class CreateInvitationDTO {
+public class CreateInvitationDto {
 
     @NotNull
     @Email

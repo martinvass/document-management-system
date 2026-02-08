@@ -3,8 +3,8 @@ package hu.martinvass.dms.invitation.service;
 import hu.martinvass.dms.events.InvitationCreatedEvent;
 import hu.martinvass.dms.invitation.Invitation;
 import hu.martinvass.dms.invitation.InvitationStatus;
-import hu.martinvass.dms.data.CreateInvitationDTO;
-import hu.martinvass.dms.data.InvitationStatsDTO;
+import hu.martinvass.dms.dto.CreateInvitationDto;
+import hu.martinvass.dms.dto.InvitationStatsDto;
 import hu.martinvass.dms.invitation.repository.InvitationRepository;
 import hu.martinvass.dms.profile.CorporationProfile;
 import hu.martinvass.dms.profile.repository.CorporationProfileRepository;
@@ -30,7 +30,7 @@ public class InvitationService {
     private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
-    public void createInvitation(CreateInvitationDTO data, CorporationProfile profile) {
+    public void createInvitation(CreateInvitationDto data, CorporationProfile profile) {
         var invitation = Invitation.fromDto(data, profile);
 
         invitationRepository.save(invitation);
@@ -72,12 +72,12 @@ public class InvitationService {
     }
 
     @Transactional(readOnly = true)
-    public InvitationStatsDTO getStatsForCorporation(Long corporationId) {
+    public InvitationStatsDto getStatsForCorporation(Long corporationId) {
         int pending = Math.toIntExact(invitationRepository.countByCorporationIdAndStatus(corporationId, InvitationStatus.PENDING));
         int accepted = Math.toIntExact(invitationRepository.countByCorporationIdAndStatus(corporationId, InvitationStatus.ACCEPTED));
         int revoked = Math.toIntExact(invitationRepository.countByCorporationIdAndStatus(corporationId, InvitationStatus.REVOKED));
 
-        return new InvitationStatsDTO(pending, accepted, revoked);
+        return new InvitationStatsDto(pending, accepted, revoked);
     }
 
     @Transactional

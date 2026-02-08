@@ -1,6 +1,6 @@
 package hu.martinvass.dms.audit;
 
-import hu.martinvass.dms.corporation.Corporation;
+import hu.martinvass.dms.corporation.domain.Corporation;
 import hu.martinvass.dms.user.AppUser;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

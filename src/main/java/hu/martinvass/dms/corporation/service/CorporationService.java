@@ -1,9 +1,9 @@
 package hu.martinvass.dms.corporation.service;
 
 import hu.martinvass.dms.profile.ProfileSessionService;
-import hu.martinvass.dms.corporation.Corporation;
-import hu.martinvass.dms.corporation.CorporationRole;
-import hu.martinvass.dms.data.CreateCorporationDTO;
+import hu.martinvass.dms.corporation.domain.Corporation;
+import hu.martinvass.dms.corporation.domain.CorporationRole;
+import hu.martinvass.dms.dto.CreateCorporationDto;
 import hu.martinvass.dms.events.CorporationCreatedEvent;
 import hu.martinvass.dms.corporation.repository.CorporationRepository;
 import hu.martinvass.dms.user.AppUser;
@@ -30,7 +30,7 @@ public class CorporationService {
     private final ApplicationEventPublisher applicationEventPublisher;
 
     @Transactional
-    public void createCorporation(CreateCorporationDTO dto, String username, HttpSession session) {
+    public void createCorporation(CreateCorporationDto dto, String username, HttpSession session) {
         // Validation
         if (corporationRepository.existsByName(dto.getName())) {
             throw new RuntimeException("Corporation with name '" + dto.getName() + "' already exists."); // Specifikusabb kivétel
@@ -48,7 +48,7 @@ public class CorporationService {
         applicationEventPublisher.publishEvent(new CorporationCreatedEvent(creatorUser, profile.getCorporation()));
     }
 
-    private CorporationProfile createCorpInternal(CreateCorporationDTO dto, AppUser creatorUser) {
+    private CorporationProfile createCorpInternal(CreateCorporationDto dto, AppUser creatorUser) {
         // Create and save corporation
         var corp = Corporation.builder()
                 .name(dto.getName())

@@ -3,7 +3,7 @@ package hu.martinvass.dms.invitation.controller;
 import hu.martinvass.dms.annotations.ActiveUserProfile;
 import hu.martinvass.dms.annotations.RequireCorpAdmin;
 import hu.martinvass.dms.auth.AuthService;
-import hu.martinvass.dms.data.CreateInvitationDTO;
+import hu.martinvass.dms.dto.CreateInvitationDto;
 import hu.martinvass.dms.invitation.service.InvitationService;
 import hu.martinvass.dms.profile.CorporationProfile;
 import jakarta.validation.Valid;
@@ -25,7 +25,7 @@ public class InvitationController {
 
     @PostMapping("/corporation/admin/invitations/create")
     @RequireCorpAdmin
-    public String createInvitation(@Valid @ModelAttribute CreateInvitationDTO data,
+    public String createInvitation(@Valid @ModelAttribute CreateInvitationDto data,
                                    @ActiveUserProfile CorporationProfile profile,
                                    BindingResult result,
                                    RedirectAttributes attributes) {

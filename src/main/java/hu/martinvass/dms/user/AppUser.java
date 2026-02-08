@@ -1,6 +1,6 @@
 package hu.martinvass.dms.user;
 
-import hu.martinvass.dms.corporation.CorporationRole;
+import hu.martinvass.dms.corporation.domain.CorporationRole;
 import hu.martinvass.dms.profile.CorporationProfile;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

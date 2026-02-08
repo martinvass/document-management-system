@@ -1,8 +1,8 @@
 package hu.martinvass.dms.invitation;
 
-import hu.martinvass.dms.corporation.Corporation;
-import hu.martinvass.dms.corporation.CorporationRole;
-import hu.martinvass.dms.data.CreateInvitationDTO;
+import hu.martinvass.dms.corporation.domain.Corporation;
+import hu.martinvass.dms.corporation.domain.CorporationRole;
+import hu.martinvass.dms.dto.CreateInvitationDto;
 import hu.martinvass.dms.profile.CorporationProfile;
 import hu.martinvass.dms.user.Profile;
 import jakarta.persistence.*;
@@ -62,7 +62,7 @@ public class Invitation {
 
     public Invitation() {}
 
-    public static Invitation fromDto(CreateInvitationDTO data, CorporationProfile profile) {
+    public static Invitation fromDto(CreateInvitationDto data, CorporationProfile profile) {
         var invitation = new Invitation();
 
         invitation.setCorporation(profile.getCorporation());

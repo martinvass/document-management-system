@@ -1,4 +1,4 @@
-package hu.martinvass.dms.corporation;
+package hu.martinvass.dms.corporation.domain;
 
 import hu.martinvass.dms.user.AppUser;
 import hu.martinvass.dms.profile.CorporationProfile;

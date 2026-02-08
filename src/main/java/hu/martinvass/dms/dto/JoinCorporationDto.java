@@ -1,11 +1,11 @@
-package hu.martinvass.dms.data;
+package hu.martinvass.dms.dto;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class JoinCorporationDTO {
+public class JoinCorporationDto {
 
     private String code;
 }
