@@ -1,6 +1,6 @@
 package hu.martinvass.dms.corporation.settings.dto;
 
-import hu.martinvass.dms.corporation.settings.StorageType;
+import hu.martinvass.dms.corporation.settings.storage.StorageType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -18,4 +18,10 @@ public class StorageSettingsDto {
     private String s3SecretKey;
 
     private boolean hasStoredCredentials;
+
+    public static StorageSettingsDto managed() {
+        StorageSettingsDto dto = new StorageSettingsDto();
+        dto.setStorageType(StorageType.MANAGED);
+        return dto;
+    }
 }

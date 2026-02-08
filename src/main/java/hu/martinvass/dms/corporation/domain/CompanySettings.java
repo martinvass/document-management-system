@@ -1,7 +1,7 @@
 package hu.martinvass.dms.corporation.domain;
 
-import hu.martinvass.dms.corporation.settings.StorageType;
-import hu.martinvass.dms.corporation.settings.encryption.EncryptionConverter;
+import hu.martinvass.dms.corporation.settings.storage.StorageType;
+import hu.martinvass.dms.infrastructure.encryption.EncryptionConverter;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

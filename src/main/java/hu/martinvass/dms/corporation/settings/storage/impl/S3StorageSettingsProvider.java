@@ -1,10 +1,10 @@
-package hu.martinvass.dms.corporation.storage.impl;
+package hu.martinvass.dms.corporation.settings.storage.impl;
 
 import hu.martinvass.dms.corporation.domain.CompanySettings;
-import hu.martinvass.dms.corporation.storage.StorageProvider;
-import hu.martinvass.dms.corporation.settings.StorageType;
+import hu.martinvass.dms.corporation.settings.storage.StorageSettingsProvider;
+import hu.martinvass.dms.corporation.settings.storage.StorageType;
 import hu.martinvass.dms.corporation.settings.dto.StorageSettingsDto;
-import hu.martinvass.dms.corporation.repository.StorageSettingsRepository;
+import hu.martinvass.dms.corporation.repository.CompanyStorageRepository;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.core.sync.RequestBody;
@@ -15,12 +15,12 @@ import software.amazon.awssdk.services.s3.model.HeadBucketRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.S3Exception;
 
-public class S3StorageProvider implements StorageProvider {
+public class S3StorageSettingsProvider implements StorageSettingsProvider {
 
-    private final StorageSettingsRepository storageSettingsRepository;
+    private final CompanyStorageRepository companyStorageRepository;
 
-    public S3StorageProvider(StorageSettingsRepository storageSettingsRepository) {
-        this.storageSettingsRepository = storageSettingsRepository;
+    public S3StorageSettingsProvider(CompanyStorageRepository companyStorageRepository) {
+        this.companyStorageRepository = companyStorageRepository;
     }
 
     @Override
@@ -30,7 +30,7 @@ public class S3StorageProvider implements StorageProvider {
 
     @Override
     public void testConnection(Long companyId, StorageSettingsDto dto) {
-        CompanySettings cfg = storageSettingsRepository.findByCorporationId(companyId)
+        CompanySettings cfg = companyStorageRepository.findByCorporationId(companyId)
                 .orElseGet(() -> defaultStorageConfig(companyId));
 
         String accessKey = dto.getS3AccessKey() == null ? cfg.getS3AccessKey() : dto.getS3AccessKey();
@@ -80,8 +80,8 @@ public class S3StorageProvider implements StorageProvider {
 
     @Override
     public void applySettings(Long companyId, StorageSettingsDto dto) {
-        CompanySettings cfg = storageSettingsRepository.findByCorporationId(companyId)
-                .orElseThrow();
+        CompanySettings cfg = companyStorageRepository.findByCorporationId(companyId)
+                .orElseGet(() -> defaultStorageConfig(companyId));
 
         cfg.setStorageType(StorageType.CUSTOM_S3);
         cfg.setS3Region(dto.getS3Region());
@@ -95,13 +95,13 @@ public class S3StorageProvider implements StorageProvider {
             cfg.setS3SecretKey(dto.getS3SecretKey());
         }
 
-        storageSettingsRepository.save(cfg);
+        companyStorageRepository.save(cfg);
     }
 
     @Override
     public StorageSettingsDto loadSettings(Long companyId) {
-        CompanySettings cfg = storageSettingsRepository.findByCorporationId(companyId)
-                .orElseThrow();
+        CompanySettings cfg = companyStorageRepository.findByCorporationId(companyId)
+                .orElseGet(() -> defaultStorageConfig(companyId));
 
         StorageSettingsDto dto = new StorageSettingsDto();
         dto.setStorageType(StorageType.CUSTOM_S3);

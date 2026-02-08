@@ -6,8 +6,6 @@ import hu.martinvass.dms.auth.AuthService;
 import hu.martinvass.dms.corporation.domain.CorporationRole;
 import hu.martinvass.dms.corporation.settings.service.GeneralSettingsService;
 import hu.martinvass.dms.corporation.settings.service.StorageSettingsService;
-import hu.martinvass.dms.corporation.settings.dto.GeneralSettingsDto;
-import hu.martinvass.dms.corporation.settings.dto.StorageSettingsDto;
 import hu.martinvass.dms.dto.CreateCorporationDto;
 import hu.martinvass.dms.dto.JoinCorporationDto;
 import hu.martinvass.dms.invitation.Invitation;
@@ -107,55 +105,6 @@ public class CorporationAdminController {
                 storageSettingsService.get(activeProfile.getCorporation().getId()));
 
         return "corporation/admin/settings";
-    }
-
-    @PostMapping("/settings/general")
-    @RequireCorpAdmin
-    public String saveGeneral(
-            @ActiveUserProfile CorporationProfile activeProfile,
-            @ModelAttribute("general") GeneralSettingsDto dto,
-            RedirectAttributes ra
-    ) {
-        Long companyId = activeProfile.getCorporation().getId();
-
-        generalSettingsService.save(companyId, dto);
-
-        ra.addFlashAttribute("successMessage", "Settings saved");
-        return "redirect:/corporation/admin/settings";
-    }
-
-    @PostMapping("/settings/storage")
-    @RequireCorpAdmin
-    public String saveStorage(
-            @ActiveUserProfile CorporationProfile activeProfile,
-            @ModelAttribute("storage") StorageSettingsDto dto,
-            RedirectAttributes ra
-    ) {
-        Long companyId = activeProfile.getCorporation().getId();
-
-        storageSettingsService.save(companyId, dto);
-
-        ra.addFlashAttribute("successMessage", "Settings saved");
-        return "redirect:/corporation/admin/settings";
-    }
-
-    @PostMapping("/settings/storage/test")
-    @RequireCorpAdmin
-    public String testStorageConnection(
-            @ActiveUserProfile CorporationProfile activeProfile,
-            @ModelAttribute("storage") StorageSettingsDto dto,
-            RedirectAttributes ra
-    ) {
-        Long companyId = activeProfile.getCorporation().getId();
-
-        try {
-            storageSettingsService.testConnection(companyId, dto);
-            ra.addFlashAttribute("storageTestSuccess", true);
-        } catch (RuntimeException ex) {
-            ra.addFlashAttribute("storageTestError", ex.getMessage());
-        }
-
-        return "redirect:/corporation/admin/settings";
     }
 
     private void addBaseAttributes(CorporationProfile activeProfile, Model model, AppUser user, List<CorporationProfile> profiles) {

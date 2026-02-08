@@ -1,4 +1,4 @@
-package hu.martinvass.dms.corporation.settings.encryption;
+package hu.martinvass.dms.infrastructure.encryption;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

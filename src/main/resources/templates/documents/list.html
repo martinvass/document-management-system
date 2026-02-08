@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="hu">
+<head th:replace="~{fragments/header :: html_header(title='DMS - Documents', additionalLinks=~{this::page_links})}">
+    <th:block th:fragment="page_links">
+        <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+        <link rel="stylesheet" th:href="@{/css/home.css}">
+        <style>
+            :root {
+                --bg: #FEFAE0;
+                --card: #E9E3C4;
+                --accent: #5F6F52;
+                --text: #2B2B2B;
+                --radius: 12px;
+            }
+
+            body {
+                background: var(--bg);
+                color: var(--text);
+            }
+
+            .doc-card {
+                background: var(--card);
+                border-radius: var(--radius);
+                padding: 16px 20px;
+                margin-bottom: 12px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .doc-name {
+                font-weight: 600;
+            }
+
+            .doc-meta {
+                font-size: 0.85rem;
+                opacity: 0.7;
+            }
+
+            .btn {
+                border-radius: var(--radius);
+                padding: 8px 14px;
+                font-weight: 600;
+                border: none;
+                cursor: pointer;
+            }
+
+            .btn-primary {
+                background: var(--accent);
+                color: #fff;
+            }
+
+            .btn-secondary {
+                background: transparent;
+                border: 1px solid var(--accent);
+                color: var(--accent);
+            }
+
+            .upload-box {
+                background: var(--card);
+                border-radius: var(--radius);
+                padding: 20px;
+                margin-bottom: 24px;
+            }
+        </style>
+    </th:block>
+</head>
+<body>
+
+<nav th:replace="~{fragments/dashboard/navigation :: navigation_bar}"></nav>
+
+<div th:replace="~{fragments/dashboard/sidebar :: sidebar(content=~{::content})}">
+    <div th:fragment="content" class="container-fluid py-4">
+
+        <h3 class="fw-bold mb-4">Documents</h3>
+
+        <!-- FLASH MESSAGES -->
+        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+        <!-- UPLOAD -->
+        <div class="upload-box">
+            <form th:action="@{/documents/upload}" method="post" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Upload document</label>
+                    <input type="file" name="file" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    Upload
+                </button>
+            </form>
+        </div>
+
+        <!-- DOCUMENT LIST -->
+        <div th:if="${#lists.isEmpty(documents)}">
+            <p>No documents uploaded yet.</p>
+        </div>
+
+        <div th:each="doc : ${documents}" class="doc-card">
+            <div>
+                <div class="doc-name" th:text="${doc.originalFilename}">file.pdf</div>
+                <div class="doc-meta">
+                    Uploaded by
+                    <span th:text="${doc.uploadedByUserId}">User</span>
+                    •
+                    <span th:text="${#temporals.format(doc.uploadedAt, 'yyyy-MM-dd HH:mm')}"></span>
+                </div>
+            </div>
+
+            <div>
+                <a th:href="@{/documents/{id}/download(id=${doc.id})}"
+                   class="btn btn-secondary">
+                    Download
+                </a>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div th:replace="~{fragments/scripts :: footer_scripts}"></div>
+</body>
+</html>

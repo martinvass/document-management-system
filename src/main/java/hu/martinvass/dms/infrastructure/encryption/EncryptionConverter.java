@@ -1,4 +1,4 @@
-package hu.martinvass.dms.corporation.settings.encryption;
+package hu.martinvass.dms.infrastructure.encryption;
 
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;

@@ -1,4 +1,4 @@
-package hu.martinvass.dms.config;
+package hu.martinvass.dms.infrastructure;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

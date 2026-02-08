@@ -1,14 +1,21 @@
 package hu.martinvass.dms.corporation.storage;
 
-import hu.martinvass.dms.corporation.settings.StorageType;
-import hu.martinvass.dms.corporation.settings.dto.StorageSettingsDto;
+import hu.martinvass.dms.corporation.settings.storage.StorageType;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 public interface StorageProvider {
     StorageType supports();
 
-    void testConnection(Long p0, StorageSettingsDto p1);
+    StoredFile save(
+            Long companyId,
+            String logicalPath,
+            InputStream content,
+            String contentType
+    ) throws IOException;
 
-    void applySettings(Long p0, StorageSettingsDto p1);
+    InputStream load(Long companyId, String logicalPath) throws IOException;
 
-    StorageSettingsDto loadSettings(Long p0);
+    void delete(Long companyId, String logicalPath) throws IOException;
 }

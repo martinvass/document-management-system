@@ -1,12 +1,13 @@
 package hu.martinvass.dms.corporation.settings.service.impl;
 
 import hu.martinvass.dms.corporation.domain.CompanySettings;
-import hu.martinvass.dms.corporation.storage.StorageProvider;
+import hu.martinvass.dms.corporation.settings.storage.StorageSettingsProvider;
 import hu.martinvass.dms.corporation.settings.service.StorageSettingsService;
-import hu.martinvass.dms.corporation.settings.StorageType;
+import hu.martinvass.dms.corporation.settings.storage.StorageType;
 import hu.martinvass.dms.corporation.settings.dto.StorageSettingsDto;
-import hu.martinvass.dms.corporation.repository.StorageSettingsRepository;
-import hu.martinvass.dms.corporation.storage.impl.S3StorageProvider;
+import hu.martinvass.dms.corporation.repository.CompanyStorageRepository;
+import hu.martinvass.dms.corporation.settings.storage.impl.ManagedStorageSettingsProvider;
+import hu.martinvass.dms.corporation.settings.storage.impl.S3StorageSettingsProvider;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -15,21 +16,21 @@ import java.util.Map;
 @Service
 public class StorageSettingsServiceImpl implements StorageSettingsService {
 
-    private final Map<StorageType, StorageProvider> providers;
-    private final StorageSettingsRepository storageSettingsRepository;
+    private final Map<StorageType, StorageSettingsProvider> providers;
+    private final CompanyStorageRepository companyStorageRepository;
 
-    public StorageSettingsServiceImpl(StorageSettingsRepository storageSettingsRepository) {
-        this.providers = new HashMap<>();
-        this.storageSettingsRepository = storageSettingsRepository;
-
-        this.providers.put(StorageType.CUSTOM_S3, new S3StorageProvider(storageSettingsRepository));
-        //this.providers.put(StorageType.MANAGED, new S3StorageProvider(storageRepository));
+    public StorageSettingsServiceImpl(CompanyStorageRepository companyStorageRepository) {
+        this.providers = Map.of(
+                StorageType.MANAGED, new ManagedStorageSettingsProvider(),
+                StorageType.CUSTOM_S3, new S3StorageSettingsProvider(companyStorageRepository)
+        );
+        this.companyStorageRepository = companyStorageRepository;
     }
 
     @Override
     public StorageSettingsDto get(Long companyId) {
-        CompanySettings cfg = storageSettingsRepository.findByCorporationId(companyId)
-                .orElseThrow();
+        CompanySettings cfg = companyStorageRepository.findByCorporationId(companyId)
+                .orElseGet(() -> defaultStorageConfig(companyId));
 
         return providers.get(cfg.getStorageType()).loadSettings(companyId);
     }
@@ -44,5 +45,13 @@ public class StorageSettingsServiceImpl implements StorageSettingsService {
     public void testConnection(Long companyId, StorageSettingsDto dto) {
         providers.get(dto.getStorageType())
                 .testConnection(companyId, dto);
+    }
+
+    private CompanySettings defaultStorageConfig(Long companyId) {
+        CompanySettings cfg = new CompanySettings();
+        cfg.setCorporationId(companyId);
+        cfg.setStorageType(StorageType.MANAGED);
+
+        return cfg;
     }
 }
