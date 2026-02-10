@@ -25,32 +25,43 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.Principal;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Controller
 @RequestMapping("/documents")
 @AllArgsConstructor
 public class DocumentController {
 
-    private CorporationProfileRepository corporationProfileRepository;
-
+    private final CorporationProfileRepository corporationProfileRepository;
     private final DocumentService documentService;
+    //private final TagService tagService;
     private final AuthService authService;
 
+    /**
+     * Upload a new document
+     */
     @PostMapping("/upload")
-    //@RequireCorpMember
     public String upload(
             @ActiveUserProfile CorporationProfile profile,
             @RequestParam("file") MultipartFile file,
+            @RequestParam(value = "description", required = false) String description,
+            //@RequestParam(value = "tags", required = false) String tagsStr,
             RedirectAttributes ra
     ) {
         try {
-            documentService.upload(
-                    profile.getCorporation().getId(),
-                    profile.getUser().getId(),
-                    file
-            );
-            ra.addFlashAttribute("success", "Document uploaded");
+            // Parse tags from comma-separated string
+            Set<String> tags = new HashSet<>();
+            /*if (tagsStr != null && !tagsStr.isBlank()) {
+                tags = Arrays.stream(tagsStr.split(","))
+                        .map(String::trim)
+                        .filter(s -> !s.isEmpty())
+                        .collect(Collectors.toSet());
+            }*/
+
+            documentService.upload(profile, file, description, tags);
+            ra.addFlashAttribute("success", "Document uploaded successfully");
         } catch (Exception e) {
             ra.addFlashAttribute("error", e.getMessage());
         }
@@ -58,8 +69,10 @@ public class DocumentController {
         return "redirect:/documents/list";
     }
 
+    /**
+     * List all documents
+     */
     @GetMapping("/list")
-    //@RequireCorpMember
     public String list(
             @ActiveUserProfile CorporationProfile profile,
             Model model,
@@ -74,29 +87,131 @@ public class DocumentController {
         // Add basic attributes
         addBaseAttributes(profile, model, user, profiles);
 
-        model.addAttribute(
-                "documents",
-                documentService.list(profile.getCorporation().getId())
-        );
+        // Get documents
+        List<Document> documents = documentService.listDocuments(profile);
+        model.addAttribute("documents", documents);
+
+        // Get all tags for the corporation
+        //model.addAttribute("availableTags", tagService.getAllTags(profile.getCorporation()));
+
         return "documents/list";
     }
 
+    /**
+     * View document details
+     */
+    @GetMapping("/{id}")
+    public String view(
+            @ActiveUserProfile CorporationProfile profile,
+            @PathVariable Long id,
+            Model model,
+            Principal principal,
+            RedirectAttributes ra
+    ) {
+        try {
+            var user = authService.findByUsername(principal.getName());
+            var profiles = corporationProfileRepository.findByUserId(user.getId());
+
+            addBaseAttributes(profile, model, user, profiles);
+
+            Document document = documentService.getDocument(id, profile);
+            model.addAttribute("document", document);
+
+            // Get versions
+            List<Document> versions = documentService.getVersions(id, profile);
+            model.addAttribute("versions", versions);
+
+            // Get available tags
+            //model.addAttribute("availableTags", tagService.getAllTags(profile.getCorporation()));
+
+            return "documents/view";
+        } catch (Exception e) {
+            ra.addFlashAttribute("error", e.getMessage());
+            return "redirect:/documents/list";
+        }
+    }
+
+    /**
+     * Update document metadata
+     */
+    @PostMapping("/{id}/update")
+    public String update(
+            @ActiveUserProfile CorporationProfile profile,
+            @PathVariable Long id,
+            @RequestParam(value = "description", required = false) String description,
+            //@RequestParam(value = "tags", required = false) String tagsStr,
+            RedirectAttributes ra
+    ) {
+        try {
+            // Parse tags
+            /*Set<String> tags = null;
+            if (tagsStr != null && !tagsStr.isBlank()) {
+                tags = Arrays.stream(tagsStr.split(","))
+                        .map(String::trim)
+                        .filter(s -> !s.isEmpty())
+                        .collect(Collectors.toSet());
+            }*/
+            Set<String> tags = new HashSet<>();
+
+            documentService.updateDocument(id, profile, description, tags);
+            ra.addFlashAttribute("success", "Document updated successfully");
+        } catch (Exception e) {
+            ra.addFlashAttribute("error", e.getMessage());
+        }
+
+        return "redirect:/documents/" + id;
+    }
+
+    /**
+     * Archive a document
+     */
+    @PostMapping("/{id}/archive")
+    public String archive(
+            @ActiveUserProfile CorporationProfile profile,
+            @PathVariable Long id,
+            RedirectAttributes ra
+    ) {
+        try {
+            documentService.archiveDocument(id, profile);
+            ra.addFlashAttribute("success", "Document archived successfully");
+        } catch (Exception e) {
+            ra.addFlashAttribute("error", e.getMessage());
+        }
+
+        return "redirect:/documents/list";
+    }
+
+    /**
+     * Upload a new version
+     */
+    @PostMapping("/{id}/new-version")
+    public String uploadNewVersion(
+            @ActiveUserProfile CorporationProfile profile,
+            @PathVariable Long id,
+            @RequestParam("file") MultipartFile file,
+            RedirectAttributes ra
+    ) {
+        try {
+            documentService.uploadNewVersion(id, profile, file);
+            ra.addFlashAttribute("success", "New version uploaded successfully");
+        } catch (Exception e) {
+            ra.addFlashAttribute("error", e.getMessage());
+        }
+
+        return "redirect:/documents/" + id;
+    }
+
+    /**
+     * Download document
+     */
     @GetMapping("/{id}/download")
-    //@RequireCorpMember
     public ResponseEntity<Resource> download(
             @ActiveUserProfile CorporationProfile profile,
             @PathVariable Long id
     ) throws IOException {
+        Document doc = documentService.getDocument(id, profile);
 
-        Document doc = documentService.getDocument(
-                profile.getCorporation().getId(),
-                id
-        );
-
-        InputStream is = documentService.download(
-                profile.getCorporation().getId(),
-                id
-        );
+        InputStream is = documentService.download(id, profile);
 
         InputStreamResource resource = new InputStreamResource(is);
 

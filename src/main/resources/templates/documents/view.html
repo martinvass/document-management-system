@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="hu">
+<head th:replace="~{fragments/header :: html_header(title='DMS - Document Details', additionalLinks=~{this::page_links})}">
+    <th:block th:fragment="page_links">
+        <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+        <link rel="stylesheet" th:href="@{/css/home.css}">
+        <style>
+            :root {
+                --bg: #FEFAE0;
+                --card: #E9E3C4;
+                --accent: #5F6F52;
+                --text: #2B2B2B;
+                --radius: 12px;
+            }
+            body {
+                background: var(--bg);
+                color: var(--text);
+            }
+            .info-card {
+                background: var(--card);
+                border-radius: var(--radius);
+                padding: 20px;
+                margin-bottom: 20px;
+            }
+            .info-row {
+                display: flex;
+                padding: 10px 0;
+                border-bottom: 1px solid rgba(0,0,0,0.1);
+            }
+            .info-row:last-child {
+                border-bottom: none;
+            }
+            .info-label {
+                font-weight: 600;
+                width: 150px;
+                opacity: 0.7;
+            }
+            .info-value {
+                flex: 1;
+            }
+            .doc-version {
+                display: inline-block;
+                background: var(--accent);
+                color: white;
+                padding: 4px 12px;
+                border-radius: 4px;
+                font-size: 0.9rem;
+            }
+            .version-card {
+                background: var(--card);
+                border-radius: var(--radius);
+                padding: 16px 20px;
+                margin-bottom: 12px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .version-current {
+                border: 2px solid var(--accent);
+            }
+            .btn {
+                border-radius: var(--radius);
+                padding: 8px 14px;
+                font-weight: 600;
+                border: none;
+                cursor: pointer;
+                text-decoration: none;
+                display: inline-block;
+            }
+            .btn-primary {
+                background: var(--accent);
+                color: #fff;
+            }
+            .btn-primary:hover {
+                background: #4a5a41;
+                color: #fff;
+            }
+            .btn-secondary {
+                background: transparent;
+                border: 1px solid var(--accent);
+                color: var(--accent);
+            }
+            .btn-secondary:hover {
+                background: var(--accent);
+                color: #fff;
+            }
+            .btn-danger {
+                background: #dc3545;
+                color: #fff;
+            }
+            .btn-danger:hover {
+                background: #bb2d3b;
+                color: #fff;
+            }
+            .form-control {
+                border-radius: var(--radius);
+            }
+            .alert {
+                border-radius: var(--radius);
+            }
+            .section-title {
+                font-weight: 700;
+                font-size: 1.2rem;
+                margin-bottom: 16px;
+                color: var(--accent);
+            }
+        </style>
+    </th:block>
+</head>
+<body>
+<nav th:replace="~{fragments/dashboard/navigation :: navigation_bar}"></nav>
+<div th:replace="~{fragments/dashboard/sidebar :: sidebar(content=~{::content})}">
+    <div th:fragment="content" class="container-fluid py-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="fw-bold">
+                <a th:href="@{/documents/list}" class="text-decoration-none text-dark">
+                    <i class="bi bi-arrow-left me-2"></i>
+                </a>
+                Document Details
+            </h3>
+            <div>
+                <a th:href="@{/documents/{id}/download(id=${document.id})}"
+                   class="btn btn-primary me-2">
+                    <i class="bi bi-download me-1"></i>Download
+                </a>
+                <form th:action="@{/documents/{id}/archive(id=${document.id})}"
+                      method="post" style="display: inline;">
+                    <button type="submit" class="btn btn-danger"
+                            onclick="return confirm('Are you sure you want to archive this document?')">
+                        <i class="bi bi-archive me-1"></i>Archive
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+        <div class="info-card">
+            <div class="info-row">
+                <div class="info-label">File Name</div>
+                <div class="info-value">
+                    <i class="bi bi-file-earmark-pdf me-2" th:if="${document.contentType == 'application/pdf'}"></i>
+                    <i class="bi bi-file-earmark-word me-2" th:if="${document.contentType.startsWith('application/vnd.openxmlformats-officedocument.wordprocessingml')}"></i>
+                    <i class="bi bi-file-earmark-image me-2" th:if="${document.contentType.startsWith('image/')}"></i>
+                    <i class="bi bi-file-earmark me-2" th:unless="${document.contentType == 'application/pdf' or document.contentType.startsWith('application/vnd.openxmlformats-officedocument.wordprocessingml') or document.contentType.startsWith('image/')}"></i>
+                    <strong th:text="${document.originalFilename}">document.pdf</strong>
+                </div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">Version</div>
+                <div class="info-value">
+                    <span class="doc-version" th:text="'v' + ${document.version}">v1</span>
+                    <span th:if="${document.isLatestVersion()}" class="ms-2 text-success">
+                        <i class="bi bi-check-circle-fill"></i> Latest
+                    </span>
+                    <span th:unless="${document.isLatestVersion()}" class="ms-2 text-warning">
+                        <i class="bi bi-exclamation-circle-fill"></i> Old version
+                    </span>
+                </div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">Size</div>
+                <div class="info-value" th:text="${#numbers.formatDecimal(document.size / 1024.0, 1, 2)} + ' KB'">125.5 KB</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">Type</div>
+                <div class="info-value" th:text="${document.contentType}">application/pdf</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">Uploaded By</div>
+                <div class="info-value" th:text="${document.uploadedBy.username}">username</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">Uploaded At</div>
+                <div class="info-value" th:text="${#temporals.format(document.uploadedAt, 'yyyy-MM-dd HH:mm:ss')}">2024-01-15 14:30:00</div>
+            </div>
+            <div class="info-row" th:if="${document.modifiedAt}">
+                <div class="info-label">Modified At</div>
+                <div class="info-value" th:text="${#temporals.format(document.modifiedAt, 'yyyy-MM-dd HH:mm:ss')}">2024-01-16 10:15:00</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">Status</div>
+                <div class="info-value">
+                    <span th:if="${document.status.name() == 'ACTIVE'}" class="badge bg-success">Active</span>
+                    <span th:if="${document.status.name() == 'ARCHIVED'}" class="badge bg-warning">Archived</span>
+                    <span th:if="${document.status.name() == 'DELETED'}" class="badge bg-danger">Deleted</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-card">
+            <h5 class="section-title">Description</h5>
+            <form th:action="@{/documents/{id}/update(id=${document.id})}" method="post">
+                <div class="mb-3">
+                    <textarea name="description" class="form-control" rows="4"
+                              th:text="${document.description}"
+                              placeholder="No description provided..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-save me-1"></i>Update Description
+                </button>
+            </form>
+        </div>
+
+        <div class="info-card" th:if="${document.isLatestVersion()}">
+            <h5 class="section-title">Upload New Version</h5>
+            <form th:action="@{/documents/{id}/new-version(id=${document.id})}"
+                  method="post" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <input type="file" name="file" class="form-control" required>
+                    <small class="form-text text-muted">
+                        Upload a new version of this document. Version number will be incremented automatically.
+                    </small>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-upload me-1"></i>Upload Version
+                </button>
+            </form>
+        </div>
+
+        <div th:if="${versions.size() > 1}">
+            <h5 class="section-title">Version History</h5>
+            <div th:each="ver : ${versions}"
+                 th:class="${ver.id == document.id} ? 'version-card version-current' : 'version-card'">
+                <div>
+                    <div class="fw-bold">
+                        Version <span th:text="${ver.version}">1</span>
+                        <span th:if="${ver.id == document.id}" class="badge bg-success ms-2">Current</span>
+                        <span th:if="${ver.isLatestVersion()}" class="badge bg-primary ms-2">Latest</span>
+                    </div>
+                    <div class="text-muted" style="font-size: 0.85rem;">
+                        <span th:text="${ver.originalFilename}">file.pdf</span>
+                        •
+                        <span th:text="${#temporals.format(ver.uploadedAt, 'yyyy-MM-dd HH:mm')}">2024-01-15 14:30</span>
+                        •
+                        <span th:text="${#numbers.formatDecimal(ver.size / 1024.0, 1, 2)} + ' KB'">125.5 KB</span>
+                    </div>
+                </div>
+                <div>
+                    <a th:href="@{/documents/{id}(id=${ver.id})}"
+                       class="btn btn-secondary me-2"
+                       th:if="${ver.id != document.id}">
+                        <i class="bi bi-eye me-1"></i>View
+                    </a>
+                    <a th:href="@{/documents/{id}/download(id=${ver.id})}"
+                       class="btn btn-primary">
+                        <i class="bi bi-download me-1"></i>Download
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:replace="~{fragments/scripts :: footer_scripts}"></div>
+</body>
+</html>

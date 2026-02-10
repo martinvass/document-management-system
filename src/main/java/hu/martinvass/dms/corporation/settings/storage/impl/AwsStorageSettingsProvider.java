@@ -15,13 +15,8 @@ import software.amazon.awssdk.services.s3.model.HeadBucketRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.S3Exception;
 
-public class S3StorageSettingsProvider implements StorageSettingsProvider {
-
-    private final CompanyStorageRepository companyStorageRepository;
-
-    public S3StorageSettingsProvider(CompanyStorageRepository companyStorageRepository) {
-        this.companyStorageRepository = companyStorageRepository;
-    }
+public record AwsStorageSettingsProvider(
+        CompanyStorageRepository companyStorageRepository) implements StorageSettingsProvider {
 
     @Override
     public StorageType supports() {

@@ -7,10 +7,9 @@ import hu.martinvass.dms.corporation.settings.storage.StorageType;
 import hu.martinvass.dms.corporation.settings.dto.StorageSettingsDto;
 import hu.martinvass.dms.corporation.repository.CompanyStorageRepository;
 import hu.martinvass.dms.corporation.settings.storage.impl.ManagedStorageSettingsProvider;
-import hu.martinvass.dms.corporation.settings.storage.impl.S3StorageSettingsProvider;
+import hu.martinvass.dms.corporation.settings.storage.impl.AwsStorageSettingsProvider;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @Service
@@ -22,7 +21,7 @@ public class StorageSettingsServiceImpl implements StorageSettingsService {
     public StorageSettingsServiceImpl(CompanyStorageRepository companyStorageRepository) {
         this.providers = Map.of(
                 StorageType.MANAGED, new ManagedStorageSettingsProvider(),
-                StorageType.CUSTOM_S3, new S3StorageSettingsProvider(companyStorageRepository)
+                StorageType.CUSTOM_S3, new AwsStorageSettingsProvider(companyStorageRepository)
         );
         this.companyStorageRepository = companyStorageRepository;
     }
