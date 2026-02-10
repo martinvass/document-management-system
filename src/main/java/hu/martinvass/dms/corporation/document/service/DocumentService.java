@@ -296,6 +296,36 @@ public class DocumentService {
     }
 
     /**
+     * Set a specific version as the latest version
+     */
+    @Transactional
+    public Document setAsLatest(Long documentId, CorporationProfile profile) {
+        Document targetVersion = getDocumentEntity(documentId, profile);
+
+        // Check EDIT permission
+        permissionService.checkPermission(targetVersion, profile, DocumentPermissionLevel.EDIT);
+
+        // Get the current latest version
+        Document currentLatest = targetVersion.getLatestVersion();
+
+        // If this version is already the latest, do nothing
+        if (targetVersion.getId().equals(currentLatest.getId())) {
+            return targetVersion;
+        }
+
+        // Get all versions
+        List<Document> allVersions = documentRepository.findAllVersions(currentLatest);
+
+        // Update all versions to point to the new latest
+        for (Document version : allVersions) {
+            version.setLatestVersion(targetVersion);
+            documentRepository.save(version);
+        }
+
+        return targetVersion;
+    }
+
+    /**
      * Search documents by filename
      */
     @Transactional(readOnly = true)

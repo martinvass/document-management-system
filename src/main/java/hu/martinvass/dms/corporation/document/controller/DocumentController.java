@@ -66,13 +66,13 @@ public class DocumentController {
             ra.addFlashAttribute("error", e.getMessage());
         }
 
-        return "redirect:/documents/list";
+        return "redirect:/documents";
     }
 
     /**
      * List all documents
      */
-    @GetMapping("/list")
+    @GetMapping({"", "/"})
     public String list(
             @ActiveUserProfile CorporationProfile profile,
             Model model,
@@ -144,14 +144,13 @@ public class DocumentController {
     ) {
         try {
             // Parse tags
-            /*Set<String> tags = null;
-            if (tagsStr != null && !tagsStr.isBlank()) {
+            Set<String> tags = new HashSet<>();
+            /*if (tagsStr != null && !tagsStr.isBlank()) {
                 tags = Arrays.stream(tagsStr.split(","))
                         .map(String::trim)
                         .filter(s -> !s.isEmpty())
                         .collect(Collectors.toSet());
             }*/
-            Set<String> tags = new HashSet<>();
 
             documentService.updateDocument(id, profile, description, tags);
             ra.addFlashAttribute("success", "Document updated successfully");
@@ -178,7 +177,7 @@ public class DocumentController {
             ra.addFlashAttribute("error", e.getMessage());
         }
 
-        return "redirect:/documents/list";
+        return "redirect:/documents";
     }
 
     /**
@@ -202,6 +201,25 @@ public class DocumentController {
     }
 
     /**
+     * Set a specific version as the latest
+     */
+    @PostMapping("/{id}/set-as-latest")
+    public String setAsLatest(
+            @ActiveUserProfile CorporationProfile profile,
+            @PathVariable Long id,
+            RedirectAttributes ra
+    ) {
+        try {
+            Document updated = documentService.setAsLatest(id, profile);
+            ra.addFlashAttribute("success", "Version set as latest successfully");
+            return "redirect:/documents/" + updated.getId();
+        } catch (Exception e) {
+            ra.addFlashAttribute("error", e.getMessage());
+            return "redirect:/documents/" + id;
+        }
+    }
+
+    /**
      * Download document
      */
     @GetMapping("/{id}/download")
@@ -209,6 +227,7 @@ public class DocumentController {
             @ActiveUserProfile CorporationProfile profile,
             @PathVariable Long id
     ) throws IOException {
+
         Document doc = documentService.getDocument(id, profile);
 
         InputStream is = documentService.download(id, profile);

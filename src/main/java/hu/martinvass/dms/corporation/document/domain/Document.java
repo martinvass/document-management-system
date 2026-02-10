@@ -150,4 +150,16 @@ public class Document {
     public void removeTag(Tag tag) {
         tags.remove(tag);
     }
+
+    public String getIconClass() {
+        return switch (contentType) {
+            case "application/pdf" -> "far fa-file-pdf";
+            case "application/vnd.openxmlformats-officedocument.wordprocessingml.document" -> "far fa-file-word";
+            case "application/vnd.openxmlformats-officedocument.presentationml.presentation" -> "far fa-file-powerpoint";
+            case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" -> "far fa-file-excel";
+            case "text/plain" -> "far fa-file-lines";
+            case "image/jpeg", "image/png" -> "far fa-image";
+            default -> "far fa-file";
+        };
+    }
 }

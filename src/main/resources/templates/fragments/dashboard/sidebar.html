@@ -30,7 +30,7 @@
                             </a>
                         </li>
                         <li class="nav-item mb-1">
-                            <a href="#" class="nav-link text-white d-flex align-items-center">
+                            <a th:href="@{/documents}" class="nav-link text-white d-flex align-items-center">
                                 <i class="fas fa-file-alt"></i>
                                 <span class="ms-2">Documents</span>
                             </a>
@@ -62,18 +62,6 @@
 
                         <ul class="nav flex-column">
                             <li class="nav-item mb-1">
-                                <a th:href="@{/corporation/admin/invitations}" class="nav-link text-white d-flex align-items-center">
-                                    <i class="fas fa-envelope-open-text"></i>
-                                    <span class="ms-2">Invitations</span>
-                                </a>
-                            </li>
-                            <li class="nav-item mb-1">
-                                <a href="#" class="nav-link text-white d-flex align-items-center">
-                                    <i class="fas fa-user-friends"></i>
-                                    <span class="ms-2">Team Members</span>
-                                </a>
-                            </li>
-                            <li class="nav-item mb-1">
                                 <a href="#" class="nav-link text-white d-flex align-items-center">
                                     <i class="fas fa-user-shield"></i>
                                     <span class="ms-2">Permissions</span>
@@ -87,15 +75,15 @@
 
                         <ul class="nav flex-column">
                             <li class="nav-item mb-1">
-                                <a th:href="@{/corporation/admin/settings}" class="nav-link text-white d-flex align-items-center">
-                                    <i class="fas fa-cogs"></i>
-                                    <span class="ms-2">Settings</span>
+                                <a th:href="@{/corporation/admin/invitations}" class="nav-link text-white d-flex align-items-center">
+                                    <i class="fas fa-envelope-open-text"></i>
+                                    <span class="ms-2">Invitations</span>
                                 </a>
                             </li>
                             <li class="nav-item mb-1">
-                                <a href="#" class="nav-link text-white d-flex align-items-center">
-                                    <i class="fas fa-clipboard-list"></i>
-                                    <span class="ms-2">Audit log</span>
+                                <a th:href="@{/corporation/admin/settings}" class="nav-link text-white d-flex align-items-center">
+                                    <i class="fas fa-cogs"></i>
+                                    <span class="ms-2">Settings</span>
                                 </a>
                             </li>
                         </ul>
