@@ -1,19 +1,12 @@
 package hu.martinvass.dms.events.listeners;
 
-import hu.martinvass.dms.audit.AuditEventAction;
-import hu.martinvass.dms.audit.service.AuditService;
 import hu.martinvass.dms.events.UserRegisteredEvent;
 import hu.martinvass.dms.auth.verification.VerificationToken;
 import hu.martinvass.dms.auth.verification.VerificationTokenRepository;
 import hu.martinvass.dms.email.EmailService;
-import hu.martinvass.dms.user.AppUser;
 import hu.martinvass.dms.user.repository.AppUserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.security.authentication.event.AuthenticationFailureBadCredentialsEvent;
-import org.springframework.security.authentication.event.InteractiveAuthenticationSuccessEvent;
-import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +18,6 @@ import org.springframework.transaction.event.TransactionalEventListener;
 public class UserEventListener {
 
     private final EmailService emailService;
-    private final AuditService auditService;
 
     private final AppUserRepository appUserRepository;
     private final VerificationTokenRepository tokenRepository;
@@ -41,46 +33,6 @@ public class UserEventListener {
         tokenRepository.save(token);
 
         sendActivationEmailAsync(email, token.getToken());
-
-        // Audit log
-        auditService.log(AuditEventAction.USER_REGISTERED, user, "User registered: " + email);
-    }
-
-    @EventListener
-    public void onUserLoggedIn(InteractiveAuthenticationSuccessEvent event) {
-        var principal = event.getAuthentication().getPrincipal();
-        var details = event.getAuthentication().getDetails();
-
-        if (principal instanceof AppUser user && details instanceof WebAuthenticationDetails webDetails) {
-            // Audit log
-            auditService.log(
-                    AuditEventAction.USER_LOGGED_IN,
-                    user,
-                    String.format("Logged in: %s | IP: %s", user.getUsername(), webDetails.getRemoteAddress())
-            );
-        }
-    }
-
-    @EventListener
-    public void onLoginFailure(AuthenticationFailureBadCredentialsEvent event) {
-        var principal = event.getAuthentication().getPrincipal();
-        var details = event.getAuthentication().getDetails();
-
-        var username = (principal instanceof AppUser appUser)
-                ? appUser.getUsername()
-                : principal.toString();
-
-        var ip = (details instanceof WebAuthenticationDetails webDetails)
-                ? webDetails.getRemoteAddress()
-                : "unknown";
-
-        boolean exists = appUserRepository.findByProfile_Username(username).isPresent();
-
-        if (exists) {
-            auditService.log(AuditEventAction.USER_LOGIN_FAILED, null, "Bad password: " + username + " | IP: " + ip);
-        } else {
-            auditService.log(AuditEventAction.UNKNOWN_USER_LOGIN_ATTEMPT, null, "Username not found: " + username + " | IP: " + ip);
-        }
     }
 
     @Async
