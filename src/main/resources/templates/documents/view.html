@@ -66,7 +66,7 @@
                 outline: 2px solid var(--accent);
             }
             .version-badge-large {
-                background: #D1C4E9;
+                background: #FFEBC6;
                 color: var(--accent);
                 padding: 6px 16px;
                 border-radius: 8px;
@@ -413,11 +413,11 @@
                     </div>
                     <div>
                         <span class="version-badge-large" th:text="'Version ' + ${document.version}">Version 1</span>
-                        <span th:if="${document.isLatestVersion()}" class="status-badge" style="background: #28a745; color: white;">
+                        <span th:if="${document.isLatestVersion()}" class="status-badge" style="background: #dff5e1; color: #5F6F52;">
                             Latest
                         </span>
-                        <span th:unless="${document.isLatestVersion()}" class="status-badge" style="background: #ffc107; color: #000;">
-                            Old Version
+                        <span th:unless="${document.isLatestVersion()}" class="status-badge" style="background: #FFC6C6; color: #5F6F52;">
+                            Old version
                         </span>
                     </div>
                 </div>
@@ -473,7 +473,7 @@
                       method="post" style="display: inline;">
                     <button type="submit"
                             class="action-btn action-btn-danger"
-                            onclick="return confirm('Archive this document?')">
+                            onclick="return confirm('Are you sure you want to archive this document?')">
                         <i class="fa-solid fa-box-archive"></i>
                         Archive
                     </button>
@@ -494,8 +494,8 @@
                         <div class="timeline-info">
                             <h4>
                                 Version <span th:text="${ver.version}">1</span>
-                                <span th:if="${ver.id == document.id}" class="badge bg-success ms-2">Viewing</span>
-                                <span th:if="${ver.isLatestVersion()}" class="badge bg-primary ms-2">Latest</span>
+                                <span th:if="${ver.id == document.id}" class="badge bg-primary ms-2">Viewing</span>
+                                <span th:if="${ver.isLatestVersion()}" class="badge ms-2" style="background: #dff5e1; color: #5F6F52;">Latest</span>
                             </h4>
                             <div class="timeline-meta">
                                 <span><span th:text="${ver.originalFilename}">file.pdf</span></span>

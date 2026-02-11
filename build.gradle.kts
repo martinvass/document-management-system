@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "hu.martinvass"
-version = "0.0.1-SNAPSHOT"
+version = "1.0-SNAPSHOT"
 description = "dms"
 
 java {
@@ -14,44 +14,65 @@ java {
     }
 }
 
+repositories {
+    mavenCentral()
+}
+
+tasks.jar {
+    enabled = false
+}
+
+tasks.bootJar {
+
+    archiveFileName.set("dms.jar")
+
+    layered {
+        enabled.set(true)
+    }
+
+    isZip64 = false
+}
+
+tasks.withType<Jar> {
+    isPreserveFileTimestamps = false
+    isReproducibleFileOrder = true
+}
+
 configurations {
     compileOnly {
         extendsFrom(configurations.annotationProcessor.get())
     }
 
-    runtimeOnly {
-        exclude(module = "spring-boot-starter-tomcat")
+    all {
+        exclude(group = "org.springframework.boot", module = "spring-boot-starter-tomcat")
     }
-
-    compileOnly {
-        exclude(module = "spring-boot-starter-tomcat")
-    }
-}
-
-repositories {
-    mavenCentral()
 }
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-jetty")
+
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-mail")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
     implementation("org.springframework.boot:spring-boot-starter-validation")
-    implementation("org.springframework.boot:spring-boot-starter-web")
+
     implementation("org.thymeleaf.extras:thymeleaf-extras-springsecurity6")
     implementation("org.bouncycastle:bcpkix-jdk15on:1.70")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
-    implementation("software.amazon.awssdk:s3:2.29.0")
+
+    implementation("software.amazon.awssdk:s3:2.29.0") {
+        exclude(group = "software.amazon.awssdk", module = "apache-client")
+        exclude(group = "software.amazon.awssdk", module = "netty-nio-client")
+        exclude(group = "software.amazon.awssdk", module = "crt-client")
+    }
+
     compileOnly("org.projectlombok:lombok")
     runtimeOnly("org.postgresql:postgresql")
+
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     annotationProcessor("org.projectlombok:lombok")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("org.springframework.security:spring-security-test")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 tasks.withType<Test> {
