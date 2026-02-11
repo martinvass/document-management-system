@@ -47,6 +47,11 @@ public interface DocumentRepository
             Pageable pageable
     );
 
+    List<Document> findByCorporationAndStatus(
+            Corporation corporation,
+            DocumentStatus status
+    );
+
     /**
      * Find all versions of a document
      */

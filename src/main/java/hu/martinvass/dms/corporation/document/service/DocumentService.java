@@ -345,6 +345,21 @@ public class DocumentService {
     }
 
     /**
+     * Get total storage used by all documents in corporation
+     */
+    @Transactional(readOnly = true)
+    public long getTotalStorageUsed(CorporationProfile profile) {
+        List<Document> documents = documentRepository.findByCorporationAndStatus(
+                profile.getCorporation(),
+                DocumentStatus.ACTIVE
+        );
+
+        return documents.stream()
+                .mapToLong(Document::getSize)
+                .sum();
+    }
+
+    /**
      * Validate uploaded file
      */
     private void validateFile(MultipartFile file) {

@@ -7,7 +7,7 @@
     --color-secondary: #B99470;
     --radius: 12px;
     --transition: 0.25s ease;
-    --font: 'Inter', sans-serif;
+    --font: 'Segoe UI', sans-serif;
 }
 
 body {
@@ -310,4 +310,52 @@ body {
     font-style: normal;
     color: #4E5E44;
     font-weight: 600;
+}
+/* Storage Circle Styles */
+.storage-container {
+    background-color: #E9E3C4;
+    position: relative;
+    width: 100%;
+    min-height: 250px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.storage-circle {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    border: 4px solid #DFF5E1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(135deg, #FEFAE0 0%, #F5F1D8 100%);
+    transition: all 0.3s ease;
+}
+
+.storage-inner {
+    text-align: center;
+    padding: 20px;
+}
+
+.storage-value {
+    font-size: 2.2rem;
+    font-weight: 600;
+    color: #5F6F52;
+    line-height: 1.2;
+    margin-bottom: 5px;
+}
+
+.storage-label {
+    font-size: 1rem;
+    font-weight: 500;
+    margin-top: 10px;
+    color: #7A8471;
+}
+
+.storage-label i {
+    color: #A8D5E2;
 }

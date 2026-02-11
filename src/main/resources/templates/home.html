@@ -6,7 +6,7 @@
         <link rel="stylesheet" th:href="@{/css/dashboard.css}">
     </th:block>
 </head>
-<body style="background-color:#FEFAE0; font-family:'Segoe UI',sans-serif;">
+<body>
 
 <!-- Navigation -->
 <nav th:replace="~{fragments/dashboard/navigation :: navigation_bar}"></nav>
@@ -92,9 +92,18 @@
                 </div>
 
                 <div class="col-lg-5">
-                    <h4 class="fw-semibold text-olive mb-3"><i class="fas fa-chart-pie me-2"></i>Document Types</h4>
-                    <div class="chart-container mb-5 p-3 rounded-4 shadow-light">
-                        <canvas id="docTypeChart" height="200"></canvas>
+                    <h4 class="fw-semibold text-olive mb-3"><i class="fas fa-database me-2"></i>Storage Usage</h4>
+                    <div class="storage-container mb-5 p-4 rounded-4 shadow-light text-center">
+                        <!-- Storage Circle -->
+                        <div class="storage-circle mx-auto mb-3">
+                            <div class="storage-inner">
+                                <div class="storage-value" th:text="${totalStorageReadable}">0 B</div>
+                            </div>
+                        </div>
+                        <div class="storage-label text-muted">
+                            <i class="fas fa-hdd me-1"></i>
+                            Total Documents Storage
+                        </div>
                     </div>
 
                     <h4 class="fw-semibold text-olive mb-3"><i class="fas fa-bell me-2"></i>Recent Activity</h4>
@@ -115,40 +124,6 @@
 <div th:replace="~{corporation/create-modal :: corpCreateModal(${createDto})}"></div>
 <div th:replace="~{corporation/join-modal :: corpJoinModal(${joinDto})}"></div>
 <div th:replace="~{fragments/scripts :: footer_scripts}"></div>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-    const ctx = document.getElementById('docTypeChart').getContext('2d');
-    new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-            labels: ['PDF', 'Word', 'Excel', 'Contracts'],
-            datasets: [{
-                data: [45, 30, 15, 10],
-                backgroundColor: ['#f76443', '#3A86FF', '#2A9D8F', '#E9C46A'],
-                borderColor: '#FEFAE0',
-                borderWidth: 2,
-                hoverOffset: 8
-            }]
-        },
-        options: {
-            plugins: {
-                legend: {
-                    position: 'bottom',
-                    labels: {
-                        color: '#5F6F52',
-                        font: { size: 13, family: 'Segoe UI' },
-                        padding: 12
-                    }
-                }
-            },
-            cutout: '70%',
-            animation: {
-                animateScale: true
-            }
-        }
-    });
-</script>
 
 </body>
 </html>

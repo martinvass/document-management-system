@@ -1,14 +1,13 @@
 :root {
-    /* Old photograph inspired palette */
-    --color-bg: #FEFAE0;          /* világos krémszín háttér */
-    --color-card: #A9B388;        /* kártyák / szekciók háttere */
-    --color-accent: #5F6F52;      /* gombok / kiemelések */
-    --color-accent-light: #A9B388;/* gomb hover / lágyabb árnyalat */
-    --color-accent-dark: #3F4C34; /* sötétebb olívazöld szöveghez */
-    --color-secondary: #B99470;   /* CTA, kontrasztos elem */
+    --color-bg: #FEFAE0;
+    --color-card: #A9B388;
+    --color-accent: #5F6F52;
+    --color-accent-light: #A9B388;
+    --color-accent-dark: #3F4C34;
+    --color-secondary: #B99470;
     --radius: 12px;
     --transition: 0.25s ease;
-    --font: 'Inter', sans-serif;
+    --font: 'Segoe UI', sans-serif;
 }
 
 /* ===== Alapbeállítások ===== */
