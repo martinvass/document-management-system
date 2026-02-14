@@ -1,6 +1,7 @@
 package hu.martinvass.dms.corporation.document.domain;
 
 import hu.martinvass.dms.corporation.domain.Corporation;
+import hu.martinvass.dms.corporation.settings.storage.StorageType;
 import hu.martinvass.dms.corporation.tag.domain.Tag;
 import hu.martinvass.dms.user.AppUser;
 import jakarta.persistence.*;
@@ -41,6 +42,11 @@ public class Document {
 
     @Column(columnDefinition = "TEXT")
     private String description;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "storage_type", nullable = false)
+    @Builder.Default
+    private StorageType storageType = StorageType.MANAGED;
 
     @Column(nullable = false)
     @Builder.Default

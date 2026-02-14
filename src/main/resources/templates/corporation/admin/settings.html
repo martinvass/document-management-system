@@ -151,6 +151,12 @@
                 font-weight: 600;
             }
 
+            .btn-secondary:disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+                pointer-events: none;
+            }
+
             .connection-success {
                 display: none;
                 margin-top: 16px;
@@ -256,18 +262,19 @@
                                 <input name="s3SecretKey" type="password" class="form-control" th:placeholder="${storage.hasStoredCredentials} ? '******** (stored)' : '********'">
                             </div>
                         </div>
+                    </div>
 
-                        <div class="actions">
-                            <button class="btn-primary" type="submit">Save changes</button>
+                    <div class="actions">
+                        <button class="btn-primary" type="submit">Save changes</button>
 
-                            <button class="btn-secondary"
-                                    type="submit"
-                                    th:formaction="@{settings/storage/test}"
-                                    th:formmethod="post"
-                                    formnovalidate>
-                                Test connection
-                            </button>
-                        </div>
+                        <button class="btn-secondary"
+                                type="submit"
+                                id="testConnectionBtn"
+                                th:formaction="@{settings/storage/test}"
+                                th:formmethod="post"
+                                formnovalidate>
+                            Test connection
+                        </button>
                     </div>
                 </form>
 
@@ -300,7 +307,10 @@
 
     function toggleAws() {
         const managed = document.querySelector('input[value="MANAGED"]').checked;
+        const testBtn = document.getElementById('testConnectionBtn');
+
         document.getElementById('aws-fields').classList.toggle('disabled', managed);
+        testBtn.disabled = managed;
     }
 
     document.querySelectorAll('input[name="storageType"]').forEach(r => {

@@ -66,7 +66,7 @@
                 outline: 2px solid var(--accent);
             }
             .version-badge-large {
-                background: #FFEBC6;
+                background: #D1C4E9;
                 color: var(--accent);
                 padding: 6px 16px;
                 border-radius: 8px;
@@ -143,6 +143,34 @@
             }
             .action-btn-danger:hover {
                 background: #F48FB1;
+                color: var(--accent);
+            }
+            .action-btn-warning {
+                background: #FFE0B2;
+                color: var(--accent);
+                border: none;
+            }
+            .action-btn-warning:hover {
+                background: #FFCC80;
+                color: var(--accent);
+            }
+
+            /* STORAGE TYPE BADGE */
+            .storage-type-badge {
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                padding: 6px 12px;
+                border-radius: 8px;
+                font-size: 0.95rem;
+                font-weight: 500;
+            }
+            .storage-type-badge.storage-s3 {
+                background: #FFE0B2;
+                color: var(--accent);
+            }
+            .storage-type-badge.storage-managed {
+                background: #C8E6C9;
                 color: var(--accent);
             }
 
@@ -397,11 +425,15 @@
 <nav th:replace="~{fragments/dashboard/navigation :: navigation_bar}"></nav>
 <div th:replace="~{fragments/dashboard/sidebar :: sidebar(content=~{::content})}">
     <div th:fragment="content" class="container-fluid py-4">
+
+        <!-- FLASH MESSAGES -->
         <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
         <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
 
+        <!-- DOCUMENT HEADER -->
         <div class="doc-header">
             <div class="doc-title-section">
+                <!-- Large File Type Icon (80x80px) - Shows document type at a glance -->
                 <div class="doc-big-icon">
                     <i th:class="${document.getIconClass()}"></i>
                 </div>
@@ -413,16 +445,17 @@
                     </div>
                     <div>
                         <span class="version-badge-large" th:text="'Version ' + ${document.version}">Version 1</span>
-                        <span th:if="${document.isLatestVersion()}" class="status-badge" style="background: #dff5e1; color: #5F6F52;">
+                        <span th:if="${document.isLatestVersion()}" class="status-badge" style="background: #28a745; color: white;">
                             Latest
                         </span>
-                        <span th:unless="${document.isLatestVersion()}" class="status-badge" style="background: #FFC6C6; color: #5F6F52;">
-                            Old version
+                        <span th:unless="${document.isLatestVersion()}" class="status-badge" style="background: #ffc107; color: #000;">
+                            Old Version
                         </span>
                     </div>
                 </div>
             </div>
 
+            <!-- DESCRIPTION -->
             <div class="doc-description-box"
                  id="docDescription"
                  contenteditable="false"
@@ -435,6 +468,7 @@
                       class="description-placeholder">Click to add description...</span>
             </div>
 
+            <!-- INFO GRID -->
             <div class="info-grid">
                 <div class="info-item">
                     <div class="info-label">Uploaded By</div>
@@ -452,8 +486,19 @@
                     <div class="info-label">File Type</div>
                     <div class="info-value" th:text="${document.contentType}">application/pdf</div>
                 </div>
+                <div class="info-item">
+                    <div class="info-label">Storage</div>
+                    <div class="info-value">
+                        <span class="storage-type-badge"
+                              th:classappend="${document.storageType.name() == 'CUSTOM_S3' ? 'storage-s3' : 'storage-managed'}">
+                            <i th:class="${document.storageType.name() == 'CUSTOM_S3' ? 'fa-brands fa-aws' : 'fa-solid fa-database'}"></i>
+                            <span th:text="${document.storageType.name() == 'CUSTOM_S3' ? 'Amazon S3' : 'Managed Storage'}">S3</span>
+                        </span>
+                    </div>
+                </div>
             </div>
 
+            <!-- ACTION BUTTONS -->
             <div class="action-buttons mt-4">
                 <a th:href="@{/documents/{id}/download(id=${document.id})}" class="action-btn">
                     <i class="fa-solid fa-download"></i>
@@ -465,6 +510,16 @@
                     <i class="fa-solid fa-upload"></i>
                     Upload New Version
                 </button>
+
+                <!-- MIGRATION BUTTON (only show if storage type differs from current) -->
+                <button class="action-btn action-btn-warning"
+                        th:if="${document.storageType != currentStorageType}"
+                        onclick="openMigrationModal()"
+                        th:title="'Migrate from ' + ${document.storageType.name()} + ' to ' + ${currentStorageType.name()}">
+                    <i class="fa-solid fa-arrow-right-arrow-left"></i>
+                    Migrate Storage
+                </button>
+
                 <a th:href="@{/documents}" class="action-btn action-btn-secondary">
                     <i class="fa-solid fa-arrow-left-long"></i>
                     Back to List
@@ -473,7 +528,7 @@
                       method="post" style="display: inline;">
                     <button type="submit"
                             class="action-btn action-btn-danger"
-                            onclick="return confirm('Are you sure you want to archive this document?')">
+                            onclick="return confirm('Archive this document?')">
                         <i class="fa-solid fa-box-archive"></i>
                         Archive
                     </button>
@@ -481,6 +536,7 @@
             </div>
         </div>
 
+        <!-- VERSION HISTORY -->
         <div class="version-section" th:if="${versions.size() > 1}">
             <h4 class="section-title">
                 <i class="fa-solid fa-clock-rotate-left"></i>
@@ -494,8 +550,8 @@
                         <div class="timeline-info">
                             <h4>
                                 Version <span th:text="${ver.version}">1</span>
-                                <span th:if="${ver.id == document.id}" class="badge bg-primary ms-2">Viewing</span>
-                                <span th:if="${ver.isLatestVersion()}" class="badge ms-2" style="background: #dff5e1; color: #5F6F52;">Latest</span>
+                                <span th:if="${ver.id == document.id}" class="badge bg-success ms-2">Viewing</span>
+                                <span th:if="${ver.isLatestVersion()}" class="badge bg-primary ms-2">Latest</span>
                             </h4>
                             <div class="timeline-meta">
                                 <span><span th:text="${ver.originalFilename}">file.pdf</span></span>
@@ -521,6 +577,7 @@
     </div>
 </div>
 
+<!-- NEW VERSION MODAL -->
 <div id="versionModal" class="modal">
     <div class="modal-content">
         <div class="modal-header">
@@ -560,6 +617,53 @@
     </div>
 </div>
 
+<!-- MIGRATION MODAL -->
+<div id="migrationModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title">Migrate Storage</h4>
+            <button class="modal-close" onclick="closeMigrationModal()">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <p>This will migrate the document from
+                <strong>
+                    <span th:text="${document.storageType.name() == 'CUSTOM_S3' ? 'Amazon S3' : 'Managed Storage'}"></span>
+                </strong>
+                to
+                <strong>
+                    <span th:text="${currentStorageType.name() == 'CUSTOM_S3' ? 'Amazon S3' : 'Managed Storage'}"></span>
+                </strong>.
+            </p>
+            <p><strong>What happens:</strong></p>
+            <ul>
+                <li>Document will be copied to the new storage</li>
+                <li>Old file will be removed automatically</li>
+                <li>Download links will work seamlessly</li>
+                <li>This action cannot be undone</li>
+            </ul>
+        </div>
+        <form id="migrationForm"
+              th:action="@{/documents/{id}/migrate(id=${document.id})}"
+              method="post">
+            <div class="d-flex gap-2">
+                <button type="button"
+                        class="action-btn action-btn-warning"
+                        onclick="confirmMigration()">
+                    <i class="fa-solid fa-arrow-right-arrow-left"></i>
+                    Migrate
+                </button>
+                <button type="button"
+                        class="action-btn action-btn-secondary"
+                        onclick="closeMigrationModal()">
+                    Cancel
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <script>
     function enableEdit(elementId) {
         const element = document.getElementById(elementId);
@@ -567,6 +671,7 @@
         element.classList.add('editing');
         element.focus();
 
+        // Select all text
         const range = document.createRange();
         range.selectNodeContents(element);
         const sel = window.getSelection();
@@ -582,6 +687,7 @@
         const docId = element.getAttribute('data-doc-id');
         const newDescription = element.textContent.trim();
 
+        // Send AJAX to update description
         fetch(`/documents/${docId}/update`, {
             method: 'POST',
             headers: {
@@ -613,9 +719,30 @@
         document.getElementById('versionFileName').textContent = fileName;
     }
 
+    function openMigrationModal() {
+        document.getElementById('migrationModal').classList.add('active');
+    }
+
+    function closeMigrationModal() {
+        document.getElementById('migrationModal').classList.remove('active');
+    }
+
+    function confirmMigration() {
+        // Submit the migration form
+        document.getElementById('migrationForm').submit();
+    }
+
+    // Close modal on outside click
     document.getElementById('versionModal')?.addEventListener('click', function(e) {
         if (e.target === this) {
             closeVersionModal();
+        }
+    });
+
+    // Close migration modal on outside click
+    document.getElementById('migrationModal')?.addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeMigrationModal();
         }
     });
 </script>

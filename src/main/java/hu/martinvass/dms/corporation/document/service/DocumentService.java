@@ -5,11 +5,10 @@ import hu.martinvass.dms.corporation.document.domain.DocumentPermissionLevel;
 import hu.martinvass.dms.corporation.document.domain.DocumentStatus;
 import hu.martinvass.dms.corporation.document.repository.DocumentRepository;
 import hu.martinvass.dms.corporation.domain.Corporation;
+import hu.martinvass.dms.corporation.settings.storage.StorageType;
 import hu.martinvass.dms.corporation.storage.StorageProvider;
 import hu.martinvass.dms.corporation.storage.StorageRouter;
 import hu.martinvass.dms.corporation.storage.StoredFile;
-import hu.martinvass.dms.corporation.tag.domain.Tag;
-import hu.martinvass.dms.corporation.tag.service.TagService;
 import hu.martinvass.dms.profile.CorporationProfile;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,7 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -87,6 +85,8 @@ public class DocumentService {
                 file.getContentType()
         );
 
+        StorageType currentStorageType = storageRouter.getStorageType(corporation.getId());
+
         // Create document entity
         Document document = Document.builder()
                 .corporation(corporation)
@@ -95,6 +95,7 @@ public class DocumentService {
                 .size(stored.size())
                 .contentType(file.getContentType())
                 .description(description)
+                .storageType(currentStorageType)
                 .uploadedBy(profile.getUser())
                 .status(DocumentStatus.ACTIVE)
                 .build();
@@ -177,7 +178,8 @@ public class DocumentService {
         // Check READ permission
         permissionService.checkPermission(document, profile, DocumentPermissionLevel.READ);
 
-        StorageProvider storage = storageRouter.forCompany(document.getCorporation().getId());
+        //StorageProvider storage = storageRouter.forCompany(document.getCorporation().getId());
+        StorageProvider storage = getStorageProviderForDocument(document);
 
         return storage.load(
                 document.getCorporation().getId(),
@@ -279,6 +281,62 @@ public class DocumentService {
         return savedNewVersion;
     }
 
+    @Transactional
+    public Document migrateDocument(Long documentId, CorporationProfile profile) throws IOException {
+        Document document = getDocumentEntity(documentId, profile);
+
+        // Check WRITE permission (migration is a significant operation)
+        permissionService.checkPermission(document, profile, DocumentPermissionLevel.EDIT);
+
+        Corporation corporation = document.getCorporation();
+        StorageType currentStorageType = storageRouter.getStorageType(corporation.getId());
+
+        // Check if migration is needed
+        if (document.getStorageType() == currentStorageType)
+            return document;
+
+        // Get old and new storage providers
+        StorageProvider oldStorage = storageRouter.getProviderByType(document.getStorageType());
+        StorageProvider newStorage = storageRouter.forCompany(corporation.getId());
+
+        try {
+            // Download from old storage
+            InputStream oldContent = oldStorage.load(corporation.getId(), document.getStoragePath());
+
+            // Generate new storage path (keep same structure)
+            String newStoragePath = UUID.randomUUID() + "/" + document.getOriginalFilename();
+
+            // Upload to new storage
+            StoredFile newStored = newStorage.save(
+                    corporation.getId(),
+                    newStoragePath,
+                    oldContent,
+                    document.getContentType()
+            );
+
+            // Update document entity
+            String oldPath = document.getStoragePath();
+
+            document.setStoragePath(newStoragePath);
+            document.setStorageType(currentStorageType);
+            document.setSize(newStored.size());
+            document.setModifiedAt(LocalDateTime.now());
+
+            Document savedDocument = documentRepository.save(document);
+
+            // Delete from old storage (best effort, don't fail if this fails)
+            try {
+                oldStorage.delete(corporation.getId(), oldPath);
+            } catch (Exception e) {
+                // Don't throw - migration is successful, cleanup just failed
+            }
+
+            return savedDocument;
+        } catch (IOException e) {
+            throw new IOException("Failed to migrate document: " + e.getMessage(), e);
+        }
+    }
+
     /**
      * Get all versions of a document
      */
@@ -357,6 +415,14 @@ public class DocumentService {
         return documents.stream()
                 .mapToLong(Document::getSize)
                 .sum();
+    }
+
+    private StorageProvider getStorageProviderForDocument(Document document) {
+        return storageRouter.getProviderByType(document.getStorageType());
+    }
+
+    public StorageType getCurrentStorageType(Long corporationId) {
+        return storageRouter.getStorageType(corporationId);
     }
 
     /**

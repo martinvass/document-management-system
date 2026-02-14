@@ -68,6 +68,8 @@ dependencies {
         exclude(group = "software.amazon.awssdk", module = "crt-client")
     }
 
+    implementation("software.amazon.awssdk:url-connection-client:2.29.0")
+
     compileOnly("org.projectlombok:lombok")
     runtimeOnly("org.postgresql:postgresql")
 

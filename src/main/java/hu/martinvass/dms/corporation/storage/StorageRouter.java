@@ -45,4 +45,23 @@ public class StorageRouter {
 
         return provider;
     }
+
+    public StorageType getStorageType(Long companyId) {
+        return settingsRepository
+                .findByCorporationId(companyId)
+                .map(CompanySettings::getStorageType)
+                .orElse(StorageType.MANAGED);
+    }
+
+    public StorageProvider getProviderByType(StorageType type) {
+        StorageProvider provider = providers.get(type);
+
+        if (provider == null) {
+            throw new IllegalStateException(
+                    "No StorageProvider registered for type: " + type
+            );
+        }
+
+        return provider;
+    }
 }

@@ -117,6 +117,9 @@ public class DocumentController {
             Document document = documentService.getDocument(id, profile);
             model.addAttribute("document", document);
 
+            model.addAttribute("currentStorageType",
+                    documentService.getCurrentStorageType(profile.getCorporation().getId()));
+
             // Get versions
             List<Document> versions = documentService.getVersions(id, profile);
             model.addAttribute("versions", versions);
@@ -156,6 +159,22 @@ public class DocumentController {
             ra.addFlashAttribute("success", "Document updated successfully");
         } catch (Exception e) {
             ra.addFlashAttribute("error", e.getMessage());
+        }
+
+        return "redirect:/documents/" + id;
+    }
+
+    @PostMapping("/{id}/migrate")
+    public String migrate(
+            @ActiveUserProfile CorporationProfile profile,
+            @PathVariable Long id,
+            RedirectAttributes ra
+    ) {
+        try {
+            documentService.migrateDocument(id, profile);
+            ra.addFlashAttribute("success", "Document migrated successfully to current storage");
+        } catch (Exception e) {
+            ra.addFlashAttribute("error", "Migration failed: " + e.getMessage());
         }
 
         return "redirect:/documents/" + id;

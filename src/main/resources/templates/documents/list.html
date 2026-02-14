@@ -14,14 +14,25 @@
                 --shadow: 0 2px 8px rgba(0,0,0,0.08);
                 --shadow-hover: 0 4px 16px rgba(0,0,0,0.12);
 
-                --color-blue: #DCEBFF;
-                --color-green: #dff5e1;
+                /* Pastel UI Colors */
+                --color-blue: #A8D5E2;
+                --color-green: #C8E6C9;
+                --color-orange: #FFE0B2;
+                --color-purple: #D1C4E9;
+                --color-pink: #F8BBD0;
             }
             body {
                 background: var(--bg);
                 color: var(--text);
             }
 
+            /* HEADER ACTIONS */
+            .header-actions {
+                display: flex;
+                gap: 12px;
+                align-items: center;
+                margin-bottom: 24px;
+            }
             .upload-btn {
                 background: var(--color-blue);
                 color: var(--accent);
@@ -41,11 +52,12 @@
                 font-size: 1.5rem;
             }
             .upload-btn:hover {
-                background: #C1D0E3;
+                background: #8FC4D6;
                 box-shadow: var(--shadow-hover);
                 transform: translateY(-2px) scale(1.05);
             }
 
+            /* FILTER BAR */
             .filter-bar {
                 background: var(--card);
                 border-radius: var(--radius);
@@ -69,6 +81,7 @@
                 box-shadow: 0 0 0 3px rgba(95, 111, 82, 0.1);
             }
 
+            /* DOCUMENT GRID */
             .doc-grid {
                 display: grid;
                 grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -143,12 +156,30 @@
             }
             .doc-version-badge {
                 display: inline-block;
-                background: var(--color-green);
+                background: var(--color-purple);
                 color: var(--accent);
                 padding: 4px 10px;
                 border-radius: 6px;
                 font-size: 0.75rem;
                 font-weight: 600;
+            }
+            .doc-storage-badge {
+                display: inline-flex;
+                align-items: center;
+                gap: 4px;
+                padding: 4px 10px;
+                border-radius: 6px;
+                font-size: 0.7rem;
+                font-weight: 500;
+                cursor: help;
+            }
+            .doc-storage-badge.storage-s3 {
+                background: var(--color-orange);
+                color: var(--accent);
+            }
+            .doc-storage-badge.storage-managed {
+                background: var(--color-green);
+                color: var(--accent);
             }
             .doc-actions {
                 display: flex;
@@ -201,19 +232,27 @@
                 height: 40px;
             }
             .icon-btn-circle:hover {
-                background: #C1D0E3;
+                background: var(--accent);
                 color: white;
                 transform: scale(1.1);
             }
             .icon-btn-circle.icon-btn-primary {
-                background: var(--color-blue);
+                background: var(--color-green);
                 color: var(--accent);
                 border: none;
             }
             .icon-btn-circle.icon-btn-primary:hover {
-                background: #C1D0E3;
+                background: #B0D9B3;
             }
-
+            .icon-btn-circle.icon-btn-outline {
+                background: transparent;
+                border: 1px solid var(--color-orange);
+                color: var(--accent);
+            }
+            .icon-btn-circle.icon-btn-outline:hover {
+                background: var(--color-orange);
+                color: var(--accent);
+            }
             .icon-btn-circle:disabled {
                 opacity: 0.5;
                 cursor: not-allowed;
@@ -224,6 +263,7 @@
                 transform: none;
             }
 
+            /* EMPTY STATE */
             .empty-state {
                 text-align: center;
                 padding: 80px 20px;
@@ -235,6 +275,7 @@
                 margin-bottom: 24px;
             }
 
+            /* MODAL */
             .modal {
                 display: none;
                 position: fixed;
@@ -248,11 +289,9 @@
                 align-items: center;
                 justify-content: center;
             }
-
             .modal.active {
                 display: flex;
             }
-
             .modal-content {
                 background: var(--card);
                 border-radius: var(--radius);
@@ -356,6 +395,8 @@
 <nav th:replace="~{fragments/dashboard/navigation :: navigation_bar}"></nav>
 <div th:replace="~{fragments/dashboard/sidebar :: sidebar(content=~{::content})}">
     <div th:fragment="content" class="container-fluid py-4">
+
+        <!-- HEADER -->
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h3 class="fw-bold m-0">Documents</h3>
             <button class="upload-btn" onclick="openUploadModal()" title="Upload document">
@@ -363,9 +404,11 @@
             </button>
         </div>
 
+        <!-- FLASH MESSAGES -->
         <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
         <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
 
+        <!-- FILTER BAR -->
         <div class="filter-bar">
             <i class="fa-solid fa-magnifying-glass" style="color: var(--accent); font-size: 1.1rem;"></i>
             <input type="text"
@@ -375,10 +418,12 @@
                    onkeyup="filterDocuments()">
         </div>
 
+        <!-- EMPTY STATE -->
         <div th:if="${#lists.isEmpty(documents)}" class="empty-state">
             <div class="empty-text">No documents yet</div>
         </div>
 
+        <!-- DOCUMENT GRID -->
         <div class="doc-grid" id="docGrid" th:unless="${#lists.isEmpty(documents)}">
             <div th:each="doc : ${documents}"
                  class="doc-card"
@@ -392,6 +437,12 @@
                 <div class="doc-header">
                     <div class="doc-name" th:text="${doc.originalFilename}">document.pdf</div>
                     <span class="doc-version-badge" th:text="'v' + ${doc.version}">v1</span>
+                    <span class="doc-storage-badge"
+                          th:classappend="${doc.storageType.name() == 'CUSTOM_S3' ? 'storage-s3' : 'storage-managed'}"
+                          th:title="${doc.storageType.name() == 'CUSTOM_S3' ? 'Stored in S3' : 'Managed storage'}">
+                        <i th:class="${doc.storageType.name() == 'CUSTOM_S3' ? 'fa-brands fa-aws' : 'fa-solid fa-database'}"></i>
+                        <span th:text="${doc.storageType.name() == 'CUSTOM_S3' ? 'S3' : 'Managed'}">S3</span>
+                    </span>
                 </div>
 
                 <div class="doc-description" th:text="${doc.description ?: 'No description'}">
@@ -416,7 +467,7 @@
                        title="Download">
                         <i class="fa-solid fa-download"></i>
                     </a>
-                    <button class="icon-btn-circle icon-btn-primary" title="Share">
+                    <button class="icon-btn-circle icon-btn-outline" title="Share">
                         <i class="fa-solid fa-share"></i>
                     </button>
                 </div>
@@ -425,6 +476,7 @@
     </div>
 </div>
 
+<!-- UPLOAD MODAL -->
 <div id="uploadModal" class="modal">
     <div class="modal-content">
         <div class="modal-header">
@@ -507,6 +559,7 @@
         });
     }
 
+    // Close modal on outside click
     document.getElementById('uploadModal').addEventListener('click', function(e) {
         if (e.target === this) {
             closeUploadModal();

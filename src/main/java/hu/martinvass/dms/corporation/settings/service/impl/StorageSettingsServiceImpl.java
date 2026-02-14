@@ -20,7 +20,7 @@ public class StorageSettingsServiceImpl implements StorageSettingsService {
 
     public StorageSettingsServiceImpl(CompanyStorageRepository companyStorageRepository) {
         this.providers = Map.of(
-                StorageType.MANAGED, new ManagedStorageSettingsProvider(),
+                StorageType.MANAGED, new ManagedStorageSettingsProvider(companyStorageRepository),
                 StorageType.CUSTOM_S3, new AwsStorageSettingsProvider(companyStorageRepository)
         );
         this.companyStorageRepository = companyStorageRepository;
