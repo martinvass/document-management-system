@@ -5,16 +5,16 @@ import hu.martinvass.dms.corporation.document.domain.DocumentPermission;
 import hu.martinvass.dms.corporation.document.domain.DocumentPermissionLevel;
 import hu.martinvass.dms.corporation.document.repository.DocumentPermissionRepository;
 import hu.martinvass.dms.corporation.domain.CorporationRole;
+import hu.martinvass.dms.department.domain.Department;
 import hu.martinvass.dms.profile.CorporationProfile;
-import hu.martinvass.dms.user.AppUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
-// TODO: custom exception handling
 /**
  * Central service for checking and managing document permissions.
  * <p>
@@ -22,9 +22,8 @@ import java.util.Optional;
  * 1. Corporation Admin - full access to all documents
  * 2. Document Owner - full access to own documents
  * 3. Explicit Document Permission - user-specific permissions
- * 4. Default by Role:
- *    - EMPLOYEE: access to own documents only
- *    - GUEST: no default access
+ * 4. Department Membership - READ access if both user and document are in same department
+ * 5. Default - NONE
  */
 @Service
 @RequiredArgsConstructor
@@ -56,7 +55,14 @@ public class DocumentPermissionService {
             return explicitPermission.get().getPermissionLevel();
         }
 
-        // 4. Default by role - no default access
+        // 4. Check department membership
+        // If both user and document are in the same department, user gets READ access
+        for (Department userDept : profile.getDepartments()) {
+            if (document.getDepartments().contains(userDept)) {
+                return DocumentPermissionLevel.READ;
+            }
+        }
+
         return DocumentPermissionLevel.NONE;
     }
 
@@ -75,7 +81,7 @@ public class DocumentPermissionService {
     @Transactional(readOnly = true)
     public void checkPermission(Document document, CorporationProfile profile, DocumentPermissionLevel required) {
         if (!hasPermission(document, profile, required)) {
-            throw new RuntimeException("You do not have permission to do this, required permission: " + required);
+            throw new SecurityException("You do not have permission to do this, required permission: " + required);
         }
     }
 
@@ -87,11 +93,11 @@ public class DocumentPermissionService {
             Document document,
             CorporationProfile targetProfile,
             DocumentPermissionLevel level,
-            AppUser grantedBy
+            CorporationProfile grantedBy
     ) {
         // Check if granter has ADMIN permission
-        if (!hasPermission(document, grantedBy.getActiveProfile(), DocumentPermissionLevel.ADMIN)) {
-            throw new RuntimeException("Cannot grant permissions without ADMIN access");
+        if (!hasPermission(document, grantedBy, DocumentPermissionLevel.ADMIN)) {
+            throw new SecurityException("Cannot grant permissions without ADMIN access");
         }
 
         // Check if permission already exists
@@ -109,7 +115,7 @@ public class DocumentPermissionService {
                     .document(document)
                     .profile(targetProfile)
                     .permissionLevel(level)
-                    .grantedBy(grantedBy)
+                    .grantedBy(grantedBy.getUser())
                     .build();
         }
 
@@ -120,10 +126,10 @@ public class DocumentPermissionService {
      * Revoke permission from a user
      */
     @Transactional
-    public void revokePermission(Document document, CorporationProfile targetProfile, AppUser revokedBy) {
+    public void revokePermission(Document document, CorporationProfile targetProfile, CorporationProfile revokedBy) {
         // Check if revoker has ADMIN permission
-        if (!hasPermission(document, revokedBy.getActiveProfile(), DocumentPermissionLevel.ADMIN)) {
-            throw new RuntimeException("Cannot revoke permissions without ADMIN access");
+        if (!hasPermission(document, revokedBy, DocumentPermissionLevel.ADMIN)) {
+            throw new SecurityException("Cannot revoke permissions without ADMIN access");
         }
 
         documentPermissionRepository.deleteByDocumentAndProfile(document, targetProfile);
@@ -146,5 +152,26 @@ public class DocumentPermissionService {
     public boolean canUploadDocuments(CorporationProfile profile) {
         return profile.getRole() == CorporationRole.ADMIN ||
                 profile.getRole() == CorporationRole.EMPLOYEE;
+    }
+
+    @Transactional
+    public void copyPermissions(Document fromDocument, Document toDocument) {
+        // Copy departments - simply create new Set
+        if (fromDocument.getDepartments() != null && !fromDocument.getDepartments().isEmpty()) {
+            toDocument.setDepartments(new HashSet<>(fromDocument.getDepartments()));
+        }
+
+        // Copy explicit permissions
+        List<DocumentPermission> sourcePermissions = documentPermissionRepository.findByDocument(fromDocument);
+        for (DocumentPermission sourcePerm : sourcePermissions) {
+            DocumentPermission newPerm = DocumentPermission.builder()
+                    .document(toDocument)
+                    .profile(sourcePerm.getProfile())
+                    .permissionLevel(sourcePerm.getPermissionLevel())
+                    .grantedBy(sourcePerm.getGrantedBy())
+                    .build();
+
+            documentPermissionRepository.save(newPerm);
+        }
     }
 }

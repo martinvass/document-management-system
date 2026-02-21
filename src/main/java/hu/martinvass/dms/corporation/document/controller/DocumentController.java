@@ -3,7 +3,13 @@ package hu.martinvass.dms.corporation.document.controller;
 import hu.martinvass.dms.annotations.ActiveUserProfile;
 import hu.martinvass.dms.auth.AuthService;
 import hu.martinvass.dms.corporation.document.domain.Document;
+import hu.martinvass.dms.corporation.document.domain.DocumentPermission;
+import hu.martinvass.dms.corporation.document.domain.DocumentStatus;
+import hu.martinvass.dms.corporation.document.repository.DocumentRepository;
+import hu.martinvass.dms.corporation.document.service.DocumentPermissionService;
 import hu.martinvass.dms.corporation.document.service.DocumentService;
+import hu.martinvass.dms.department.domain.Department;
+import hu.martinvass.dms.department.service.DepartmentService;
 import hu.martinvass.dms.dto.CreateCorporationDto;
 import hu.martinvass.dms.dto.CreateInvitationDto;
 import hu.martinvass.dms.dto.JoinCorporationDto;
@@ -13,6 +19,8 @@ import hu.martinvass.dms.user.AppUser;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -25,9 +33,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.Principal;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Controller
 @RequestMapping("/documents")
@@ -35,8 +41,10 @@ import java.util.Set;
 public class DocumentController {
 
     private final CorporationProfileRepository corporationProfileRepository;
+    private final DocumentRepository documentRepository;
     private final DocumentService documentService;
-    //private final TagService tagService;
+    private final DepartmentService departmentService;
+    private DocumentPermissionService permissionService;
     private final AuthService authService;
 
     /**
@@ -47,20 +55,11 @@ public class DocumentController {
             @ActiveUserProfile CorporationProfile profile,
             @RequestParam("file") MultipartFile file,
             @RequestParam(value = "description", required = false) String description,
-            //@RequestParam(value = "tags", required = false) String tagsStr,
             RedirectAttributes ra
     ) {
         try {
-            // Parse tags from comma-separated string
-            Set<String> tags = new HashSet<>();
-            /*if (tagsStr != null && !tagsStr.isBlank()) {
-                tags = Arrays.stream(tagsStr.split(","))
-                        .map(String::trim)
-                        .filter(s -> !s.isEmpty())
-                        .collect(Collectors.toSet());
-            }*/
+            documentService.upload(profile, file, description);
 
-            documentService.upload(profile, file, description, tags);
             ra.addFlashAttribute("success", "Document uploaded successfully");
         } catch (Exception e) {
             ra.addFlashAttribute("error", e.getMessage());
@@ -69,12 +68,11 @@ public class DocumentController {
         return "redirect:/documents";
     }
 
-    /**
-     * List all documents
-     */
     @GetMapping({"", "/"})
     public String list(
             @ActiveUserProfile CorporationProfile profile,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "15") int size,
             Model model,
             Principal principal
     ) {
@@ -87,12 +85,16 @@ public class DocumentController {
         // Add basic attributes
         addBaseAttributes(profile, model, user, profiles);
 
-        // Get documents
-        List<Document> documents = documentService.listDocuments(profile);
-        model.addAttribute("documents", documents);
+        // Get documents (paginated)
+        Page<Document> documentsPage = documentRepository.findLatestVersionsByCorporationAndStatus(
+                profile.getCorporation(),
+                DocumentStatus.ACTIVE,
+                PageRequest.of(page - 1, size)
+        );
 
-        // Get all tags for the corporation
-        //model.addAttribute("availableTags", tagService.getAllTags(profile.getCorporation()));
+        model.addAttribute("documents", documentsPage);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", documentsPage.getTotalPages());
 
         return "documents/list";
     }
@@ -114,9 +116,11 @@ public class DocumentController {
 
             addBaseAttributes(profile, model, user, profiles);
 
+            // Get document
             Document document = documentService.getDocument(id, profile);
             model.addAttribute("document", document);
 
+            // Current storage type
             model.addAttribute("currentStorageType",
                     documentService.getCurrentStorageType(profile.getCorporation().getId()));
 
@@ -124,13 +128,28 @@ public class DocumentController {
             List<Document> versions = documentService.getVersions(id, profile);
             model.addAttribute("versions", versions);
 
-            // Get available tags
-            //model.addAttribute("availableTags", tagService.getAllTags(profile.getCorporation()));
+            // Permission management data (only for owners and admins)
+            if (profile.isCorporationAdmin() ||
+                    document.getUploadedBy().getId().equals(profile.getUser().getId())) {
+
+                // Get explicit permissions
+                List<DocumentPermission> permissions = permissionService.getDocumentPermissions(document, profile);
+                model.addAttribute("permissions", permissions);
+
+                // Get all departments in corporation
+                List<Department> allDepartments = departmentService.getAllDepartments(profile.getCorporation());
+                model.addAttribute("allDepartments", allDepartments);
+
+                // NO availableProfiles - AJAX-szal kéri le!
+            }
 
             return "documents/view";
+        } catch (SecurityException e) {
+            ra.addFlashAttribute("error", e.getMessage());
+            return "redirect:/documents";
         } catch (Exception e) {
             ra.addFlashAttribute("error", e.getMessage());
-            return "redirect:/documents/list";
+            return "redirect:/documents";
         }
     }
 
@@ -142,20 +161,11 @@ public class DocumentController {
             @ActiveUserProfile CorporationProfile profile,
             @PathVariable Long id,
             @RequestParam(value = "description", required = false) String description,
-            //@RequestParam(value = "tags", required = false) String tagsStr,
             RedirectAttributes ra
     ) {
         try {
-            // Parse tags
-            Set<String> tags = new HashSet<>();
-            /*if (tagsStr != null && !tagsStr.isBlank()) {
-                tags = Arrays.stream(tagsStr.split(","))
-                        .map(String::trim)
-                        .filter(s -> !s.isEmpty())
-                        .collect(Collectors.toSet());
-            }*/
+            documentService.updateDocument(id, profile, description);
 
-            documentService.updateDocument(id, profile, description, tags);
             ra.addFlashAttribute("success", "Document updated successfully");
         } catch (Exception e) {
             ra.addFlashAttribute("error", e.getMessage());

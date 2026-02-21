@@ -83,6 +83,33 @@
                 </div>
             </div>
         </div>
+
+        <!-- Pagination -->
+        <div class="pagination-wrapper mt-5" th:if="${documents.totalPages > 1}">
+            <ul class="pagination mb-0">
+                <li class="page-item" th:classappend="${documents.first} ? 'disabled'">
+                    <a class="page-link"
+                       th:if="${!documents.first}"
+                       th:href="@{/documents(page=${currentPage - 1})}">
+                        prev
+                    </a>
+                </li>
+                <li th:each="pageNum : ${#numbers.sequence(1, documents.totalPages)}"
+                    class="page-item"
+                    th:classappend="${pageNum == currentPage} ? 'active'">
+                    <a class="page-link" th:text="${pageNum}"
+                       th:href="@{/documents(page=${pageNum})}"></a>
+                </li>
+                <li class="page-item" th:classappend="${documents.last} ? 'disabled'">
+                    <a class="page-link"
+                       th:if="${!documents.last}"
+                       th:href="@{/documents(page=${currentPage + 1})}">
+                        next
+                    </a>
+                </li>
+            </ul>
+        </div>
+
     </div>
 </div>
 

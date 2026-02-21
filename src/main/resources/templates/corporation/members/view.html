@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="hu">
+<head th:replace="~{fragments/header :: html_header(title='DMS - Member Details', additionalLinks=~{this::page_links})}">
+    <th:block th:fragment="page_links">
+        <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+        <link rel="stylesheet" th:href="@{/css/home.css}">
+    </th:block>
+</head>
+<body>
+<nav th:replace="~{fragments/dashboard/navigation :: navigation_bar}"></nav>
+
+<div th:if="${success}" th:replace="~{fragments/toasts-messages :: alert_success(message=${success})}"></div>
+<div th:if="${error}"   th:replace="~{fragments/toasts-messages :: alert_error(message=${error})}"></div>
+
+<div th:replace="~{fragments/dashboard/sidebar :: sidebar(content=~{::content})}">
+    <div th:fragment="content" class="container-fluid py-4">
+
+        <a th:href="@{/corporation/members}" class="btn btn-outline-secondary mb-4">
+            <i class="fas fa-arrow-left me-1"></i> Back to Members
+        </a>
+
+        <!-- Member Info Card -->
+        <div class="card mb-4 p-4">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h3 class="fw-bold text-olive mb-2">
+                        <span th:text="${member.user.profile.firstName + ' ' + member.user.profile.lastName}">John Doe</span>
+                    </h3>
+                    <p class="text-muted mb-1">
+                        <i class="fas fa-envelope me-2"></i> <span th:text="${member.user.profile.email}">john@example.com</span>
+                    </p>
+                    <p class="text-muted mb-1">
+                        <i class="fas fa-user me-2"></i> <span th:text="${member.user.profile.username}">johndoe</span>
+                    </p>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    <span class="badge fs-6"
+                          th:classappend="${member.role.name() == 'ADMIN' ? 'bg-danger' : (member.role.name() == 'EMPLOYEE' ? 'bg-success' : 'bg-secondary')}"
+                          th:text="${member.role}">EMPLOYEE</span>
+                </div>
+            </div>
+
+            <hr class="my-4">
+
+            <div class="row">
+                <div class="col-md-6">
+                    <h6 class="text-muted mb-2">Member Since</h6>
+                    <p th:text="${#dates.format(member.user.creationDate, 'MMM dd, yyyy')}">Jan 15, 2025</p>
+                </div>
+                <div class="col-md-6">
+                    <h6 class="text-muted mb-2">Corporation</h6>
+                    <p th:text="${member.corporation.name}">Flexo2000 Kft.</p>
+                </div>
+            </div>
+
+            <!-- Admin only: Role update -->
+            <div th:if="${activeProfile.isCorporationAdmin()}" class="mt-4">
+                <h6 class="text-olive mb-3">Change Role</h6>
+                <form th:action="@{/corporation/members/{id}/update-role(id=${member.id})}" method="post" class="d-inline-flex gap-2">
+                    <select name="role" class="form-select" style="width: 200px;">
+                        <option value="EMPLOYEE" th:selected="${member.role.name() == 'EMPLOYEE'}">Employee</option>
+                        <option value="ADMIN" th:selected="${member.role.name() == 'ADMIN'}">Admin</option>
+                        <option value="GUEST" th:selected="${member.role.name() == 'GUEST'}">Guest</option>
+                    </select>
+                    <button type="submit" class="btn btn-primary">Update Role</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Departments Card -->
+        <div class="card mb-4 p-4">
+            <h4 class="fw-bold text-olive mb-3">
+                <i class="fas fa-building me-2"></i> Departments
+            </h4>
+
+            <div class="mb-3">
+                <div th:if="${#lists.isEmpty(memberDepartments)}" class="text-muted">
+                    <i class="fas fa-info-circle me-1"></i> Not assigned to any department
+                </div>
+                <div th:unless="${#lists.isEmpty(memberDepartments)}" class="d-flex flex-wrap gap-2">
+                    <div th:each="dept : ${memberDepartments}" class="d-inline-flex align-items-center gap-2 p-2 rounded" style="background-color: #e9e3c4">
+                        <span class="fw-semibold" th:text="${dept.name}">IT Department</span>
+                        <form th:if="${activeProfile.isCorporationAdmin()}"
+                              th:action="@{/corporation/members/{id}/remove-from-department(id=${member.id})}"
+                              method="post" class="d-inline">
+                            <input type="hidden" name="departmentId" th:value="${dept.id}"/>
+                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin only: Add to department -->
+            <div th:if="${activeProfile.isCorporationAdmin()}" class="mt-3">
+                <h6 class="text-olive mb-2">Add to Department</h6>
+                <form th:action="@{/corporation/members/{id}/add-to-department(id=${member.id})}"
+                      method="post" class="d-inline-flex gap-2">
+                    <select name="departmentId" class="form-select" style="width: 250px;" required>
+                        <option value="">-- Select Department --</option>
+                        <option th:each="dept : ${allDepartments}"
+                                th:value="${dept.id}"
+                                th:text="${dept.name}"
+                                th:disabled="${memberDepartments.contains(dept)}">Department</option>
+                    </select>
+                    <button type="submit" class="btn btn-primary">Add</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Recent Documents Card -->
+        <div class="card p-4">
+            <h4 class="fw-bold text-olive mb-3">
+                <i class="fas fa-file-alt me-2"></i> Recent Uploads
+            </h4>
+
+            <div th:if="${#lists.isEmpty(memberDocuments)}" class="text-muted">
+                <i class="fas fa-info-circle me-1"></i> No documents uploaded yet
+            </div>
+
+            <div th:unless="${#lists.isEmpty(memberDocuments)}" class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>Document</th>
+                        <th>Uploaded</th>
+                        <th>Size</th>
+                        <th>Version</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="doc : ${memberDocuments}">
+                        <td>
+                            <i th:class="${doc.getIconClass()}" class="me-2"></i>
+                            <span th:text="${doc.originalFilename}">document.pdf</span>
+                        </td>
+                        <td th:text="${#temporals.format(doc.uploadedAt, 'MMM dd, yyyy HH:mm')}">Jan 15, 2025 14:30</td>
+                        <td th:text="${#numbers.formatDecimal(doc.size / 1024.0, 1, 2)} + ' KB'">125 KB</td>
+                        <td>
+                            <span class="badge bg-secondary" th:text="'v' + ${doc.version}">v1</span>
+                        </td>
+                        <td>
+                            <a th:href="@{/documents/{id}(id=${doc.id})}" class="btn btn-sm btn-outline-secondary">
+                                <i class="fas fa-eye"></i> View
+                            </a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{corporation/create-modal :: corpCreateModal(${createDto})}"></div>
+<div th:replace="~{corporation/join-modal   :: corpJoinModal(${joinDto})}"></div>
+<div th:replace="~{fragments/scripts :: footer_scripts}"></div>
+</body>
+</html>

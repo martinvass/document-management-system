@@ -2,30 +2,28 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="hu">
 <head th:replace="~{fragments/header :: html_header(title='DMS - Dashboard', additionalLinks=~{this::page_links})}">
     <th:block th:fragment="page_links">
-        <link rel="stylesheet" th:href="@{/css/home.css}">
         <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+        <link rel="stylesheet" th:href="@{/css/home.css}">
     </th:block>
 </head>
 <body>
 
-<!-- Navigation -->
 <nav th:replace="~{fragments/dashboard/navigation :: navigation_bar}"></nav>
 
-<!-- Sidebar + Content -->
 <div th:replace="~{fragments/dashboard/sidebar :: sidebar(content=~{::content})}">
     <div th:fragment="content">
-        <p th:if="${!user.isInCorporation()}">
+
+        <p th:if="${!user.isInCorporation()}" class="text-muted">
             You are not currently a member of any corporation. Please join an existing corporation or create a new one to proceed.
         </p>
-
-        <p th:if="${activeProfileId == -1} and ${user.isInCorporation()}">
+        <p th:if="${activeProfileId == -1} and ${user.isInCorporation()}" class="text-muted">
             Please select a corporation profile to proceed.
         </p>
 
-        <div th:if="${activeProfileId != -1} and ${user.isInCorporation()}" class="container-fluid py-4">
+        <div th:if="${activeProfileId != -1} and ${user.isInCorporation()}" class="container-fluid py-2">
 
-            <!-- Welcome -->
-            <div class="welcome-section p-4 mb-4 rounded-4 shadow-section d-flex flex-column flex-md-row justify-content-between align-items-md-center">
+            <!-- Welcome banner -->
+            <div class="shadow-section p-4 mb-4 d-flex flex-column flex-md-row justify-content-between align-items-md-center">
                 <div>
                     <h2 class="fw-bold text-olive mb-1">
                         Welcome back, <span th:text="${user.profile.username}">Martin</span>
@@ -33,96 +31,113 @@
                 </div>
                 <div class="text-end mt-3 mt-md-0">
                     <h6 class="text-muted mb-1"><i class="far fa-calendar-alt me-1"></i> Today</h6>
-                    <h4 class="fw-semibold text-olive" th:text="${#dates.format(new java.util.Date(), 'yyyy.MM.dd')}">2025.10.29</h4>
+                    <h4 class="fw-semibold text-olive"
+                        th:text="${#dates.format(new java.util.Date(), 'yyyy.MM.dd')}">2025.02.20</h4>
                 </div>
             </div>
 
-            <!-- Quick Access -->
-            <div class="quick-access mb-5 d-flex flex-wrap gap-3">
-                <a th:href="@{/documents}" class="qa-link qa-blue"><i class="fas fa-folder-open me-2"></i>All Documents</a>
+            <!-- Quick access -->
+            <div class="d-flex flex-wrap gap-3 mb-5">
+                <a th:href="@{/documents}"    class="qa-link qa-blue"><i class="fas fa-folder-open me-2"></i>All Documents</a>
                 <a th:href="@{/documents/my}" class="qa-link qa-green"><i class="fas fa-user me-2"></i>My Uploads</a>
             </div>
 
             <div class="row g-5">
+                <!-- Left column -->
                 <div class="col-lg-7">
                     <h4 class="fw-semibold text-olive mb-3"><i class="fas fa-chart-simple me-2"></i>Statistics</h4>
-
-                    <div class="row g-4 mb-5 justify-content-center">
-                        <div class="col-md-6 col-lg-3">
-                            <div class="highlight-tile small-tile text-center">
-                                <i class="fas fa-file-alt fa-md mb-2 text-olive"></i>
-                                <h6 class="text-muted mb-0">Total Documents</h6>
-                                <h4 class="fw-bold text-olive mt-1">128</h4>
+                    <div class="row g-4 mb-5">
+                        <div class="col-6 col-lg-3">
+                            <div class="highlight-tile text-center" style="aspect-ratio:1;display:flex;flex-direction:column;justify-content:center;align-items:center;">
+                                <i class="fas fa-file-alt fa-lg mb-2 text-olive"></i>
+                                <h6 class="text-muted mb-0 small">Total Documents</h6>
+                                <h4 class="fw-bold text-olive mt-1 mb-0" th:text="${totalDocuments}">0</h4>
                             </div>
                         </div>
-                        <div class="col-md-6 col-lg-3">
-                            <div class="highlight-tile small-tile text-center">
-                                <i class="fas fa-pen-nib fa-md mb-2 text-olive"></i>
-                                <h6 class="text-muted mb-0">Documents to Migrate</h6>
-                                <h4 class="fw-bold text-olive mt-1">4</h4>
+                        <div class="col-6 col-lg-3">
+                            <div class="highlight-tile text-center" style="aspect-ratio:1;display:flex;flex-direction:column;justify-content:center;align-items:center;">
+                                <i class="fas fa-pen-nib fa-lg mb-2 text-olive"></i>
+                                <h6 class="text-muted mb-0 small">To Migrate</h6>
+                                <h4 class="fw-bold text-olive mt-1 mb-0" th:text="${documentsToMigrate}">0</h4>
                             </div>
                         </div>
-                        <div class="col-md-6 col-lg-3">
-                            <div class="highlight-tile small-tile text-center">
-                                <i class="fas fa-users fa-md mb-2 text-olive"></i>
-                                <h6 class="text-muted mb-0">Active Users</h6>
-                                <h4 class="fw-bold text-olive mt-1">23</h4>
+                        <div class="col-6 col-lg-3">
+                            <div class="highlight-tile text-center" style="aspect-ratio:1;display:flex;flex-direction:column;justify-content:center;align-items:center;">
+                                <i class="fas fa-users fa-lg mb-2 text-olive"></i>
+                                <h6 class="text-muted mb-0 small">Active Users</h6>
+                                <h4 class="fw-bold text-olive mt-1 mb-0" th:text="${activeUsers}">0</h4>
                             </div>
                         </div>
-                        <div class="col-md-6 col-lg-3">
-                            <div class="highlight-tile small-tile text-center">
-                                <i class="fas fa-building fa-md mb-2 text-olive"></i>
-                                <h6 class="text-muted mb-0">Departments</h6>
-                                <h4 class="fw-bold text-olive mt-1">6</h4>
+                        <div class="col-6 col-lg-3">
+                            <div class="highlight-tile text-center" style="aspect-ratio:1;display:flex;flex-direction:column;justify-content:center;align-items:center;">
+                                <i class="fas fa-building fa-lg mb-2 text-olive"></i>
+                                <h6 class="text-muted mb-0 small">Departments</h6>
+                                <h4 class="fw-bold text-olive mt-1 mb-0" th:text="${departmentCount}">0</h4>
                             </div>
                         </div>
                     </div>
 
                     <h4 class="fw-semibold text-olive mb-3"><i class="fas fa-clock me-2"></i>Recent Documents</h4>
                     <ul class="recent-list">
-                        <li><div class="file-icon file-pdf"><i class="far fa-file-pdf"></i></div><div class="info"><strong>Test.pdf</strong><br><small>Uploaded by Andika • 2025-10-29 • 350 KB</small></div></li>
-                        <li><div class="file-icon file-doc"><i class="far fa-file-word"></i></div><div class="info"><strong>Test.docx</strong><br><small>Uploaded by Martin • 2025-10-28 • 120 KB</small></div></li>
-                        <li><div class="file-icon file-contract"><i class="far fa-file-contract"></i></div><div class="info"><strong>Test.pdf</strong><br><small>Uploaded by Tamás • 2025-10-27 • 890 KB</small></div></li>
-                        <li><div class="file-icon file-xls"><i class="far fa-file-excel"></i></div><div class="info"><strong>Test.xlsx</strong><br><small>Uploaded by Anyád • 2025-10-26 • 240 KB</small></div></li>
-                        <li><div class="file-icon file-xls"><i class="far fa-file-excel"></i></div><div class="info"><strong>Test.xlsx</strong><br><small>Uploaded by Anyád • 2025-10-26 • 240 KB</small></div></li>
-                        <li><div class="file-icon file-xls"><i class="far fa-file-excel"></i></div><div class="info"><strong>Test.xlsx</strong><br><small>Uploaded by Anyád • 2025-10-26 • 240 KB</small></div></li>
-                        <li><div class="file-icon file-xls"><i class="far fa-file-excel"></i></div><div class="info"><strong>Test.xlsx</strong><br><small>Uploaded by Anyád • 2025-10-26 • 240 KB</small></div></li>
+                        <li th:each="doc : ${recentDocuments}">
+                            <div class="file-icon" th:classappend="${doc.contentType == 'application/pdf' ? 'file-pdf' : (doc.contentType.contains('word') ? 'file-doc' : (doc.contentType.contains('excel') ? 'file-xls' : 'file-contract'))}">
+                                <i th:class="${doc.getIconClass()}"></i>
+                            </div>
+                            <div class="info">
+                                <strong><a th:href="@{/documents/{id}(id=${doc.id})}" th:text="${doc.originalFilename}">Test.pdf</a></strong><br>
+                                <small>
+                                    Uploaded by <span th:text="${doc.uploadedBy.username}">User</span> •
+                                    <span th:text="${#temporals.format(doc.uploadedAt, 'yyyy-MM-dd HH:mm')}">2025-02-20 14:30</span> •
+                                    <span th:text="${#numbers.formatDecimal(doc.size / 1024.0, 1, 2)} + ' KB'">350 KB</span>
+                                </small>
+                            </div>
+                        </li>
+                        <li th:if="${#lists.isEmpty(recentDocuments)}">
+                            <span class="text-muted">No documents yet</span>
+                        </li>
                     </ul>
                 </div>
 
+                <!-- Right column -->
                 <div class="col-lg-5">
                     <h4 class="fw-semibold text-olive mb-3"><i class="fas fa-database me-2"></i>Storage Usage</h4>
-                    <div class="storage-container mb-5 p-4 rounded-4 shadow-light text-center">
-                        <!-- Storage Circle -->
+                    <div class="card p-4 mb-5 text-center">
                         <div class="storage-circle mx-auto mb-3">
-                            <div class="storage-inner">
+                            <div class="text-center">
                                 <div class="storage-value" th:text="${totalStorageReadable}">0 B</div>
                             </div>
                         </div>
-                        <div class="storage-label text-muted">
-                            <i class="fas fa-hdd me-1"></i>
+                        <p class="text-muted mb-0">
+                            <i class="fas fa-hdd me-1" style="color:#A8D5E2;"></i>
                             Total Documents Storage
-                        </div>
+                        </p>
                     </div>
 
                     <h4 class="fw-semibold text-olive mb-3"><i class="fas fa-bell me-2"></i>Recent Activity</h4>
-                    <ul class="timeline">
-                        <li><span class="dot-sm"></span><div class="content"><strong>Andika</strong> uploaded <em>Teast.pdf</em> <small class="text-muted">2h ago</small></div></li>
-                        <li><span class="dot-sm"></span><div class="content"><strong>Tamás</strong> joined <em>Flexo2000 Kft.</em> <small class="text-muted">5h ago</small></div></li>
-                        <li><span class="dot-sm"></span><div class="content"><strong>Martin</strong> archived <em>Test.docx</em> <small class="text-muted">1d ago</small></div></li>
-                        <li><span class="dot-sm"></span><div class="content"><strong>Anyád</strong> uploaded <em>Test.xlsx</em> <small class="text-muted">2d ago</small></div></li>
+                    <ul class="activity-timeline">
+                        <li th:each="activity : ${recentActivities}">
+                            <span class="dot-sm"></span>
+                            <div class="content">
+                                <strong th:text="${activity.user.profile.username}">User</strong>
+                                <span th:text="${activity.type.displayText}">uploaded</span>
+                                <em th:text="${activity.entityName}">document.pdf</em>
+                                <small class="text-muted"
+                                       th:text="${#temporals.format(activity.createdAt, 'HH:mm')}">14:30</small>
+                            </div>
+                        </li>
+                        <li th:if="${#lists.isEmpty(recentActivities)}">
+                            <span class="dot-sm"></span>
+                            <div class="content text-muted">No recent activity</div>
+                        </li>
                     </ul>
                 </div>
             </div>
-
         </div>
     </div>
 </div>
 
-<!-- Modals -->
 <div th:replace="~{corporation/create-modal :: corpCreateModal(${createDto})}"></div>
-<div th:replace="~{corporation/join-modal :: corpJoinModal(${joinDto})}"></div>
+<div th:replace="~{corporation/join-modal   :: corpJoinModal(${joinDto})}"></div>
 <div th:replace="~{fragments/scripts :: footer_scripts}"></div>
-
 </body>
 </html>

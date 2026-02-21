@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="hu" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: html_header(title='DMS - Departments', additionalLinks=~{this::page_links})}">
+    <th:block th:fragment="page_links">
+        <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+        <link rel="stylesheet" th:href="@{/css/home.css}">
+    </th:block>
+</head>
+<body>
+
+<nav th:replace="~{fragments/dashboard/navigation :: navigation_bar}"></nav>
+
+<div th:if="${success}" th:replace="~{fragments/toasts-messages :: alert_success(message=${success})}"></div>
+<div th:if="${error}"   th:replace="~{fragments/toasts-messages :: alert_error(message=${error})}"></div>
+
+<div th:replace="~{fragments/dashboard/sidebar :: sidebar(content=~{::content})}">
+    <div th:fragment="content">
+        <div class="container-fluid py-4">
+
+            <!-- Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h3 class="fw-bold mb-0">Departments</h3>
+                    <small class="text-muted">
+                        Manage departments in <span th:text="${activeProfile.corporation.name}">Corporation</span>
+                    </small>
+                </div>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createDeptModal">
+                    <i class="fas fa-plus me-1"></i> New Department
+                </button>
+            </div>
+
+            <!-- Table -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Description</th>
+                                <th>Members</th>
+                                <th>Created</th>
+                                <th>Created By</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="dept : ${departments}">
+                                <td>
+                                    <strong th:text="${dept.name}">IT Department</strong>
+                                </td>
+                                <td th:text="${dept.description ?: '—'}">Department description</td>
+                                <td>
+                                    <span class="badge bg-info">0 members</span>
+                                </td>
+                                <td th:text="${#temporals.format(dept.createdAt, 'yyyy-MM-dd')}">
+                                <td th:text="${dept.createdBy?.profile?.username ?: '—'}">admin</td>
+                                <td>
+                                    <div class="d-flex gap-1">
+                                        <button class="btn btn-sm btn-outline-secondary"
+                                                data-bs-toggle="modal"
+                                                th:attr="data-bs-target='#editDeptModal' + ${dept.id}">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </button>
+                                        <form th:action="@{/corporation/admin/departments/{id}/archive(id=${dept.id})}"
+                                              method="post" class="d-inline">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger"
+                                                    onclick="return confirm('Archive this department?')">
+                                                <i class="fas fa-archive"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(departments)}">
+                                <td colspan="6" class="text-center text-muted py-4">No departments found.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="pagination-wrapper" th:if="${departments.totalPages > 1}">
+                        <ul class="pagination mb-0">
+                            <li class="page-item" th:classappend="${departments.first} ? 'disabled'">
+                                <a class="page-link"
+                                   th:if="${!departments.first}"
+                                   th:href="@{/corporation/admin/departments(page=${currentPage - 1})}">
+                                    prev
+                                </a>
+                            </li>
+                            <li th:each="pageNum : ${#numbers.sequence(1, departments.totalPages)}"
+                                class="page-item"
+                                th:classappend="${pageNum == currentPage} ? 'active'">
+                                <a class="page-link" th:text="${pageNum}"
+                                   th:href="@{/corporation/admin/departments(page=${pageNum})}"></a>
+                            </li>
+                            <li class="page-item" th:classappend="${departments.last} ? 'disabled'">
+                                <a class="page-link"
+                                   th:if="${!departments.last}"
+                                   th:href="@{/corporation/admin/departments(page=${currentPage + 1})}">
+                                    next
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Create Department Modal -->
+<div class="modal fade" id="createDeptModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold">Create New Department</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form th:action="@{/corporation/admin/departments/create}" method="post">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Name</label>
+                        <input type="text" name="name" class="form-control" placeholder="e.g., IT Department" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Description (optional)</label>
+                        <textarea name="description" class="form-control" rows="3"
+                                  placeholder="Brief description of the department..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-plus me-1"></i> Create
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{corporation/create-modal :: corpCreateModal(${createDto})}"></div>
+<div th:replace="~{corporation/join-modal   :: corpJoinModal(${joinDto})}"></div>
+<div th:replace="~{fragments/scripts :: footer_scripts}"></div>
+</body>
+</html>

@@ -122,12 +122,6 @@ public class AwsStorageProvider implements StorageProvider {
      * Validate that all required S3 settings are configured
      */
     private void validateSettings(CompanySettings settings) {
-        if (settings.getStorageType() != StorageType.CUSTOM_S3) {
-            throw new IllegalStateException(
-                    "Storage type is not CUSTOM_S3: " + settings.getStorageType()
-            );
-        }
-
         if (settings.getS3Bucket() == null || settings.getS3Bucket().isBlank()) {
             throw new IllegalStateException("S3 bucket is not configured");
         }

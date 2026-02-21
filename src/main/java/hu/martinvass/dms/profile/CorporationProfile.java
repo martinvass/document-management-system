@@ -2,10 +2,14 @@ package hu.martinvass.dms.profile;
 
 import hu.martinvass.dms.corporation.domain.Corporation;
 import hu.martinvass.dms.corporation.domain.CorporationRole;
+import hu.martinvass.dms.department.domain.Department;
 import hu.martinvass.dms.user.AppUser;
 import hu.martinvass.dms.user.Profile;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "user_corp_profiles")
@@ -36,6 +40,14 @@ public class CorporationProfile {
     @Enumerated(EnumType.STRING)
     @Column(name = "role_in_corp")
     private CorporationRole role;
+
+    @ManyToMany
+    @JoinTable(
+            name = "profile_departments",
+            joinColumns = @JoinColumn(name = "profile_id"),
+            inverseJoinColumns = @JoinColumn(name = "department_id")
+    )
+    private Set<Department> departments = new HashSet<>();
 
     public boolean isCorporationAdmin() {
         return role == CorporationRole.ADMIN;

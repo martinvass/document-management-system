@@ -1,5 +1,7 @@
 package hu.martinvass.dms.corporation.document.service;
 
+import hu.martinvass.dms.activity.ActivityService;
+import hu.martinvass.dms.activity.ActivityType;
 import hu.martinvass.dms.corporation.document.domain.Document;
 import hu.martinvass.dms.corporation.document.domain.DocumentPermissionLevel;
 import hu.martinvass.dms.corporation.document.domain.DocumentStatus;
@@ -10,6 +12,7 @@ import hu.martinvass.dms.corporation.storage.StorageProvider;
 import hu.martinvass.dms.corporation.storage.StorageRouter;
 import hu.martinvass.dms.corporation.storage.StoredFile;
 import hu.martinvass.dms.profile.CorporationProfile;
+import hu.martinvass.dms.user.AppUser;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,7 +33,7 @@ public class DocumentService {
     private final DocumentRepository documentRepository;
     private final StorageRouter storageRouter;
     private final DocumentPermissionService permissionService;
-    //private final TagService tagService;
+    private final ActivityService activityService;
 
     // File validation constants
     private static final long MAX_FILE_SIZE = 100 * 1024 * 1024; // 100MB
@@ -59,8 +62,7 @@ public class DocumentService {
     public Document upload(
             CorporationProfile profile,
             MultipartFile file,
-            String description,
-            Set<String> tagNames
+            String description
     ) throws IOException {
 
         // Check if user can upload
@@ -100,13 +102,13 @@ public class DocumentService {
                 .status(DocumentStatus.ACTIVE)
                 .build();
 
-        // Add tags
-        /*if (tagNames != null && !tagNames.isEmpty()) {
-            Set<Tag> tags = tagNames.stream()
-                    .map(tagName -> tagService.getOrCreateTag(corporation, tagName, profile.getUser()))
-                    .collect(Collectors.toSet());
-            document.setTags(tags);
-        }*/
+        activityService.log(
+                corporation,
+                profile.getUser(),
+                ActivityType.DOCUMENT_UPLOADED,
+                document.getOriginalFilename(),
+                document.getId()
+        );
 
         return documentRepository.save(document);
     }
@@ -117,7 +119,7 @@ public class DocumentService {
     @Transactional(readOnly = true)
     public List<Document> listDocuments(CorporationProfile profile) {
         Corporation corporation = profile.getCorporation();
-        return documentRepository.findByCorporationAndStatusOrderByUploadedAtDesc(
+        return documentRepository.findLatestVersionsByCorporationAndStatus(
                 corporation,
                 DocumentStatus.ACTIVE
         );
@@ -143,8 +145,7 @@ public class DocumentService {
     public Document updateDocument(
             Long documentId,
             CorporationProfile profile,
-            String description,
-            Set<String> tagNames
+            String description
     ) {
         Document document = getDocumentEntity(documentId, profile);
 
@@ -156,14 +157,13 @@ public class DocumentService {
             document.setDescription(description);
         }
 
-        // Update tags
-        /*if (tagNames != null) {
-            document.getTags().clear();
-            Set<Tag> newTags = tagNames.stream()
-                    .map(tagName -> tagService.getOrCreateTag(profile.getCorporation(), tagName, profile.getUser()))
-                    .collect(Collectors.toSet());
-            document.setTags(newTags);
-        }*/
+        activityService.log(
+                document.getCorporation(),
+                profile.getUser(),
+                ActivityType.DOCUMENT_UPDATED,
+                document.getOriginalFilename(),
+                document.getId()
+        );
 
         return documentRepository.save(document);
     }
@@ -171,7 +171,7 @@ public class DocumentService {
     /**
      * Download document
      */
-    @Transactional(readOnly = true)
+    @Transactional
     public InputStream download(Long documentId, CorporationProfile profile) throws IOException {
         Document document = getDocumentEntity(documentId, profile);
 
@@ -180,6 +180,14 @@ public class DocumentService {
 
         //StorageProvider storage = storageRouter.forCompany(document.getCorporation().getId());
         StorageProvider storage = getStorageProviderForDocument(document);
+
+        activityService.log(
+                document.getCorporation(),
+                profile.getUser(),
+                ActivityType.DOCUMENT_DOWNLOADED,
+                document.getOriginalFilename(),
+                document.getId()
+        );
 
         return storage.load(
                 document.getCorporation().getId(),
@@ -202,6 +210,14 @@ public class DocumentService {
         document.setArchivedBy(profile.getUser());
 
         documentRepository.save(document);
+
+        activityService.log(
+                document.getCorporation(),
+                profile.getUser(),
+                ActivityType.DOCUMENT_ARCHIVED,
+                document.getOriginalFilename(),
+                document.getId()
+        );
     }
 
     /**
@@ -230,7 +246,6 @@ public class DocumentService {
             CorporationProfile profile,
             MultipartFile file
     ) throws IOException {
-
         Document currentDocument = getDocumentEntity(documentId, profile);
 
         // Check EDIT permission
@@ -264,7 +279,6 @@ public class DocumentService {
                 .version(currentDocument.getVersion() + 1)
                 .previousVersion(currentDocument)
                 .latestVersion(null) // Will be set to itself
-                //.tags(new HashSet<>(currentDocument.getTags()))
                 .uploadedBy(profile.getUser())
                 .status(DocumentStatus.ACTIVE)
                 .build();
@@ -275,8 +289,19 @@ public class DocumentService {
         savedNewVersion.setLatestVersion(savedNewVersion);
         currentDocument.setLatestVersion(savedNewVersion);
 
+        permissionService.copyPermissions(currentDocument, newVersion);
+
         documentRepository.save(savedNewVersion);
         documentRepository.save(currentDocument);
+
+        activityService.log(
+                corporation,
+                profile.getUser(),
+                ActivityType.NEW_VERSION_UPLOADED,
+                newVersion.getOriginalFilename(),
+                newVersion.getId(),
+                "Version " + newVersion.getVersion()
+        );
 
         return savedNewVersion;
     }
@@ -415,6 +440,61 @@ public class DocumentService {
         return documents.stream()
                 .mapToLong(Document::getSize)
                 .sum();
+    }
+
+    /**
+     * Get total number of active documents in corporation
+     */
+    @Transactional(readOnly = true)
+    public long getTotalDocuments(CorporationProfile profile) {
+        return documentRepository.countByCorporationAndStatus(
+                profile.getCorporation(),
+                DocumentStatus.ACTIVE
+        );
+    }
+
+    /**
+     * Get number of documents that need migration
+     * (documents where storageType != current company storage type)
+     */
+    @Transactional(readOnly = true)
+    public long getDocumentsToMigrate(CorporationProfile profile) {
+        Corporation corporation = profile.getCorporation();
+        StorageType currentStorageType = storageRouter.getStorageType(corporation.getId());
+
+        List<Document> allDocs = documentRepository.findByCorporationAndStatus(
+                corporation,
+                DocumentStatus.ACTIVE
+        );
+
+        return allDocs.stream()
+                .filter(doc -> doc.getStorageType() != null && doc.getStorageType() != currentStorageType)
+                .count();
+    }
+
+    /**
+     * Get recent documents (latest uploads)
+     */
+    @Transactional(readOnly = true)
+    public List<Document> getRecentDocuments(CorporationProfile profile, int limit) {
+        List<Document> allDocs = documentRepository.findLatestVersionsByCorporationAndStatus(
+                profile.getCorporation(),
+                DocumentStatus.ACTIVE
+        );
+
+        return allDocs.stream()
+                .limit(limit)
+                .toList();
+    }
+
+    /**
+     * Get user's recent uploads
+     */
+    @Transactional(readOnly = true)
+    public List<Document> getUserRecentDocuments(AppUser user, int limit) {
+        return documentRepository.findByUploadedByOrderByUploadedAtDesc(user).stream()
+                .limit(limit)
+                .toList();
     }
 
     private StorageProvider getStorageProviderForDocument(Document document) {

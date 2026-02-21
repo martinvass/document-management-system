@@ -1,100 +1,85 @@
 <div class="container-fluid" th:fragment="sidebar(content)">
     <div class="row">
-        <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse custom-sidebar">
+        <!-- Sidebar -->
+        <nav class="col-md-3 col-lg-2 d-md-block custom-sidebar sidebar collapse">
             <div class="position-sticky pt-3 px-3">
 
-                <div class="d-flex align-items-center mb-4">
+                <!-- Corporation name + user -->
+                <div class="d-flex align-items-center mb-4" th:if="${activeProfile}">
                     <div>
-                        <h6 class="mb-0 fw-bold" th:if="${activeProfile}" th:text="${activeProfile.corporation.name}"></h6>
-                        <small class="text-secondary" th:if="${activeProfile}" th:text="${user.profile.username}"></small>
+                        <h6 class="mb-0 fw-bold text-white" th:text="${activeProfile.corporation.name}"></h6>
+                        <small class="text-white-50" th:text="${user.profile.username}"></small>
                     </div>
                 </div>
 
+                <!-- No profile: Create / Join buttons -->
                 <div th:if="${activeProfile == null}">
-                    <a href="#" data-bs-toggle="modal" data-bs-target="#corpCreateModal" class="btn w-100 mb-2 text-white sidebar-btn">
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#corpCreateModal"
+                       class="btn w-100 mb-2 sidebar-btn">
                         <i class="fas fa-square-plus me-1"></i>&nbsp;Create
                     </a>
-                    <a href="#" data-bs-toggle="modal" data-bs-target="#corpJoinModal" class="btn w-100 text-white sidebar-btn">
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#corpJoinModal"
+                       class="btn w-100 sidebar-btn">
                         <i class="fas fa-arrow-right-to-bracket me-1"></i>&nbsp;Join
                     </a>
                 </div>
 
+                <!-- Navigation links -->
                 <div th:if="${activeProfile}">
                     <hr class="border-secondary my-3">
-
-                    <h7 class="text-white text-uppercase mb-3">Corporation</h7>
-
+                    <p class="text-white text-uppercase small fw-bold mb-2">Corporation</p>
                     <ul class="nav flex-column">
                         <li class="nav-item mb-1">
                             <a th:href="@{/home}" class="nav-link text-white d-flex align-items-center">
-                                <i class="fas fa-house"></i>
-                                <span class="ms-2">Home</span>
+                                <i class="fas fa-house me-2"></i>Home
                             </a>
                         </li>
                         <li class="nav-item mb-1">
                             <a th:href="@{/documents}" class="nav-link text-white d-flex align-items-center">
-                                <i class="fas fa-file-alt"></i>
-                                <span class="ms-2">Documents</span>
+                                <i class="fas fa-file-alt me-2"></i>Documents
+                            </a>
+                        </li>
+                        <li class="nav-item mb-1">
+                            <a th:href="@{/corporation/members}" class="nav-link text-white d-flex align-items-center">
+                                <i class="fas fa-users me-2"></i>Team Members
                             </a>
                         </li>
                         <li class="nav-item mb-1">
                             <a href="#" class="nav-link text-white d-flex align-items-center">
-                                <i class="fas fa-building"></i>
-                                <span class="ms-2">Departments</span>
-                            </a>
-                        </li>
-                        <li class="nav-item mb-1">
-                            <a href="#" class="nav-link text-white d-flex align-items-center">
-                                <i class="fas fa-users"></i>
-                                <span class="ms-2">Team</span>
-                            </a>
-                        </li>
-                        <li class="nav-item mb-1">
-                            <a href="#" class="nav-link text-white d-flex align-items-center">
-                                <i class="fas fa-tags"></i>
-                                <span class="ms-2">Tags</span>
+                                <i class="fas fa-tags me-2"></i>Tags
                             </a>
                         </li>
                     </ul>
 
                     <div th:if="${activeProfile.isCorporationAdmin()}">
                         <hr class="border-secondary my-3">
-
-                        <h7 class="text-white text-uppercase mb-3">Privacy</h7>
-
+                        <p class="text-white text-uppercase small fw-bold mb-2">Admin</p>
                         <ul class="nav flex-column">
                             <li class="nav-item mb-1">
-                                <a href="#" class="nav-link text-white d-flex align-items-center">
-                                    <i class="fas fa-user-shield"></i>
-                                    <span class="ms-2">Permissions</span>
-                                </a>
-                            </li>
-                        </ul>
-
-                        <hr class="border-secondary my-3">
-
-                        <h7 class="text-white text-uppercase mb-3">Admin</h7>
-
-                        <ul class="nav flex-column">
-                            <li class="nav-item mb-1">
-                                <a th:href="@{/corporation/admin/invitations}" class="nav-link text-white d-flex align-items-center">
-                                    <i class="fas fa-envelope-open-text"></i>
-                                    <span class="ms-2">Invitations</span>
+                                <a th:href="@{/corporation/admin/departments}"
+                                   class="nav-link text-white d-flex align-items-center">
+                                    <i class="fas fa-building me-2"></i>Departments
                                 </a>
                             </li>
                             <li class="nav-item mb-1">
-                                <a th:href="@{/corporation/admin/settings}" class="nav-link text-white d-flex align-items-center">
-                                    <i class="fas fa-cogs"></i>
-                                    <span class="ms-2">Settings</span>
+                                <a th:href="@{/corporation/admin/invitations}"
+                                   class="nav-link text-white d-flex align-items-center">
+                                    <i class="fas fa-envelope-open-text me-2"></i>Invitations
+                                </a>
+                            </li>
+                            <li class="nav-item mb-1">
+                                <a th:href="@{/corporation/admin/settings}"
+                                   class="nav-link text-white d-flex align-items-center">
+                                    <i class="fas fa-cogs me-2"></i>Settings
                                 </a>
                             </li>
                         </ul>
                     </div>
                 </div>
-
             </div>
         </nav>
 
+        <!-- Content area -->
         <div class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4 content-area">
             <div th:insert="${content}"></div>
         </div>

@@ -52,6 +52,25 @@ public interface DocumentRepository
             DocumentStatus status
     );
 
+    @Query("SELECT d FROM Document d WHERE d.corporation = :corporation AND d.status = :status " +
+            "AND d.latestVersion = d ORDER BY d.uploadedAt DESC")
+    List<Document> findLatestVersionsByCorporationAndStatus(
+            @Param("corporation") Corporation corporation,
+            @Param("status") DocumentStatus status
+    );
+
+    @Query("SELECT d FROM Document d WHERE d.corporation = :corporation AND d.status = :status " +
+            "AND d.latestVersion = d ORDER BY d.uploadedAt DESC")
+    Page<Document> findLatestVersionsByCorporationAndStatus(
+            @Param("corporation") Corporation corporation,
+            @Param("status") DocumentStatus status,
+            Pageable pageable
+    );
+
+    long countByCorporationAndStatus(Corporation corporation, DocumentStatus status);
+
+    List<Document> findByUploadedByOrderByUploadedAtDesc(AppUser user);
+
     /**
      * Find all versions of a document
      */

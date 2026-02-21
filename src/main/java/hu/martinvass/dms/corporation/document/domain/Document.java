@@ -2,7 +2,7 @@ package hu.martinvass.dms.corporation.document.domain;
 
 import hu.martinvass.dms.corporation.domain.Corporation;
 import hu.martinvass.dms.corporation.settings.storage.StorageType;
-import hu.martinvass.dms.corporation.tag.domain.Tag;
+import hu.martinvass.dms.department.domain.Department;
 import hu.martinvass.dms.user.AppUser;
 import jakarta.persistence.*;
 import lombok.*;
@@ -63,14 +63,13 @@ public class Document {
     @JoinColumn(name = "latest_version_id")
     private Document latestVersion;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany
     @JoinTable(
-            name = "document_tags",
+            name = "document_departments",
             joinColumns = @JoinColumn(name = "document_id"),
-            inverseJoinColumns = @JoinColumn(name = "tag_id")
+            inverseJoinColumns = @JoinColumn(name = "department_id")
     )
-    @Builder.Default
-    private Set<Tag> tags = new HashSet<>();
+    private Set<Department> departments = new HashSet<>();
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -141,20 +140,6 @@ public class Document {
      */
     public boolean isDeleted() {
         return status == DocumentStatus.DELETED || deletedAt != null;
-    }
-
-    /**
-     * Add a tag to this document
-     */
-    public void addTag(Tag tag) {
-        tags.add(tag);
-    }
-
-    /**
-     * Remove a tag from this document
-     */
-    public void removeTag(Tag tag) {
-        tags.remove(tag);
     }
 
     public String getIconClass() {
