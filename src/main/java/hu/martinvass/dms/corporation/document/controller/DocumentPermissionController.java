@@ -42,7 +42,6 @@ public class DocumentPermissionController {
         try {
             Document document = documentService.getDocument(docId, profile);
 
-            // Check ADMIN permission
             permissionService.checkPermission(document, profile, DocumentPermissionLevel.ADMIN);
 
             Department department = departmentService.getDepartment(departmentId, profile.getCorporation());
@@ -72,7 +71,6 @@ public class DocumentPermissionController {
         try {
             Document document = documentService.getDocument(docId, profile);
 
-            // Check ADMIN permission
             permissionService.checkPermission(document, profile, DocumentPermissionLevel.ADMIN);
 
             Department department = departmentService.getDepartment(departmentId, profile.getCorporation());
@@ -105,7 +103,6 @@ public class DocumentPermissionController {
             CorporationProfile targetProfile = profileRepository.findById(profileId)
                     .orElseThrow(() -> new RuntimeException("User profile not found"));
 
-            // Verify same corporation
             if (!targetProfile.getCorporation().getId().equals(profile.getCorporation().getId())) {
                 throw new SecurityException("Cannot grant permissions across corporations");
             }

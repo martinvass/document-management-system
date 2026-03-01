@@ -39,7 +39,6 @@ public class DepartmentController {
             Model model,
             Principal principal
     ) {
-        // Only ADMIN can manage departments
         if (!activeProfile.isCorporationAdmin()) {
             return "redirect:/access-denied";
         }
@@ -54,7 +53,6 @@ public class DepartmentController {
         model.addAttribute("createDto", new CreateCorporationDto());
         model.addAttribute("joinDto", new JoinCorporationDto());
 
-        // Get departments (paginated)
         Page<Department> departments = departmentService.getDepartments(
                 activeProfile.getCorporation(),
                 PageRequest.of(page - 1, 15)

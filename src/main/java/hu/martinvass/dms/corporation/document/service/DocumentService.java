@@ -13,7 +13,13 @@ import hu.martinvass.dms.corporation.storage.StorageRouter;
 import hu.martinvass.dms.corporation.storage.StoredFile;
 import hu.martinvass.dms.profile.CorporationProfile;
 import hu.martinvass.dms.user.AppUser;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.Predicate;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -268,7 +275,6 @@ public class DocumentService {
                 file.getContentType()
         );
 
-        // Create new version
         Document newVersion = Document.builder()
                 .corporation(corporation)
                 .originalFilename(file.getOriginalFilename())
@@ -278,14 +284,13 @@ public class DocumentService {
                 .description(currentDocument.getDescription())
                 .version(currentDocument.getVersion() + 1)
                 .previousVersion(currentDocument)
-                .latestVersion(null) // Will be set to itself
+                .latestVersion(null)
                 .uploadedBy(profile.getUser())
                 .status(DocumentStatus.ACTIVE)
                 .build();
 
         Document savedNewVersion = documentRepository.save(newVersion);
 
-        // Update latestVersion reference
         savedNewVersion.setLatestVersion(savedNewVersion);
         currentDocument.setLatestVersion(savedNewVersion);
 
@@ -310,28 +315,22 @@ public class DocumentService {
     public Document migrateDocument(Long documentId, CorporationProfile profile) throws IOException {
         Document document = getDocumentEntity(documentId, profile);
 
-        // Check WRITE permission (migration is a significant operation)
         permissionService.checkPermission(document, profile, DocumentPermissionLevel.EDIT);
 
         Corporation corporation = document.getCorporation();
         StorageType currentStorageType = storageRouter.getStorageType(corporation.getId());
 
-        // Check if migration is needed
         if (document.getStorageType() == currentStorageType)
             return document;
 
-        // Get old and new storage providers
         StorageProvider oldStorage = storageRouter.getProviderByType(document.getStorageType());
         StorageProvider newStorage = storageRouter.forCompany(corporation.getId());
 
         try {
-            // Download from old storage
             InputStream oldContent = oldStorage.load(corporation.getId(), document.getStoragePath());
 
-            // Generate new storage path (keep same structure)
             String newStoragePath = UUID.randomUUID() + "/" + document.getOriginalFilename();
 
-            // Upload to new storage
             StoredFile newStored = newStorage.save(
                     corporation.getId(),
                     newStoragePath,
@@ -339,7 +338,6 @@ public class DocumentService {
                     document.getContentType()
             );
 
-            // Update document entity
             String oldPath = document.getStoragePath();
 
             document.setStoragePath(newStoragePath);
@@ -349,11 +347,9 @@ public class DocumentService {
 
             Document savedDocument = documentRepository.save(document);
 
-            // Delete from old storage (best effort, don't fail if this fails)
             try {
                 oldStorage.delete(corporation.getId(), oldPath);
-            } catch (Exception e) {
-                // Don't throw - migration is successful, cleanup just failed
+            } catch (Exception ignored) {
             }
 
             return savedDocument;
@@ -369,10 +365,8 @@ public class DocumentService {
     public List<Document> getVersions(Long documentId, CorporationProfile profile) {
         Document document = getDocumentEntity(documentId, profile);
 
-        // Check READ permission
         permissionService.checkPermission(document, profile, DocumentPermissionLevel.READ);
 
-        // Get latest version
         Document latestVersion = document.getLatestVersion();
 
         return documentRepository.findAllVersions(latestVersion);
@@ -385,21 +379,16 @@ public class DocumentService {
     public Document setAsLatest(Long documentId, CorporationProfile profile) {
         Document targetVersion = getDocumentEntity(documentId, profile);
 
-        // Check EDIT permission
         permissionService.checkPermission(targetVersion, profile, DocumentPermissionLevel.EDIT);
 
-        // Get the current latest version
         Document currentLatest = targetVersion.getLatestVersion();
 
-        // If this version is already the latest, do nothing
         if (targetVersion.getId().equals(currentLatest.getId())) {
             return targetVersion;
         }
 
-        // Get all versions
         List<Document> allVersions = documentRepository.findAllVersions(currentLatest);
 
-        // Update all versions to point to the new latest
         for (Document version : allVersions) {
             version.setLatestVersion(targetVersion);
             documentRepository.save(version);
@@ -409,14 +398,83 @@ public class DocumentService {
     }
 
     /**
-     * Search documents by filename
+     * Find documents with filters
+     *
+     * @param corporation Corporation to filter by
+     * @param currentUser Current logged-in user
+     * @param search Search term for filename
+     * @param departmentId Department filter
+     * @param fileType File type filter (pdf, docx, xlsx, image)
+     * @param myUploads Filter only documents uploaded by current user
+     * @param pageable Pagination
+     * @return Filtered documents
      */
-    @Transactional(readOnly = true)
-    public List<Document> searchByFilename(CorporationProfile profile, String search) {
-        // For now, return all documents - can be optimized later
-        return listDocuments(profile).stream()
-                .filter(doc -> doc.getOriginalFilename().toLowerCase().contains(search.toLowerCase()))
-                .collect(Collectors.toList());
+    public Page<Document> findFiltered(
+            Corporation corporation,
+            AppUser currentUser,
+            String search,
+            Long departmentId,
+            String fileType,
+            Boolean myUploads,
+            Pageable pageable
+    ) {
+        Specification<Document> spec = (root, query, cb) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+            // 1. Corporation filter (ALWAYS required)
+            predicates.add(cb.equal(root.get("corporation"), corporation));
+
+            // 2. Status filter (ACTIVE only)
+            predicates.add(cb.equal(root.get("status"), DocumentStatus.ACTIVE));
+
+            // 3. Latest version only
+            predicates.add(cb.equal(root.get("latestVersion"), root));
+
+            // 4. Search by filename (optional)
+            if (search != null && !search.trim().isEmpty()) {
+                predicates.add(
+                        cb.like(
+                                cb.lower(root.get("originalFilename")),
+                                "%" + search.toLowerCase().trim() + "%"
+                        )
+                );
+            }
+
+            // 5. Department filter (optional)
+            if (departmentId != null) {
+                Join<Object, Object> departmentsJoin = root.join("departments", JoinType.INNER);
+                predicates.add(cb.equal(departmentsJoin.get("id"), departmentId));
+            }
+
+            // 6. File type filter (optional)
+            if (fileType != null && !fileType.trim().isEmpty()) {
+                String type = fileType.toLowerCase().trim();
+                switch (type) {
+                    case "pdf":
+                        predicates.add(cb.equal(root.get("contentType"), "application/pdf"));
+                        break;
+                    case "docx":
+                        predicates.add(cb.like(root.get("contentType"), "%wordprocessingml%"));
+                        break;
+                    case "xlsx":
+                        predicates.add(cb.like(root.get("contentType"), "%spreadsheetml%"));
+                        break;
+                    case "image":
+                        predicates.add(cb.like(root.get("contentType"), "image/%"));
+                        break;
+                }
+            }
+
+            // 7. My Uploads filter (optional)
+            if (Boolean.TRUE.equals(myUploads)) {
+                predicates.add(cb.equal(root.get("uploadedBy"), currentUser));
+            }
+
+            // Combine all predicates with AND
+            return cb.and(predicates.toArray(new Predicate[0]));
+        };
+
+        return documentRepository.findAll(spec, pageable);
     }
 
     /**

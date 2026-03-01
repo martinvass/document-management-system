@@ -12,32 +12,123 @@
 <div th:replace="~{fragments/dashboard/sidebar :: sidebar(content=~{::content})}">
     <div th:fragment="content" class="container-fluid py-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h3 class="fw-bold m-0">Documents</h3>
-            <button class="upload-btn" onclick="openUploadModal()" title="Upload document">
-                <i class="fa-solid fa-upload"></i>
+            <div>
+                <h3 class="fw-bold mb-0">Documents</h3>
+                <small class="text-muted">Manage your documents</small>
+            </div>
+            <button class="btn btn-primary shadow-sm" onclick="openUploadModal()">
+                <i class="fa-solid fa-upload me-1"></i> Upload Document
             </button>
         </div>
 
         <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
         <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
 
-        <div class="filter-bar">
-            <i class="fa-solid fa-magnifying-glass" style="color: var(--accent); font-size: 1.1rem;"></i>
-            <input type="text"
-                   class="filter-input"
-                   id="searchInput"
-                   placeholder="Search documents by name or description..."
-                   onkeyup="filterDocuments()">
+        <div class="row g-3 mb-4">
+            <div class="col-md-3">
+                <div class="card shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="mb-2 text-olive" style="font-size: 32px;">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <h6 class="text-muted mb-1">Total Documents</h6>
+                        <h2 class="fw-bold text-olive mb-0" th:text="${documents.totalElements}">0</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="mb-2 text-olive" style="font-size: 32px;">
+                            <i class="fas fa-upload"></i>
+                        </div>
+                        <h6 class="text-muted mb-1">My Uploads</h6>
+                        <h2 class="fw-bold text-olive mb-0" th:text="${myUploadsCount ?: 0}">0</h2>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div th:if="${#lists.isEmpty(documents)}" class="empty-state">
-            <div class="empty-text">No documents yet</div>
+        <div class="mb-3">
+            <form method="get" action="/documents">
+                <div class="row align-items-center">
+                    <div class="col-lg-8 col-12">
+                        <div class="d-flex flex-wrap align-items-center gap-2">
+                            <div class="d-flex gap-2">
+                                <select name="departmentId"
+                                        class="form-select form-select-sm"
+                                        style="width: 180px; background: #FEFAE0; border: 2px solid #E9E3C4; color: #5F6F52; font-weight: 500; background-image: url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 16 16%27%3e%3cpath fill=%27none%27 stroke=%27%235F6F52%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27 stroke-width=%272%27 d=%27M2 5l6 6 6-6%27/%3e%3c/svg%3e'); background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 16px 12px; padding-right: 2.5rem;">
+                                    <option value="">All Departments</option>
+                                    <option th:each="dept : ${allDepartments}"
+                                            th:value="${dept.id}"
+                                            th:text="${dept.name}"
+                                            th:selected="${param.departmentId != null and param.departmentId[0] == dept.id.toString()}">
+                                    </option>
+                                </select>
+
+                                <select name="fileType"
+                                        class="form-select form-select-sm"
+                                        style="width: 150px; background: #FEFAE0; border: 2px solid #E9E3C4; color: #5F6F52; font-weight: 500; background-image: url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 16 16%27%3e%3cpath fill=%27none%27 stroke=%27%235F6F52%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27 stroke-width=%272%27 d=%27M2 5l6 6 6-6%27/%3e%3c/svg%3e'); background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 16px 12px; padding-right: 2.5rem;">
+                                    <option value="">All Types</option>
+                                    <option value="pdf" th:selected="${param.fileType != null and param.fileType[0] == 'pdf'}">PDF</option>
+                                    <option value="docx" th:selected="${param.fileType != null and param.fileType[0] == 'docx'}">Word</option>
+                                    <option value="xlsx" th:selected="${param.fileType != null and param.fileType[0] == 'xlsx'}">Excel</option>
+                                    <option value="image" th:selected="${param.fileType != null and param.fileType[0] == 'image'}">Image</option>
+                                </select>
+                            </div>
+
+                            <div class="form-check ms-2">
+                                <input class="form-check-input"
+                                       type="checkbox"
+                                       name="myUploads"
+                                       id="myUploadsCheck"
+                                       th:checked="${param.myUploads != null}"
+                                       style="width: 18px; height: 18px; border: 2px solid #A9B388; cursor: pointer; margin-right: 8px;">
+                                <label class="form-check-label"
+                                       for="myUploadsCheck"
+                                       style="color: #5F6F52; font-weight: 500; cursor: pointer; font-size: 14px; white-space: nowrap;">
+                                    My Uploads
+                                </label>
+                            </div>
+
+                            <div class="d-flex gap-2 ms-3">
+                                <button type="submit" class="btn btn-sm btn-primary">
+                                    <i class="fas fa-filter me-1"></i> Filter
+                                </button>
+
+                                <a href="/documents" class="btn btn-sm btn-outline-secondary">
+                                    Clear
+                                </a>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-12 mt-2 mt-lg-0">
+                        <div class="search-wrapper ms-lg-auto">
+                            <i class="fas fa-search"></i>
+                            <input type="text"
+                                   placeholder="Search documents..."
+                                   id="searchInput"
+                                   onkeyup="filterDocuments()"/>
+                        </div>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+
+        <div th:if="${#lists.isEmpty(documents)}" class="card border-0 shadow-sm">
+            <div class="card-body text-center py-5">
+                <i class="fas fa-folder-open text-muted" style="font-size: 64px; opacity: 0.3;"></i>
+                <p class="text-muted mt-3 mb-0">No documents found</p>
+            </div>
         </div>
 
         <div class="doc-grid" id="docGrid" th:unless="${#lists.isEmpty(documents)}">
             <div th:each="doc : ${documents}"
                  class="doc-card"
-                 th:attr="data-name=${doc.originalFilename}, data-desc=${doc.description}, data-id=${doc.id}"
+                 th:attr="data-id=${doc.id}, data-name=${doc.originalFilename}"
                  onclick="viewDocument(this)">
 
                 <div class="doc-icon">
@@ -61,51 +152,52 @@
 
                 <div class="doc-meta">
                     <div class="doc-meta-item">
+                        <i class="fas fa-user"></i>
                         <span th:text="${doc.uploadedBy.username}">User</span>
                     </div>
                     <div class="doc-meta-item">
+                        <i class="fas fa-calendar"></i>
                         <span th:text="${#temporals.format(doc.uploadedAt, 'MMM dd')}">Jan 15</span>
                     </div>
                     <div class="doc-meta-item">
+                        <i class="fas fa-weight"></i>
                         <span th:text="${#numbers.formatDecimal(doc.size / 1024.0, 1, 2)} + ' KB'">125.50 KB</span>
                     </div>
                 </div>
 
                 <div class="doc-actions" onclick="event.stopPropagation()">
                     <a th:href="@{/documents/{id}/download(id=${doc.id})}"
-                       class="icon-btn-circle icon-btn-primary"
+                       class="btn btn-sm btn-outline-secondary"
                        title="Download">
                         <i class="fa-solid fa-download"></i>
                     </a>
-                    <button class="icon-btn-circle icon-btn-outline" title="Share">
-                        <i class="fa-solid fa-share"></i>
-                    </button>
                 </div>
             </div>
         </div>
 
-        <!-- Pagination -->
-        <div class="pagination-wrapper mt-5" th:if="${documents.totalPages > 1}">
-            <ul class="pagination mb-0">
-                <li class="page-item" th:classappend="${documents.first} ? 'disabled'">
-                    <a class="page-link"
-                       th:if="${!documents.first}"
-                       th:href="@{/documents(page=${currentPage - 1})}">
+        <div class="floating-pagination-modern">
+            <ul class="pagination-modern">
+                <li th:classappend="${documents.first} ? 'disabled'">
+                    <a th:if="${!documents.first}"
+                       th:href="@{/documents(page=${currentPage - 1}, search=${param.search}, fileType=${param.fileType}, storage=${param.storage})}">
                         prev
                     </a>
+                    <span th:if="${documents.first}">prev</span>
                 </li>
+
                 <li th:each="pageNum : ${#numbers.sequence(1, documents.totalPages)}"
-                    class="page-item"
                     th:classappend="${pageNum == currentPage} ? 'active'">
-                    <a class="page-link" th:text="${pageNum}"
-                       th:href="@{/documents(page=${pageNum})}"></a>
+                    <a th:text="${pageNum}"
+                       th:href="@{/documents(page=${pageNum}, search=${param.search}, fileType=${param.fileType}, storage=${param.storage})}">
+                    </a>
                 </li>
-                <li class="page-item" th:classappend="${documents.last} ? 'disabled'">
-                    <a class="page-link"
-                       th:if="${!documents.last}"
-                       th:href="@{/documents(page=${currentPage + 1})}">
+
+                <li th:classappend="${documents.last} ? 'disabled'">
+                    <a th:if="${!documents.last}"
+                       th:href="@{/documents(page=${currentPage + 1}, search=${param.search}, fileType=${param.fileType}, storage=${param.storage})}">
                         next
                     </a>
+                    <span th:if="${documents.last}">next</span>
                 </li>
             </ul>
         </div>
@@ -185,9 +277,7 @@
 
         cards.forEach(card => {
             const name = card.getAttribute('data-name')?.toLowerCase() || '';
-            const desc = card.getAttribute('data-desc')?.toLowerCase() || '';
-
-            if (name.includes(searchValue) || desc.includes(searchValue)) {
+            if (name.includes(searchValue)) {
                 card.style.display = '';
             } else {
                 card.style.display = 'none';
@@ -195,7 +285,6 @@
         });
     }
 
-    // Close modal on outside click
     document.getElementById('uploadModal').addEventListener('click', function(e) {
         if (e.target === this) {
             closeUploadModal();

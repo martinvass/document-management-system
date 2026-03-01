@@ -95,22 +95,18 @@ public class DocumentPermissionService {
             DocumentPermissionLevel level,
             CorporationProfile grantedBy
     ) {
-        // Check if granter has ADMIN permission
         if (!hasPermission(document, grantedBy, DocumentPermissionLevel.ADMIN)) {
             throw new SecurityException("Cannot grant permissions without ADMIN access");
         }
 
-        // Check if permission already exists
         Optional<DocumentPermission> existing =
                 documentPermissionRepository.findByDocumentAndProfile(document, targetProfile);
 
         DocumentPermission permission;
         if (existing.isPresent()) {
-            // Update existing permission
             permission = existing.get();
             permission.setPermissionLevel(level);
         } else {
-            // Create new permission
             permission = DocumentPermission.builder()
                     .document(document)
                     .profile(targetProfile)
@@ -127,7 +123,6 @@ public class DocumentPermissionService {
      */
     @Transactional
     public void revokePermission(Document document, CorporationProfile targetProfile, CorporationProfile revokedBy) {
-        // Check if revoker has ADMIN permission
         if (!hasPermission(document, revokedBy, DocumentPermissionLevel.ADMIN)) {
             throw new SecurityException("Cannot revoke permissions without ADMIN access");
         }
@@ -140,7 +135,6 @@ public class DocumentPermissionService {
      */
     @Transactional(readOnly = true)
     public List<DocumentPermission> getDocumentPermissions(Document document, CorporationProfile requester) {
-        // Check if requester has READ permission
         checkPermission(document, requester, DocumentPermissionLevel.READ);
 
         return documentPermissionRepository.findByDocument(document);
@@ -156,12 +150,10 @@ public class DocumentPermissionService {
 
     @Transactional
     public void copyPermissions(Document fromDocument, Document toDocument) {
-        // Copy departments - simply create new Set
         if (fromDocument.getDepartments() != null && !fromDocument.getDepartments().isEmpty()) {
             toDocument.setDepartments(new HashSet<>(fromDocument.getDepartments()));
         }
 
-        // Copy explicit permissions
         List<DocumentPermission> sourcePermissions = documentPermissionRepository.findByDocument(fromDocument);
         for (DocumentPermission sourcePerm : sourcePermissions) {
             DocumentPermission newPerm = DocumentPermission.builder()

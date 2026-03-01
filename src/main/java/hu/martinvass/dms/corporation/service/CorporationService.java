@@ -31,7 +31,6 @@ public class CorporationService {
 
     @Transactional
     public void createCorporation(CreateCorporationDto dto, String username, HttpSession session) {
-        // Validation
         if (corporationRepository.existsByName(dto.getName())) {
             throw new RuntimeException("Corporation with name '" + dto.getName() + "' already exists."); // Specifikusabb kivétel
         }
@@ -41,24 +40,20 @@ public class CorporationService {
 
         var profile = createCorpInternal(dto, creatorUser);
 
-        // Set in session
         activeSession.setActiveProfile(session, profile.getId());
 
-        // Fire event for audit log and other
         applicationEventPublisher.publishEvent(new CorporationCreatedEvent(creatorUser, profile.getCorporation()));
     }
 
     private CorporationProfile createCorpInternal(CreateCorporationDto dto, AppUser creatorUser) {
-        // Create and save corporation
         var corp = Corporation.builder()
                 .name(dto.getName())
                 .description(dto.getDescription())
                 .owner(creatorUser)
                 .build();
 
-        corporationRepository.save(corp); // Save
+        corporationRepository.save(corp);
 
-        // Create and save user profile for the corporation
         var profile = CorporationProfile.builder()
                 .user(creatorUser)
                 .profile(creatorUser.getProfile())
@@ -66,7 +61,7 @@ public class CorporationService {
                 .role(CorporationRole.ADMIN)
                 .build();
 
-        profileRepository.save(profile); // Save
+        profileRepository.save(profile);
 
         creatorUser.getProfiles().add(profile);
 

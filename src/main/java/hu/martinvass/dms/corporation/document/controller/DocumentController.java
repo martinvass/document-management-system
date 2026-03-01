@@ -72,7 +72,10 @@ public class DocumentController {
     public String list(
             @ActiveUserProfile CorporationProfile profile,
             @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "15") int size,
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) Long departmentId,
+            @RequestParam(required = false) String fileType,
+            @RequestParam(required = false) Boolean myUploads,
             Model model,
             Principal principal
     ) {
@@ -82,17 +85,39 @@ public class DocumentController {
         var user = authService.findByUsername(principal.getName());
         var profiles = corporationProfileRepository.findByUserId(user.getId());
 
-        // Add basic attributes
         addBaseAttributes(profile, model, user, profiles);
 
-        // Get documents (paginated)
-        Page<Document> documentsPage = documentRepository.findLatestVersionsByCorporationAndStatus(
+        Page<Document> documentsPage;
+
+        if (search != null || departmentId != null || fileType != null || Boolean.TRUE.equals(myUploads)) {
+            documentsPage = documentService.findFiltered(
+                    profile.getCorporation(),
+                    user,
+                    search,
+                    departmentId,
+                    fileType,
+                    myUploads,
+                    PageRequest.of(page - 1, 15)
+            );
+        } else {
+            documentsPage = documentRepository.findLatestVersionsByCorporationAndStatus(
+                    profile.getCorporation(),
+                    DocumentStatus.ACTIVE,
+                    PageRequest.of(page - 1, 15)
+            );
+        }
+
+        List<Department> allDepartments = departmentService.getAllDepartments(profile.getCorporation());
+
+        long myUploadsCount = documentRepository.countByUploadedByAndCorporationAndStatus(
+                user,
                 profile.getCorporation(),
-                DocumentStatus.ACTIVE,
-                PageRequest.of(page - 1, size)
+                DocumentStatus.ACTIVE
         );
+        model.addAttribute("myUploadsCount", myUploadsCount);
 
         model.addAttribute("documents", documentsPage);
+        model.addAttribute("allDepartments", allDepartments);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", documentsPage.getTotalPages());
 
@@ -116,37 +141,26 @@ public class DocumentController {
 
             addBaseAttributes(profile, model, user, profiles);
 
-            // Get document
             Document document = documentService.getDocument(id, profile);
             model.addAttribute("document", document);
 
-            // Current storage type
             model.addAttribute("currentStorageType",
                     documentService.getCurrentStorageType(profile.getCorporation().getId()));
 
-            // Get versions
             List<Document> versions = documentService.getVersions(id, profile);
             model.addAttribute("versions", versions);
 
-            // Permission management data (only for owners and admins)
             if (profile.isCorporationAdmin() ||
                     document.getUploadedBy().getId().equals(profile.getUser().getId())) {
 
-                // Get explicit permissions
                 List<DocumentPermission> permissions = permissionService.getDocumentPermissions(document, profile);
                 model.addAttribute("permissions", permissions);
 
-                // Get all departments in corporation
                 List<Department> allDepartments = departmentService.getAllDepartments(profile.getCorporation());
                 model.addAttribute("allDepartments", allDepartments);
-
-                // NO availableProfiles - AJAX-szal kéri le!
             }
 
             return "documents/view";
-        } catch (SecurityException e) {
-            ra.addFlashAttribute("error", e.getMessage());
-            return "redirect:/documents";
         } catch (Exception e) {
             ra.addFlashAttribute("error", e.getMessage());
             return "redirect:/documents";

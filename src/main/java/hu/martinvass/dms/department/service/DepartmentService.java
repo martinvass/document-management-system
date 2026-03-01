@@ -100,7 +100,6 @@ public class DepartmentService {
      */
     @Transactional
     public void addMember(Long departmentId, Long profileId, CorporationProfile requester) {
-        // Check admin permission
         if (requester.getRole() != CorporationRole.ADMIN) {
             throw new SecurityException("Only admins can add members to departments");
         }
@@ -109,7 +108,6 @@ public class DepartmentService {
         CorporationProfile profile = profileRepository.findById(profileId)
                 .orElseThrow(() -> new RuntimeException("Profile not found: " + profileId));
 
-        // Verify same corporation
         if (!profile.getCorporation().getId().equals(department.getCorporation().getId())) {
             throw new SecurityException("Profile and department must be in the same corporation");
         }

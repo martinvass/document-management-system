@@ -2,31 +2,52 @@
     <div class="row">
         <!-- Sidebar -->
         <nav class="col-md-3 col-lg-2 d-md-block custom-sidebar sidebar collapse">
-            <div class="position-sticky pt-3 px-3">
+            <div class="position-sticky pt-3">
+                <div class="px-3 pb-2">
+                    <div class="d-flex align-items-center mb-3" th:if="${activeProfile}">
+                        <div>
+                            <h6 class="mb-0 fw-bold text-white" th:text="${activeProfile.corporation.name}">Corporation</h6>
+                            <small class="text-white-50">Document Management</small>
+                        </div>
+                    </div>
 
-                <!-- Corporation name + user -->
-                <div class="d-flex align-items-center mb-4" th:if="${activeProfile}">
-                    <div>
-                        <h6 class="mb-0 fw-bold text-white" th:text="${activeProfile.corporation.name}"></h6>
-                        <small class="text-white-50" th:text="${user.profile.username}"></small>
+                    <div th:if="${activeProfile == null}">
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#corpCreateModal"
+                           class="btn w-100 mb-2 sidebar-btn">
+                            <i class="fas fa-square-plus me-1"></i>&nbsp;Create
+                        </a>
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#corpJoinModal"
+                           class="btn w-100 sidebar-btn">
+                            <i class="fas fa-arrow-right-to-bracket me-1"></i>&nbsp;Join
+                        </a>
                     </div>
                 </div>
 
-                <!-- No profile: Create / Join buttons -->
-                <div th:if="${activeProfile == null}">
-                    <a href="#" data-bs-toggle="modal" data-bs-target="#corpCreateModal"
-                       class="btn w-100 mb-2 sidebar-btn">
-                        <i class="fas fa-square-plus me-1"></i>&nbsp;Create
-                    </a>
-                    <a href="#" data-bs-toggle="modal" data-bs-target="#corpJoinModal"
-                       class="btn w-100 sidebar-btn">
-                        <i class="fas fa-arrow-right-to-bracket me-1"></i>&nbsp;Join
-                    </a>
+                <div class="px-3 pb-3" th:if="${activeProfile}">
+                    <div class="mb-2" style="background: rgba(255,255,255,0.1); border-radius: 8px; padding: 12px;">
+                        <div class="d-flex align-items-center">
+                            <div style="width: 40px; height: 40px; border-radius: 50%; background: #5F6F52; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: bold; color: white; margin-right: 12px;">
+                                <span th:text="${#strings.substring(activeProfile.user.profile.firstName, 0, 1) + #strings.substring(activeProfile.user.profile.lastName, 0, 1)}"></span>
+                            </div>
+                            <div style="flex: 1; min-width: 0;">
+                                <div style="font-weight: 600; color: white; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+                                     th:text="${activeProfile.user.profile.firstName + ' ' + activeProfile.user.profile.lastName}">
+                                </div>
+                                <div style="font-size: 11px; color: rgba(255,255,255,0.6); text-transform: uppercase;"
+                                     th:text="${activeProfile.role}"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <form th:action="@{/logout}" method="post">
+                        <button type="submit" class="btn btn-sm w-100 sidebar-logout-btn" style="background: transparent; border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.8); padding: 8px; border-radius: 6px; font-size: 13px; font-weight: 500; transition: all 0.2s;">
+                            <i class="fa-solid fa-right-from-bracket me-1"></i> Sign Out
+                        </button>
+                    </form>
                 </div>
 
-                <!-- Navigation links -->
-                <div th:if="${activeProfile}">
-                    <hr class="border-secondary my-3">
+                <div class="px-3" th:if="${activeProfile}">
+                    <hr class="border-secondary my-2">
                     <p class="text-white text-uppercase small fw-bold mb-2">Corporation</p>
                     <ul class="nav flex-column">
                         <li class="nav-item mb-1">
@@ -44,15 +65,10 @@
                                 <i class="fas fa-users me-2"></i>Team Members
                             </a>
                         </li>
-                        <li class="nav-item mb-1">
-                            <a href="#" class="nav-link text-white d-flex align-items-center">
-                                <i class="fas fa-tags me-2"></i>Tags
-                            </a>
-                        </li>
                     </ul>
 
                     <div th:if="${activeProfile.isCorporationAdmin()}">
-                        <hr class="border-secondary my-3">
+                        <hr class="border-secondary my-2">
                         <p class="text-white text-uppercase small fw-bold mb-2">Admin</p>
                         <ul class="nav flex-column">
                             <li class="nav-item mb-1">
@@ -79,9 +95,16 @@
             </div>
         </nav>
 
-        <!-- Content area -->
         <div class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4 content-area">
             <div th:insert="${content}"></div>
         </div>
     </div>
+
+    <style>
+        .sidebar-logout-btn:hover {
+            background: rgba(220, 53, 69, 0.15) !important;
+            border-color: rgba(220, 53, 69, 0.4) !important;
+            color: #ff6b6b !important;
+        }
+    </style>
 </div>

@@ -52,7 +52,6 @@ public class MembersController {
         model.addAttribute("createDto", new CreateCorporationDto());
         model.addAttribute("joinDto", new JoinCorporationDto());
 
-        // Get members (paginated)
         Page<CorporationProfile> members = profileRepository.findByCorporation(
                 activeProfile.getCorporation(),
                 PageRequest.of(page - 1, 15)
@@ -61,7 +60,6 @@ public class MembersController {
         model.addAttribute("members", members);
         model.addAttribute("currentPage", page);
 
-        // Get departments for assignment dropdown
         List<Department> departments = departmentService.getAllDepartments(activeProfile.getCorporation());
         model.addAttribute("departments", departments);
 
@@ -88,25 +86,19 @@ public class MembersController {
         model.addAttribute("createDto", new CreateCorporationDto());
         model.addAttribute("joinDto", new JoinCorporationDto());
 
-        // Get member profile
         CorporationProfile member = profileRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Member not found: " + id));
 
-        // Verify same corporation
         if (!member.getCorporation().getId().equals(activeProfile.getCorporation().getId())) {
             throw new SecurityException("Access denied");
         }
 
         model.addAttribute("member", member);
-
-        // Get member's departments
         model.addAttribute("memberDepartments", member.getDepartments());
 
-        // Get all departments for assignment
         List<Department> allDepartments = departmentService.getAllDepartments(activeProfile.getCorporation());
         model.addAttribute("allDepartments", allDepartments);
 
-        // Get member's uploaded documents (recent 10)
         List<Document> memberDocuments = documentService.getUserRecentDocuments(member.getUser(), 10);
         model.addAttribute("memberDocuments", memberDocuments);
 
@@ -164,7 +156,6 @@ public class MembersController {
             RedirectAttributes ra
     ) {
         try {
-            // Only ADMIN can update roles
             if (!activeProfile.isCorporationAdmin()) {
                 throw new SecurityException("Only admins can update member roles");
             }
@@ -172,7 +163,6 @@ public class MembersController {
             CorporationProfile member = profileRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("Member not found"));
 
-            // Verify same corporation
             if (!member.getCorporation().getId().equals(activeProfile.getCorporation().getId())) {
                 throw new SecurityException("Access denied");
             }

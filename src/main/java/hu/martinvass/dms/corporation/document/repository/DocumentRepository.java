@@ -7,6 +7,7 @@ import hu.martinvass.dms.user.AppUser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -14,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface DocumentRepository
-        extends JpaRepository<Document, Long> {
+        extends JpaRepository<Document, Long>, JpaSpecificationExecutor<Document> {
 
     /**
      * Find active documents in a corporation (paginated)
@@ -82,4 +83,10 @@ public interface DocumentRepository
      */
     @Query("SELECT d.latestVersion FROM Document d WHERE d.id = :docId")
     Optional<Document> findLatestVersion(@Param("docId") Long documentId);
+
+    long countByUploadedByAndCorporationAndStatus(
+            AppUser uploadedBy,
+            Corporation corporation,
+            DocumentStatus status
+    );
 }
