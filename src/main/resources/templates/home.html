@@ -13,6 +13,9 @@
 <div th:replace="~{fragments/dashboard/sidebar :: sidebar(content=~{::content})}">
     <div th:fragment="content">
 
+        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
         <p th:if="${!user.isInCorporation()}" class="text-muted">
             You are not currently a member of any corporation. Please join an existing corporation or create a new one to proceed.
         </p>

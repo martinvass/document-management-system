@@ -2,9 +2,11 @@ package hu.martinvass.dms.corporation.controller;
 
 import hu.martinvass.dms.dto.CreateCorporationDto;
 import hu.martinvass.dms.corporation.service.CorporationService;
+import hu.martinvass.dms.profile.ProfileSessionService;
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +20,7 @@ import java.security.Principal;
 public class CorporationController {
 
     private final CorporationService corporationService;
+    private final ProfileSessionService sessionService;
 
     @PostMapping("/create")
     public String handleCreate(@ModelAttribute("createDto") CreateCorporationDto dto,
@@ -34,5 +37,19 @@ public class CorporationController {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
             return "redirect:/home";
         }
+    }
+
+    /**
+     * Sign out from current corporation (not from application)
+     * Clears active profile from session and redirects to home
+     */
+    @GetMapping("/sign-out")
+    public String signOutFromCorporation(HttpSession session, RedirectAttributes redirectAttributes) {
+        // Remove active profile from session
+        sessionService.clear(session);
+
+        redirectAttributes.addFlashAttribute("success", "You have successfully signed out the company.");
+        // Redirect to home (corporation selection screen)
+        return "redirect:/home";
     }
 }

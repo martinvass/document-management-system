@@ -46,13 +46,10 @@ public class HomeController {
         model.addAttribute("activeProfileId", activeProfile != null ? activeProfile.getId() : -1);
         model.addAttribute("profiles", profiles);
 
-        // Modal DTOs
         model.addAttribute("createDto", new CreateCorporationDto());
         model.addAttribute("joinDto", new JoinCorporationDto());
 
-        // Dashboard statistics and data (only if user has active profile)
         if (activeProfile != null && activeProfile.getCorporation() != null) {
-            // Statistics
             long totalDocuments = documentService.getTotalDocuments(activeProfile);
             long documentsToMigrate = documentService.getDocumentsToMigrate(activeProfile);
             long activeUsers = corporationProfileRepository.countByCorporation(activeProfile.getCorporation());
@@ -63,7 +60,6 @@ public class HomeController {
             model.addAttribute("activeUsers", activeUsers);
             model.addAttribute("departmentCount", departmentCount);
 
-            // Recent documents (4 most recent)
             List<Document> recentDocuments = documentService.getRecentDocuments(activeProfile, 4);
             model.addAttribute("recentDocuments", recentDocuments);
 
@@ -73,7 +69,6 @@ public class HomeController {
             );
             model.addAttribute("recentActivities", recentActivities);
 
-            // Storage statistics
             long totalStorage = documentService.getTotalStorageUsed(activeProfile);
             String totalStorageReadable = FileUtils.humanReadableSize(totalStorage);
             model.addAttribute("totalStorage", totalStorage);

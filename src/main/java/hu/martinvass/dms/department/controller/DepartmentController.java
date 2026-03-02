@@ -55,7 +55,7 @@ public class DepartmentController {
 
         Page<Department> departments = departmentService.getDepartments(
                 activeProfile.getCorporation(),
-                PageRequest.of(page - 1, 15)
+                PageRequest.of(page - 1, 5)
         );
 
         model.addAttribute("departments", departments);

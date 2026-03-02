@@ -38,7 +38,7 @@
                     <div class="card shadow-sm">
                         <div class="card-body text-center">
                             <h6 class="text-muted mb-1">Administrators</h6>
-                            <h2 class="fw-bold text-danger mb-0">0</h2>
+                            <h2 class="fw-bold text-danger mb-0" th:text="${adminsCount}">0</h2>
                         </div>
                     </div>
                 </div>
@@ -46,7 +46,7 @@
                     <div class="card shadow-sm">
                         <div class="card-body text-center">
                             <h6 class="text-muted mb-1">Employees</h6>
-                            <h2 class="fw-bold text-success mb-0" th:text="${members.totalElements}">0</h2>
+                            <h2 class="fw-bold text-success mb-0" th:text="${employeesCount}">0</h2>
                         </div>
                     </div>
                 </div>
@@ -54,7 +54,7 @@
                     <div class="card shadow-sm">
                         <div class="card-body text-center">
                             <h6 class="text-muted mb-1">Joined This Month</h6>
-                            <h2 class="fw-bold text-info mb-0">0</h2>
+                            <h2 class="fw-bold text-info mb-0" th:text="${joinedThisMonthCount}">0</h2>
                         </div>
                     </div>
                 </div>

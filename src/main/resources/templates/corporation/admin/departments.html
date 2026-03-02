@@ -37,30 +37,6 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3">
-                    <div class="card shadow-sm">
-                        <div class="card-body text-center">
-                            <h6 class="text-muted mb-1">Active Members</h6>
-                            <h2 class="fw-bold text-success mb-0">0</h2>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card shadow-sm">
-                        <div class="card-body text-center">
-                            <h6 class="text-muted mb-1">Largest Dept</h6>
-                            <h2 class="fw-bold text-info mb-0">0</h2>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card shadow-sm">
-                        <div class="card-body text-center">
-                            <h6 class="text-muted mb-1">Created This Month</h6>
-                            <h2 class="fw-bold text-warning mb-0">0</h2>
-                        </div>
-                    </div>
-                </div>
             </div>
 
             <div class="d-flex justify-content-between align-items-center mb-3">
@@ -91,7 +67,8 @@
                             </td>
                             <td th:text="${dept.description ?: '—'}">Department description</td>
                             <td>
-                                <span class="badge bg-info">0 members</span>
+                                <span class="badge bg-info"
+                                      th:text="${dept.memberCount ?: 0} + ' members'">0 members</span>
                             </td>
                             <td th:text="${#temporals.format(dept.createdAt, 'yyyy-MM-dd')}">2025-01-15</td>
                             <td th:text="${dept.createdBy?.profile?.username ?: '—'}">admin</td>

@@ -4,6 +4,7 @@ import hu.martinvass.dms.corporation.domain.Corporation;
 import hu.martinvass.dms.user.AppUser;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Formula;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
@@ -38,6 +39,9 @@ public class Department {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_by")
     private AppUser createdBy;
+
+    @Formula("(SELECT COUNT(*) FROM profile_departments pd WHERE pd.department_id = id)")
+    private Integer memberCount;
 
     @PrePersist
     protected void onCreate() {

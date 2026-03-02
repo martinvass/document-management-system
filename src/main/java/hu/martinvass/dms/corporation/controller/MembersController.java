@@ -4,6 +4,7 @@ import hu.martinvass.dms.annotations.ActiveUserProfile;
 import hu.martinvass.dms.auth.AuthService;
 import hu.martinvass.dms.corporation.document.domain.Document;
 import hu.martinvass.dms.corporation.document.service.DocumentService;
+import hu.martinvass.dms.corporation.domain.CorporationRole;
 import hu.martinvass.dms.department.domain.Department;
 import hu.martinvass.dms.department.service.DepartmentService;
 import hu.martinvass.dms.dto.CreateCorporationDto;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
@@ -33,7 +35,7 @@ public class MembersController {
     private final AuthService authService;
 
     /**
-     * List all members (paginated)
+     * List all members
      */
     @GetMapping
     public String list(
@@ -62,6 +64,30 @@ public class MembersController {
 
         List<Department> departments = departmentService.getAllDepartments(activeProfile.getCorporation());
         model.addAttribute("departments", departments);
+
+        long adminsCount = profileRepository.countByCorporationAndRole(
+                activeProfile.getCorporation(),
+                CorporationRole.ADMIN
+        );
+        long employeesCount = profileRepository.countByCorporationAndRole(
+                activeProfile.getCorporation(),
+                CorporationRole.EMPLOYEE
+        );
+
+        // Joined this month (current month)
+        LocalDateTime startOfMonth = LocalDateTime.now()
+                .withDayOfMonth(1)
+                .withHour(0)
+                .withMinute(0)
+                .withSecond(0);
+        long joinedThisMonthCount = profileRepository.countByCorporationAndCreatedAfter(
+                activeProfile.getCorporation(),
+                startOfMonth
+        );
+
+        model.addAttribute("joinedThisMonthCount", joinedThisMonthCount);
+        model.addAttribute("adminsCount", adminsCount);
+        model.addAttribute("employeesCount", employeesCount);
 
         return "corporation/members/list";
     }

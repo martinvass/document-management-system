@@ -116,6 +116,7 @@ public class DocumentController {
         );
         model.addAttribute("myUploadsCount", myUploadsCount);
 
+        model.addAttribute("totalDocuments", documentService.getTotalDocuments(profile));
         model.addAttribute("documents", documentsPage);
         model.addAttribute("allDepartments", allDepartments);
         model.addAttribute("currentPage", page);
