@@ -4,7 +4,6 @@ import hu.martinvass.dms.events.UserRegisteredEvent;
 import hu.martinvass.dms.auth.verification.VerificationToken;
 import hu.martinvass.dms.auth.verification.VerificationTokenRepository;
 import hu.martinvass.dms.email.EmailService;
-import hu.martinvass.dms.user.repository.AppUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -19,7 +18,6 @@ public class UserEventListener {
 
     private final EmailService emailService;
 
-    private final AppUserRepository appUserRepository;
     private final VerificationTokenRepository tokenRepository;
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -37,7 +35,7 @@ public class UserEventListener {
 
     @Async
     public void sendActivationEmailAsync(String email, String token) {
-        var verificationLink = "http://localhost:8080/auth/verify?token=" + token;
+        var verificationLink = "https://dms.lexium.dev/auth/verify?token=" + token;
         emailService.sendEmail(
                 email,
                 "DMS - Activate account",
