@@ -16,18 +16,86 @@
         <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
         <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
 
-        <p th:if="${!user.isInCorporation()}" class="text-muted">
-            You are not currently a member of any corporation. Please join an existing corporation or create a new one to proceed.
-        </p>
-        <p th:if="${activeProfileId == -1} and ${user.isInCorporation()}" class="text-muted">
-            Please select a corporation profile to proceed.
-        </p>
+        <div th:if="${!user.isInCorporation()}" class="empty-state-container">
+            <div class="empty-state-card">
+                <h3 class="empty-state-title">Welcome to DMS!</h3>
+                <p class="empty-state-description">
+                    Get started by creating a new company or joining an existing one
+                </p>
+
+                <div class="empty-state-actions">
+                    <button class="btn-action btn-action-primary"
+                            data-bs-toggle="modal"
+                            data-bs-target="#corpCreateModal">
+                        <i class="fas fa-plus me-2"></i>
+                        Create Company
+                    </button>
+
+                    <button class="btn-action btn-action-secondary"
+                            data-bs-toggle="modal"
+                            data-bs-target="#corpJoinModal">
+                        <i class="fas fa-arrow-right-to-bracket me-2"></i>
+                        Join Company
+                    </button>
+                </div>
+
+                <div class="info-cards">
+                    <div class="info-card">
+                        <i class="fas fa-users info-icon"></i>
+                        <h6>Collaborate</h6>
+                        <p>Work together with your team</p>
+                    </div>
+                    <div class="info-card">
+                        <i class="fas fa-cloud info-icon"></i>
+                        <h6>Cloud Storage</h6>
+                        <p>Access from anywhere</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div th:if="${activeProfileId == -1} and ${user.isInCorporation()}" class="empty-state-container">
+            <div class="empty-state-card">
+                <h3 class="empty-state-title">Select Your Workspace</h3>
+                <p class="empty-state-description">
+                    Choose a corporation to start managing your documents
+                </p>
+
+                <div class="corporation-selector">
+                    <form th:each="profile : ${profiles}"
+                          th:action="@{/profile/switch}"
+                          method="post"
+                          class="corporation-card-form">
+
+                        <input type="hidden" name="profileId" th:value="${profile.id}"/>
+
+                        <button type="submit" class="corporation-card">
+                            <div class="corp-initial">
+                                <span th:text="${#strings.substring(profile.corporation.name, 0, 1)}"></span>
+                            </div>
+
+                            <div class="corp-info">
+                                <h5 class="corp-name" th:text="${profile.corporation.name}"></h5>
+                                <p class="corp-role">
+                                    <i class="fas fa-user-tag me-1"></i>
+                                    <span th:text="${profile.role}"></span>
+                                </p>
+                            </div>
+
+                            <div class="corp-arrow">
+                                <i class="fas fa-arrow-right"></i>
+                            </div>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
 
         <div th:if="${activeProfileId != -1} and ${user.isInCorporation()}" class="container-fluid py-2">
             <div class="shadow-section p-4 mb-4 d-flex flex-column flex-md-row justify-content-between align-items-md-center">
                 <div>
                     <h2 class="fw-bold text-olive mb-1">
-                        Welcome back, <span th:text="${user.profile.username}">Martin</span>
+                        Welcome back, <span th:text="${user.profile.username}">Unknown</span>
                     </h2>
                 </div>
                 <div class="text-end mt-3 mt-md-0">
@@ -38,7 +106,7 @@
             </div>
 
             <div class="d-flex flex-wrap gap-3 mb-5">
-                <a th:href="@{/documents}"    class="qa-link qa-blue"><i class="fas fa-folder-open me-2"></i>All Documents</a>
+                <a th:href="@{/documents}" class="qa-link qa-blue"><i class="fas fa-folder-open me-2"></i>All Documents</a>
                 <a th:href="@{/documents(myUploads='on')}" class="qa-link qa-green"><i class="fas fa-user me-2"></i>My Uploads</a>
             </div>
 

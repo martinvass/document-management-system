@@ -35,7 +35,7 @@ public class CorporationEventListener {
 
                     You have been invited to join corporation: %s.
                     Invitation code: %s
-                    Link: http://localhost:8080/invite/%s
+                    Link: https://dms.lexium.dev/invite/%s
                     This invitation expires on %s.
                     """,
                         invitation.getCorporation().getName(),
