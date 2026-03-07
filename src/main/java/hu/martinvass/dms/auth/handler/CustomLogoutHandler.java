@@ -1,7 +1,5 @@
 package hu.martinvass.dms.auth.handler;
 
-import hu.martinvass.dms.auth.AuthService;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
@@ -16,14 +14,12 @@ import java.io.IOException;
 @AllArgsConstructor
 public class CustomLogoutHandler extends SimpleUrlLogoutSuccessHandler implements LogoutSuccessHandler {
 
-    private final AuthService authService;
-
     @Override
     public void onLogoutSuccess(
             HttpServletRequest request,
             HttpServletResponse response,
             Authentication authentication
-    ) throws IOException, ServletException {
+    ) throws IOException {
         if (authentication == null)
             response.sendRedirect("/auth/login");
 

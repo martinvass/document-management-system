@@ -1,14 +1,14 @@
 package hu.martinvass.dms.department.service;
 
-import hu.martinvass.dms.activity.ActivityService;
 import hu.martinvass.dms.activity.ActivityType;
+import hu.martinvass.dms.activity.service.ActivityService;
 import hu.martinvass.dms.corporation.domain.Corporation;
 import hu.martinvass.dms.corporation.domain.CorporationRole;
 import hu.martinvass.dms.department.domain.Department;
 import hu.martinvass.dms.department.repository.DepartmentRepository;
 import hu.martinvass.dms.profile.CorporationProfile;
 import hu.martinvass.dms.profile.repository.CorporationProfileRepository;
-import hu.martinvass.dms.user.AppUser;
+import hu.martinvass.dms.user.domain.AppUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -36,7 +36,7 @@ public class DepartmentService {
             String description,
             AppUser createdBy
     ) {
-        Department department = Department.builder()
+        var department = Department.builder()
                 .corporation(corporation)
                 .name(name)
                 .description(description)
@@ -89,9 +89,10 @@ public class DepartmentService {
             String name,
             String description
     ) {
-        Department department = getDepartment(id, corporation);
+        var department = getDepartment(id, corporation);
         department.setName(name);
         department.setDescription(description);
+
         return departmentRepository.save(department);
     }
 
@@ -104,8 +105,8 @@ public class DepartmentService {
             throw new SecurityException("Only admins can add members to departments");
         }
 
-        Department department = getDepartment(departmentId, requester.getCorporation());
-        CorporationProfile profile = profileRepository.findById(profileId)
+        var department = getDepartment(departmentId, requester.getCorporation());
+        var profile = profileRepository.findById(profileId)
                 .orElseThrow(() -> new RuntimeException("Profile not found: " + profileId));
 
         if (!profile.getCorporation().getId().equals(department.getCorporation().getId())) {
@@ -134,8 +135,8 @@ public class DepartmentService {
             throw new SecurityException("Only admins can remove members from departments");
         }
 
-        Department department = getDepartment(departmentId, requester.getCorporation());
-        CorporationProfile profile = profileRepository.findById(profileId)
+        var department = getDepartment(departmentId, requester.getCorporation());
+        var profile = profileRepository.findById(profileId)
                 .orElseThrow(() -> new RuntimeException("Profile not found: " + profileId));
 
         profile.getDepartments().remove(department);
@@ -155,7 +156,7 @@ public class DepartmentService {
      */
     @Transactional(readOnly = true)
     public List<CorporationProfile> getDepartmentMembers(Long departmentId, Corporation corporation) {
-        Department department = getDepartment(departmentId, corporation);
+        var department = getDepartment(departmentId, corporation);
 
         return profileRepository.findByDepartmentsContaining(department);
     }

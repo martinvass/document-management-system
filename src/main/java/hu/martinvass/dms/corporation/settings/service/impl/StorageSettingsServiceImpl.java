@@ -1,13 +1,13 @@
 package hu.martinvass.dms.corporation.settings.service.impl;
 
 import hu.martinvass.dms.corporation.domain.CompanySettings;
-import hu.martinvass.dms.corporation.settings.storage.StorageSettingsProvider;
-import hu.martinvass.dms.corporation.settings.service.StorageSettingsService;
-import hu.martinvass.dms.corporation.settings.storage.StorageType;
-import hu.martinvass.dms.corporation.settings.dto.StorageSettingsDto;
 import hu.martinvass.dms.corporation.repository.CompanyStorageRepository;
-import hu.martinvass.dms.corporation.settings.storage.impl.ManagedStorageSettingsProvider;
+import hu.martinvass.dms.corporation.settings.dto.StorageSettingsDto;
+import hu.martinvass.dms.corporation.settings.service.StorageSettingsService;
+import hu.martinvass.dms.corporation.settings.storage.StorageSettingsProvider;
+import hu.martinvass.dms.corporation.settings.storage.StorageType;
 import hu.martinvass.dms.corporation.settings.storage.impl.AwsStorageSettingsProvider;
+import hu.martinvass.dms.corporation.settings.storage.impl.ManagedStorageSettingsProvider;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -28,7 +28,7 @@ public class StorageSettingsServiceImpl implements StorageSettingsService {
 
     @Override
     public StorageSettingsDto get(Long companyId) {
-        CompanySettings cfg = companyStorageRepository.findByCorporationId(companyId)
+        var cfg = companyStorageRepository.findByCorporationId(companyId)
                 .orElseGet(() -> defaultStorageConfig(companyId));
 
         return providers.get(cfg.getStorageType()).loadSettings(companyId);
@@ -47,7 +47,7 @@ public class StorageSettingsServiceImpl implements StorageSettingsService {
     }
 
     private CompanySettings defaultStorageConfig(Long companyId) {
-        CompanySettings cfg = new CompanySettings();
+        var cfg = new CompanySettings();
         cfg.setCorporationId(companyId);
         cfg.setStorageType(StorageType.MANAGED);
 

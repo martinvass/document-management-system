@@ -56,26 +56,40 @@
                 </div>
             </div>
 
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <div class="d-flex gap-2">
-                    <select class="form-select form-select-sm" style="width: 160px;">
-                        <option>Status: All</option>
-                        <option>Pending</option>
-                        <option>Accepted</option>
-                        <option>Revoked</option>
-                    </select>
-                    <select class="form-select form-select-sm" style="width: 160px;">
-                        <option>Role: All</option>
-                        <option th:each="r : ${availableRoles}" th:text="${r}"></option>
-                    </select>
-                </div>
-                <div class="d-flex justify-content-end">
-                    <div class="search-wrapper ms-auto">
-                        <i class="fas fa-search"></i>
-                        <input placeholder="Search email or code..." type="text"/>
+            <form method="get" th:action="@{/corporation/admin/invitations}" class="mb-3">
+                <div class="row g-2 align-items-end">
+                    <div class="col-auto">
+                        <select name="status"
+                                class="form-select form-select-sm"
+                                style="width: 150px; background: #FEFAE0; border: 2px solid #E9E3C4; color: #5F6F52; font-weight: 500; background-image: url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 16 16%27%3e%3cpath fill=%27none%27 stroke=%27%235F6F52%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27 stroke-width=%272%27 d=%27M2 5l6 6 6-6%27/%3e%3c/svg%3e'); background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 16px 12px; padding-right: 2.5rem;">
+                            <option value="">All Status</option>
+                            <option value="PENDING" th:selected="${param.status != null and param.status[0] == 'PENDING'}">Pending</option>
+                            <option value="ACCEPTED" th:selected="${param.status != null and param.status[0] == 'ACCEPTED'}">Accepted</option>
+                            <option value="EXPIRED" th:selected="${param.status != null and param.status[0] == 'EXPIRED'}">Expired</option>
+                        </select>
+                    </div>
+
+                    <div class="col-auto">
+                        <select name="role"
+                                class="form-select form-select-sm"
+                                style="width: 150px; background: #FEFAE0; border: 2px solid #E9E3C4; color: #5F6F52; font-weight: 500; background-image: url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 16 16%27%3e%3cpath fill=%27none%27 stroke=%27%235F6F52%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27 stroke-width=%272%27 d=%27M2 5l6 6 6-6%27/%3e%3c/svg%3e'); background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 16px 12px; padding-right: 2.5rem;">
+                            <option value="">All Roles</option>
+                            <option value="ADMIN" th:selected="${param.role != null and param.role[0] == 'ADMIN'}">Admin</option>
+                            <option value="EMPLOYEE" th:selected="${param.role != null and param.role[0] == 'EMPLOYEE'}">Employee</option>
+                        </select>
+                    </div>
+
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-sm btn-primary">
+                            <i class="fas fa-filter me-1"></i> Filter
+                        </button>
+                    </div>
+
+                    <div class="col-auto">
+                        <a th:href="@{/corporation/admin/invitations}" class="btn btn-sm btn-outline-secondary">Clear</a>
                     </div>
                 </div>
-            </div>
+            </form>
 
             <div class="card border-0 shadow-sm">
                 <div class="card-body">

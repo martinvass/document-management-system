@@ -1,9 +1,9 @@
 package hu.martinvass.dms.events.listeners;
 
-import hu.martinvass.dms.events.UserRegisteredEvent;
 import hu.martinvass.dms.auth.verification.VerificationToken;
 import hu.martinvass.dms.auth.verification.VerificationTokenRepository;
-import hu.martinvass.dms.email.EmailService;
+import hu.martinvass.dms.events.UserRegisteredEvent;
+import hu.martinvass.dms.shared.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;

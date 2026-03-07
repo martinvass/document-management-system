@@ -1,22 +1,27 @@
 package hu.martinvass.dms.invitation.service;
 
+import hu.martinvass.dms.corporation.domain.Corporation;
+import hu.martinvass.dms.corporation.domain.CorporationRole;
 import hu.martinvass.dms.events.InvitationCreatedEvent;
 import hu.martinvass.dms.invitation.Invitation;
 import hu.martinvass.dms.invitation.InvitationStatus;
-import hu.martinvass.dms.dto.CreateInvitationDto;
-import hu.martinvass.dms.dto.InvitationStatsDto;
+import hu.martinvass.dms.invitation.dto.CreateInvitationDto;
+import hu.martinvass.dms.invitation.dto.InvitationStatsDto;
 import hu.martinvass.dms.invitation.repository.InvitationRepository;
 import hu.martinvass.dms.profile.CorporationProfile;
 import hu.martinvass.dms.profile.repository.CorporationProfileRepository;
-import hu.martinvass.dms.user.AppUser;
+import hu.martinvass.dms.user.domain.AppUser;
+import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -119,6 +124,34 @@ public class InvitationService {
 
         // Mark invitation as accepted
         markAsAccepted(invitation);
+    }
+
+    public Page<Invitation> findFiltered(
+            Corporation corporation,
+            String status,
+            String role,
+            Pageable pageable
+    ) {
+        Specification<Invitation> spec = (root, query, cb) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+            // Corporation filter
+            predicates.add(cb.equal(root.get("corporation"), corporation));
+
+            // Status filter
+            if (status != null && !status.trim().isEmpty()) {
+                predicates.add(cb.equal(root.get("status"), InvitationStatus.valueOf(status)));
+            }
+
+            // Role filter
+            if (role != null && !role.trim().isEmpty()) {
+                predicates.add(cb.equal(root.get("role"), CorporationRole.valueOf(role)));
+            }
+
+            return cb.and(predicates.toArray(new Predicate[0]));
+        };
+
+        return invitationRepository.findAll(spec, pageable);
     }
 
     @Scheduled(cron = "0 0 * * * *")

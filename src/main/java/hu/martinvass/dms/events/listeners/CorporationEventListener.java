@@ -1,8 +1,8 @@
 package hu.martinvass.dms.events.listeners;
 
-import hu.martinvass.dms.email.EmailService;
 import hu.martinvass.dms.events.CorporationCreatedEvent;
 import hu.martinvass.dms.events.InvitationCreatedEvent;
+import hu.martinvass.dms.shared.EmailService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;

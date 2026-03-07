@@ -1,8 +1,8 @@
 package hu.martinvass.dms.corporation.controller;
 
-import hu.martinvass.dms.dto.CreateCorporationDto;
+import hu.martinvass.dms.corporation.dto.CreateCorporationDto;
 import hu.martinvass.dms.corporation.service.CorporationService;
-import hu.martinvass.dms.profile.ProfileSessionService;
+import hu.martinvass.dms.profile.service.ProfileSessionService;
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;

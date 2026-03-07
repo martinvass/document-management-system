@@ -1,16 +1,11 @@
 package hu.martinvass.dms.department.controller;
 
 import hu.martinvass.dms.annotations.ActiveUserProfile;
-import hu.martinvass.dms.auth.AuthService;
-import hu.martinvass.dms.department.domain.Department;
 import hu.martinvass.dms.department.service.DepartmentService;
-import hu.martinvass.dms.dto.CreateCorporationDto;
-import hu.martinvass.dms.dto.JoinCorporationDto;
 import hu.martinvass.dms.profile.CorporationProfile;
 import hu.martinvass.dms.profile.repository.CorporationProfileRepository;
-import hu.martinvass.dms.user.AppUser;
-import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
+import hu.martinvass.dms.shared.controller.BaseController;
+import hu.martinvass.dms.user.repository.AppUserRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,16 +13,18 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
-import java.util.List;
 
 @Controller
 @RequestMapping("/corporation/admin/departments")
-@AllArgsConstructor
-public class DepartmentController {
+public class DepartmentController extends BaseController {
 
     private final DepartmentService departmentService;
-    private final CorporationProfileRepository profileRepository;
-    private final AuthService authService;
+
+    public DepartmentController(AppUserRepository userRepository, CorporationProfileRepository profileRepository, DepartmentService departmentService) {
+        super(userRepository, profileRepository);
+
+        this.departmentService = departmentService;
+    }
 
     /**
      * List all departments
@@ -43,17 +40,10 @@ public class DepartmentController {
             return "redirect:/access-denied";
         }
 
-        AppUser user = authService.findByUsername(principal.getName());
-        List<CorporationProfile> profiles = profileRepository.findByUserId(user.getId());
+        // Add base attributes
+        addBaseAttributes(activeProfile, model, principal);
 
-        model.addAttribute("user", user);
-        model.addAttribute("activeProfile", activeProfile);
-        model.addAttribute("activeProfileId", activeProfile.getId());
-        model.addAttribute("profiles", profiles);
-        model.addAttribute("createDto", new CreateCorporationDto());
-        model.addAttribute("joinDto", new JoinCorporationDto());
-
-        Page<Department> departments = departmentService.getDepartments(
+        var departments = departmentService.getDepartments(
                 activeProfile.getCorporation(),
                 PageRequest.of(page - 1, 5)
         );

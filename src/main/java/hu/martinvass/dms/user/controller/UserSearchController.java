@@ -6,7 +6,10 @@ import hu.martinvass.dms.profile.repository.CorporationProfileRepository;
 import hu.martinvass.dms.user.dto.UserSearchDto;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -29,15 +32,16 @@ public class UserSearchController {
             return ResponseEntity.ok(List.of());
         }
 
-        String searchTerm = query.toLowerCase().trim();
+        var searchTerm = query.toLowerCase().trim();
 
-        List<UserSearchDto> results = profileRepository.findByCorporation(activeProfile.getCorporation())
+        var results = profileRepository.findByCorporation(activeProfile.getCorporation())
                 .stream()
                 .filter(p -> !p.getId().equals(activeProfile.getId())) // Exclude current user
                 .filter(p -> {
-                    String fullName = (p.getUser().getProfile().getFirstName() + " " +
+                    var fullName = (p.getUser().getProfile().getFirstName() + " " +
                             p.getUser().getProfile().getLastName()).toLowerCase();
-                    String email = p.getUser().getProfile().getEmail().toLowerCase();
+                    var email = p.getUser().getProfile().getEmail().toLowerCase();
+
                     return fullName.contains(searchTerm) || email.contains(searchTerm);
                 })
                 .limit(10) // Max 10 results

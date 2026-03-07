@@ -1,6 +1,6 @@
 package hu.martinvass.dms.events;
 
-import hu.martinvass.dms.user.AppUser;
+import hu.martinvass.dms.user.domain.AppUser;
 import lombok.Getter;
 
 import java.util.Date;

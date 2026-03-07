@@ -2,9 +2,9 @@ package hu.martinvass.dms.invitation;
 
 import hu.martinvass.dms.corporation.domain.Corporation;
 import hu.martinvass.dms.corporation.domain.CorporationRole;
-import hu.martinvass.dms.dto.CreateInvitationDto;
+import hu.martinvass.dms.invitation.dto.CreateInvitationDto;
 import hu.martinvass.dms.profile.CorporationProfile;
-import hu.martinvass.dms.user.Profile;
+import hu.martinvass.dms.user.domain.Profile;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

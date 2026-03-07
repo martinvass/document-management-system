@@ -1,18 +1,14 @@
 package hu.martinvass.dms.corporation.controller;
 
 import hu.martinvass.dms.annotations.ActiveUserProfile;
-import hu.martinvass.dms.auth.AuthService;
-import hu.martinvass.dms.corporation.document.domain.Document;
-import hu.martinvass.dms.corporation.document.service.DocumentService;
 import hu.martinvass.dms.corporation.domain.CorporationRole;
-import hu.martinvass.dms.department.domain.Department;
 import hu.martinvass.dms.department.service.DepartmentService;
-import hu.martinvass.dms.dto.CreateCorporationDto;
-import hu.martinvass.dms.dto.JoinCorporationDto;
+import hu.martinvass.dms.document.service.DocumentService;
 import hu.martinvass.dms.profile.CorporationProfile;
 import hu.martinvass.dms.profile.repository.CorporationProfileRepository;
-import hu.martinvass.dms.user.AppUser;
-import lombok.AllArgsConstructor;
+import hu.martinvass.dms.profile.service.CorporationProfileService;
+import hu.martinvass.dms.shared.controller.BaseController;
+import hu.martinvass.dms.user.repository.AppUserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
@@ -22,17 +18,24 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Controller
 @RequestMapping("/corporation/members")
-@AllArgsConstructor
-public class MembersController {
+public class MembersController extends BaseController {
 
     private final CorporationProfileRepository profileRepository;
+    private final CorporationProfileService profileService;
     private final DepartmentService departmentService;
     private final DocumentService documentService;
-    private final AuthService authService;
+
+    public MembersController(AppUserRepository userRepository, CorporationProfileRepository profileRepository, CorporationProfileRepository profileRepository1, CorporationProfileService profileService, DepartmentService departmentService, DocumentService documentService) {
+        super(userRepository, profileRepository);
+
+        this.profileRepository = profileRepository1;
+        this.profileService = profileService;
+        this.departmentService = departmentService;
+        this.documentService = documentService;
+    }
 
     /**
      * List all members
@@ -41,53 +44,55 @@ public class MembersController {
     public String list(
             @ActiveUserProfile CorporationProfile activeProfile,
             @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(required = false) String role,
+            @RequestParam(required = false) Long departmentId,
             Model model,
             Principal principal
     ) {
-        AppUser user = authService.findByUsername(principal.getName());
-        List<CorporationProfile> profiles = profileRepository.findByUserId(user.getId());
+        Page<CorporationProfile> members;
 
-        model.addAttribute("user", user);
-        model.addAttribute("activeProfile", activeProfile);
-        model.addAttribute("activeProfileId", activeProfile.getId());
-        model.addAttribute("profiles", profiles);
-        model.addAttribute("createDto", new CreateCorporationDto());
-        model.addAttribute("joinDto", new JoinCorporationDto());
+        if (role != null || departmentId != null) {
+            members = profileService.findFiltered(
+                    activeProfile.getCorporation(),
+                    role,
+                    departmentId,
+                    PageRequest.of(page - 1, size)
+            );
+        } else {
+            members = profileRepository.findByCorporation(
+                    activeProfile.getCorporation(),
+                    PageRequest.of(page - 1, size)
+            );
+        }
 
-        Page<CorporationProfile> members = profileRepository.findByCorporation(
-                activeProfile.getCorporation(),
-                PageRequest.of(page - 1, 15)
-        );
-
-        model.addAttribute("members", members);
-        model.addAttribute("currentPage", page);
-
-        List<Department> departments = departmentService.getAllDepartments(activeProfile.getCorporation());
-        model.addAttribute("departments", departments);
-
-        long adminsCount = profileRepository.countByCorporationAndRole(
+        var adminsCount = profileRepository.countByCorporationAndRole(
                 activeProfile.getCorporation(),
                 CorporationRole.ADMIN
         );
-        long employeesCount = profileRepository.countByCorporationAndRole(
+        var employeesCount = profileRepository.countByCorporationAndRole(
                 activeProfile.getCorporation(),
                 CorporationRole.EMPLOYEE
         );
 
-        // Joined this month (current month)
-        LocalDateTime startOfMonth = LocalDateTime.now()
-                .withDayOfMonth(1)
-                .withHour(0)
-                .withMinute(0)
-                .withSecond(0);
-        long joinedThisMonthCount = profileRepository.countByCorporationAndCreatedAfter(
+        var startOfMonth = LocalDateTime.now()
+                .withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0);
+        var joinedThisMonthCount = profileRepository.countByCorporationAndCreatedAfter(
                 activeProfile.getCorporation(),
                 startOfMonth
         );
 
-        model.addAttribute("joinedThisMonthCount", joinedThisMonthCount);
+        var allDepartments = departmentService.getAllDepartments(activeProfile.getCorporation());
+
+        // Add basic attributes
+        addBaseAttributes(activeProfile, model, principal);
+
+        model.addAttribute("members", members);
+        model.addAttribute("departments", allDepartments);
+        model.addAttribute("currentPage", page);
         model.addAttribute("adminsCount", adminsCount);
         model.addAttribute("employeesCount", employeesCount);
+        model.addAttribute("joinedThisMonthCount", joinedThisMonthCount);
 
         return "corporation/members/list";
     }
@@ -102,17 +107,10 @@ public class MembersController {
             Model model,
             Principal principal
     ) {
-        AppUser user = authService.findByUsername(principal.getName());
-        List<CorporationProfile> profiles = profileRepository.findByUserId(user.getId());
+        // Add base attributes
+        addBaseAttributes(activeProfile, model, principal);
 
-        model.addAttribute("user", user);
-        model.addAttribute("activeProfile", activeProfile);
-        model.addAttribute("activeProfileId", activeProfile.getId());
-        model.addAttribute("profiles", profiles);
-        model.addAttribute("createDto", new CreateCorporationDto());
-        model.addAttribute("joinDto", new JoinCorporationDto());
-
-        CorporationProfile member = profileRepository.findById(id)
+        var member = profileRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Member not found: " + id));
 
         if (!member.getCorporation().getId().equals(activeProfile.getCorporation().getId())) {
@@ -122,10 +120,10 @@ public class MembersController {
         model.addAttribute("member", member);
         model.addAttribute("memberDepartments", member.getDepartments());
 
-        List<Department> allDepartments = departmentService.getAllDepartments(activeProfile.getCorporation());
+        var allDepartments = departmentService.getAllDepartments(activeProfile.getCorporation());
         model.addAttribute("allDepartments", allDepartments);
 
-        List<Document> memberDocuments = documentService.getUserRecentDocuments(member.getUser(), 10);
+        var memberDocuments = documentService.getUserRecentDocuments(member.getUser(), 10);
         model.addAttribute("memberDocuments", memberDocuments);
 
         return "corporation/members/view";
@@ -186,7 +184,7 @@ public class MembersController {
                 throw new SecurityException("Only admins can update member roles");
             }
 
-            CorporationProfile member = profileRepository.findById(id)
+            var member = profileRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("Member not found"));
 
             if (!member.getCorporation().getId().equals(activeProfile.getCorporation().getId())) {

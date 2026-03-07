@@ -1,7 +1,7 @@
 package hu.martinvass.dms.corporation.domain;
 
-import hu.martinvass.dms.user.AppUser;
 import hu.martinvass.dms.profile.CorporationProfile;
+import hu.martinvass.dms.user.domain.AppUser;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

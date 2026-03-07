@@ -1,9 +1,9 @@
 package hu.martinvass.dms.auth;
 
-import hu.martinvass.dms.events.UserRegisteredEvent;
 import hu.martinvass.dms.auth.verification.VerificationResult;
 import hu.martinvass.dms.auth.verification.VerificationTokenRepository;
-import hu.martinvass.dms.user.AppUser;
+import hu.martinvass.dms.events.UserRegisteredEvent;
+import hu.martinvass.dms.user.domain.AppUser;
 import hu.martinvass.dms.user.exception.UserAlreadyExistsException;
 import hu.martinvass.dms.user.repository.AppUserRepository;
 import lombok.AllArgsConstructor;

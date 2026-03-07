@@ -60,22 +60,50 @@
                 </div>
             </div>
 
-            <div class="d-flex justify-content-between align-items-center mb-3 gap-2">
-                <div class="d-flex gap-2">
-                    <select class="form-select form-select-sm" style="width: 160px;" onchange="filterMembers()">
-                        <option>Role: All</option>
-                        <option>Admin</option>
-                        <option>Employee</option>
-                    </select>
-                    <select class="form-select form-select-sm" style="width: 160px;" onchange="filterMembers()">
-                        <option>Department: All</option>
-                    </select>
+            <form method="get" th:action="@{/corporation/members}" class="mb-3">
+                <div class="row g-2 align-items-end">
+                    <div class="col-auto">
+                        <select name="role"
+                                class="form-select form-select-sm"
+                                style="width: 150px; border: 2px solid #E9E3C4; color: #5F6F52; font-weight: 500; background: #FEFAE0 url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 16 16%27%3e%3cpath fill=%27none%27 stroke=%27%235F6F52%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27 stroke-width=%272%27 d=%27M2 5l6 6 6-6%27/%3e%3c/svg%3e') no-repeat right 0.75rem center;background-size: 16px 12px; padding-right: 2.5rem;">
+                            <option value="">All Roles</option>
+                            <option value="ADMIN" th:selected="${param.role != null and param.role[0] == 'ADMIN'}">Admin</option>
+                            <option value="EMPLOYEE" th:selected="${param.role != null and param.role[0] == 'EMPLOYEE'}">Employee</option>
+                        </select>
+                    </div>
+
+                    <div class="col-auto">
+                        <select name="departmentId"
+                                class="form-select form-select-sm"
+                                style="width: 180px; border: 2px solid #E9E3C4; color: #5F6F52; font-weight: 500; background: #FEFAE0 url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 16 16%27%3e%3cpath fill=%27none%27 stroke=%27%235F6F52%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27 stroke-width=%272%27 d=%27M2 5l6 6 6-6%27/%3e%3c/svg%3e') no-repeat right 0.75rem center;background-size: 16px 12px; padding-right: 2.5rem;">
+                            <option value="">All Departments</option>
+                            <option th:each="dept : ${departments}"
+                                    th:value="${dept.id}"
+                                    th:text="${dept.name}"
+                                    th:selected="${param.departmentId != null and param.departmentId[0] == dept.id.toString()}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-sm btn-primary">
+                            <i class="fas fa-filter me-1"></i> Filter
+                        </button>
+                    </div>
+
+                    <div class="col-auto">
+                        <a th:href="@{/corporation/members}" class="btn btn-sm btn-outline-secondary">Clear</a>
+                    </div>
+
+                    <div class="search-wrapper ms-auto">
+                        <i class="fas fa-search"></i>
+                        <input type="text"
+                               placeholder="Search by name or email..."
+                               id="searchInput"
+                               onkeyup="filterMembers()"/>
+                    </div>
                 </div>
-                <div class="search-wrapper">
-                    <i class="fas fa-search"></i>
-                    <input type="text" placeholder="Search by name or email..." id="searchInput" onkeyup="filterMembers()"/>
-                </div>
-            </div>
+            </form>
 
             <div class="card border-0 shadow-sm">
                 <div class="card-body">

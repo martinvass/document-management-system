@@ -3,8 +3,8 @@ package hu.martinvass.dms.profile;
 import hu.martinvass.dms.corporation.domain.Corporation;
 import hu.martinvass.dms.corporation.domain.CorporationRole;
 import hu.martinvass.dms.department.domain.Department;
-import hu.martinvass.dms.user.AppUser;
-import hu.martinvass.dms.user.Profile;
+import hu.martinvass.dms.user.domain.AppUser;
+import hu.martinvass.dms.user.domain.Profile;
 import jakarta.persistence.*;
 import lombok.*;
 

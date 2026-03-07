@@ -2,11 +2,9 @@ package hu.martinvass.dms.annotations.interceptor;
 
 import hu.martinvass.dms.annotations.RequireCorpAdmin;
 import hu.martinvass.dms.corporation.domain.CorporationRole;
-import hu.martinvass.dms.profile.CorporationProfile;
 import hu.martinvass.dms.profile.repository.CorporationProfileRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
@@ -26,10 +24,10 @@ public class CorporationRoleInterceptor implements HandlerInterceptor {
             RequireCorpAdmin annotation = method.getMethodAnnotation(RequireCorpAdmin.class);
 
             if (annotation != null) {
-                HttpSession session = request.getSession(false);
-                Long profileId = (Long) session.getAttribute("ACTIVE_USER_PROFILE_ID");
+                var session = request.getSession(false);
+                var profileId = (Long) session.getAttribute("ACTIVE_USER_PROFILE_ID");
 
-                CorporationProfile profile = repository.findById(profileId).orElse(null);
+                var profile = repository.findById(profileId).orElse(null);
 
                 if (profile == null)
                     return false;

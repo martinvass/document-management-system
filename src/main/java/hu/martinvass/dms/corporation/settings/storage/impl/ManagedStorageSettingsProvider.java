@@ -20,7 +20,7 @@ public record ManagedStorageSettingsProvider(CompanyStorageRepository companySto
 
     @Override
     public void applySettings(Long companyId, StorageSettingsDto dto) {
-        CompanySettings cfg = companyStorageRepository.findByCorporationId(companyId)
+        var cfg = companyStorageRepository.findByCorporationId(companyId)
                 .orElseGet(() -> defaultStorageConfig(companyId));
 
         cfg.setStorageType(StorageType.MANAGED);
@@ -39,7 +39,7 @@ public record ManagedStorageSettingsProvider(CompanyStorageRepository companySto
     }
 
     private CompanySettings defaultStorageConfig(Long companyId) {
-        CompanySettings cfg = new CompanySettings();
+        var cfg = new CompanySettings();
         cfg.setCorporationId(companyId);
         cfg.setStorageType(StorageType.MANAGED);
 

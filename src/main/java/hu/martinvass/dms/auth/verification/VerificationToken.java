@@ -1,6 +1,6 @@
 package hu.martinvass.dms.auth.verification;
 
-import hu.martinvass.dms.user.AppUser;
+import hu.martinvass.dms.user.domain.AppUser;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

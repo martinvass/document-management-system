@@ -36,7 +36,7 @@
                         <span th:text="${#authentication.name}">User</span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item">View Profile</a></li>
+                        <li><a th:href="@{/profile/view}" class="dropdown-item">View Profile</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li>
                             <form th:action="@{/logout}" method="post">

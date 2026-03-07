@@ -1,8 +1,8 @@
 package hu.martinvass.dms.auth;
 
-import hu.martinvass.dms.user.AppUser;
+import hu.martinvass.dms.shared.utils.SecurityUtils;
+import hu.martinvass.dms.user.domain.AppUser;
 import hu.martinvass.dms.user.exception.UserAlreadyExistsException;
-import hu.martinvass.dms.utils.SecurityUtils;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

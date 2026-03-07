@@ -1,10 +1,10 @@
 package hu.martinvass.dms.corporation.settings.storage.impl;
 
 import hu.martinvass.dms.corporation.domain.CompanySettings;
+import hu.martinvass.dms.corporation.repository.CompanyStorageRepository;
+import hu.martinvass.dms.corporation.settings.dto.StorageSettingsDto;
 import hu.martinvass.dms.corporation.settings.storage.StorageSettingsProvider;
 import hu.martinvass.dms.corporation.settings.storage.StorageType;
-import hu.martinvass.dms.corporation.settings.dto.StorageSettingsDto;
-import hu.martinvass.dms.corporation.repository.CompanyStorageRepository;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.core.sync.RequestBody;
@@ -25,11 +25,11 @@ public record AwsStorageSettingsProvider(
 
     @Override
     public void testConnection(Long companyId, StorageSettingsDto dto) {
-        CompanySettings cfg = companyStorageRepository.findByCorporationId(companyId)
+        var cfg = companyStorageRepository.findByCorporationId(companyId)
                 .orElseGet(() -> defaultStorageConfig(companyId));
 
-        String accessKey = dto.getS3AccessKey() == null ? cfg.getS3AccessKey() : dto.getS3AccessKey();
-        String secretKey = dto.getS3SecretKey() == null ? cfg.getS3AccessKey() : dto.getS3SecretKey();
+        var accessKey = dto.getS3AccessKey() == null ? cfg.getS3AccessKey() : dto.getS3AccessKey();
+        var secretKey = dto.getS3SecretKey() == null ? cfg.getS3AccessKey() : dto.getS3SecretKey();
 
         try (S3Client s3 = buildClient(
                 dto.getS3Region(),
@@ -49,7 +49,7 @@ public record AwsStorageSettingsProvider(
             }
 
             // Check prefix
-            String testKey = normalizePrefix(dto.getS3Prefix()) + ".dms-test";
+            var testKey = normalizePrefix(dto.getS3Prefix()) + ".dms-test";
 
             try {
                 s3.putObject(
@@ -75,7 +75,7 @@ public record AwsStorageSettingsProvider(
 
     @Override
     public void applySettings(Long companyId, StorageSettingsDto dto) {
-        CompanySettings cfg = companyStorageRepository.findByCorporationId(companyId)
+        var cfg = companyStorageRepository.findByCorporationId(companyId)
                 .orElseGet(() -> defaultStorageConfig(companyId));
 
         cfg.setStorageType(StorageType.CUSTOM_S3);
@@ -95,10 +95,10 @@ public record AwsStorageSettingsProvider(
 
     @Override
     public StorageSettingsDto loadSettings(Long companyId) {
-        CompanySettings cfg = companyStorageRepository.findByCorporationId(companyId)
+        var cfg = companyStorageRepository.findByCorporationId(companyId)
                 .orElseGet(() -> defaultStorageConfig(companyId));
 
-        StorageSettingsDto dto = new StorageSettingsDto();
+        var dto = new StorageSettingsDto();
         dto.setStorageType(StorageType.CUSTOM_S3);
         dto.setS3Region(cfg.getS3Region());
         dto.setS3Bucket(cfg.getS3Bucket());
@@ -122,13 +122,14 @@ public record AwsStorageSettingsProvider(
     }
 
     private String normalizePrefix(String prefix) {
-        String p = prefix.trim();
+        var p = prefix.trim();
         if (!p.endsWith("/")) p += "/";
+
         return p;
     }
 
     private CompanySettings defaultStorageConfig(Long companyId) {
-        CompanySettings cfg = new CompanySettings();
+        var cfg = new CompanySettings();
         cfg.setCorporationId(companyId);
         cfg.setStorageType(StorageType.MANAGED);
 

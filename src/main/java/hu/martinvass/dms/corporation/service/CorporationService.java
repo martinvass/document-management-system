@@ -1,15 +1,15 @@
 package hu.martinvass.dms.corporation.service;
 
-import hu.martinvass.dms.profile.ProfileSessionService;
 import hu.martinvass.dms.corporation.domain.Corporation;
 import hu.martinvass.dms.corporation.domain.CorporationRole;
-import hu.martinvass.dms.dto.CreateCorporationDto;
-import hu.martinvass.dms.events.CorporationCreatedEvent;
+import hu.martinvass.dms.corporation.dto.CreateCorporationDto;
 import hu.martinvass.dms.corporation.repository.CorporationRepository;
-import hu.martinvass.dms.user.AppUser;
+import hu.martinvass.dms.events.CorporationCreatedEvent;
 import hu.martinvass.dms.profile.CorporationProfile;
-import hu.martinvass.dms.user.repository.AppUserRepository;
 import hu.martinvass.dms.profile.repository.CorporationProfileRepository;
+import hu.martinvass.dms.profile.service.ProfileSessionService;
+import hu.martinvass.dms.user.domain.AppUser;
+import hu.martinvass.dms.user.repository.AppUserRepository;
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;

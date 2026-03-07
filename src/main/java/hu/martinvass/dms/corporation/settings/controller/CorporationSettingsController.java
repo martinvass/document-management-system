@@ -29,7 +29,7 @@ public class CorporationSettingsController {
             @ModelAttribute("general") GeneralSettingsDto dto,
             RedirectAttributes ra
     ) {
-        Long companyId = activeProfile.getCorporation().getId();
+        var companyId = activeProfile.getCorporation().getId();
 
         generalSettingsService.save(companyId, dto);
 
@@ -44,7 +44,7 @@ public class CorporationSettingsController {
             @ModelAttribute("storage") StorageSettingsDto dto,
             RedirectAttributes ra
     ) {
-        Long companyId = activeProfile.getCorporation().getId();
+        var companyId = activeProfile.getCorporation().getId();
 
         storageSettingsService.save(companyId, dto);
 
@@ -59,7 +59,7 @@ public class CorporationSettingsController {
             @ModelAttribute("storage") StorageSettingsDto dto,
             RedirectAttributes ra
     ) {
-        Long companyId = activeProfile.getCorporation().getId();
+        var companyId = activeProfile.getCorporation().getId();
 
         try {
             storageSettingsService.testConnection(companyId, dto);

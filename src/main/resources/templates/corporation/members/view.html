@@ -55,7 +55,7 @@
             <div th:if="${activeProfile.isCorporationAdmin()}" class="mt-4">
                 <h6 class="text-olive mb-3">Change Role</h6>
                 <form th:action="@{/corporation/members/{id}/update-role(id=${member.id})}" method="post" class="d-inline-flex gap-2">
-                    <select name="role" class="form-select" style="width: 200px;">
+                    <select name="role" class="form-select" style="background: #FEFAE0; border: 2px solid #E9E3C4; color: #5F6F52; font-weight: 500; background-image: url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 16 16%27%3e%3cpath fill=%27none%27 stroke=%27%235F6F52%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27 stroke-width=%272%27 d=%27M2 5l6 6 6-6%27/%3e%3c/svg%3e'); background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 16px 12px; padding-right: 2.5rem;">
                         <option value="EMPLOYEE" th:selected="${member.role.name() == 'EMPLOYEE'}">Employee</option>
                         <option value="ADMIN" th:selected="${member.role.name() == 'ADMIN'}">Admin</option>
                         <option value="GUEST" th:selected="${member.role.name() == 'GUEST'}">Guest</option>
@@ -93,7 +93,7 @@
                 <h6 class="text-olive mb-2">Add to Department</h6>
                 <form th:action="@{/corporation/members/{id}/add-to-department(id=${member.id})}"
                       method="post" class="d-inline-flex gap-2">
-                    <select name="departmentId" class="form-select" style="width: 250px;" required>
+                    <select name="departmentId" class="form-select" style="background: #FEFAE0; border: 2px solid #E9E3C4; color: #5F6F52; font-weight: 500; background-image: url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 16 16%27%3e%3cpath fill=%27none%27 stroke=%27%235F6F52%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27 stroke-width=%272%27 d=%27M2 5l6 6 6-6%27/%3e%3c/svg%3e'); background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 16px 12px; padding-right: 2.5rem;" required>
                         <option value="">-- Select Department --</option>
                         <option th:each="dept : ${allDepartments}"
                                 th:value="${dept.id}"
