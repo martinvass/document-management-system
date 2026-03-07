@@ -1,18 +1,5 @@
-:root {
-    --color-bg: #FEFAE0;
-    --color-card: #A9B388;
-    --color-accent: #5F6F52;
-    --color-accent-light: #A9B388;
-    --color-accent-dark: #3F4C34;
-    --color-secondary: #B99470;
-    --radius: 12px;
-    --transition: 0.25s ease;
-    --font: 'Segoe UI', sans-serif;
-}
-
-/* ===== Alapbeállítások ===== */
 body {
-    font-family: var(--font);
+    font-family: var(--font), serif;
     background-color: var(--color-bg);
     color: var(--color-accent-dark);
     margin: 0;
@@ -20,14 +7,13 @@ body {
     overflow-x: hidden;
 }
 
-/* ===== Hero szekció ===== */
 .hero-section {
     min-height: 100vh;
     display: flex;
     align-items: center;
     padding: 80px 20px;
     color: var(--color-bg);
-    background: linear-gradient(to bottom right, var(--color-accent), var(--color-accent-light));
+    background: linear-gradient(to bottom right, var(--color-accent), var(--color-accent-dark));
 }
 
 .hero-section h1 {
@@ -66,7 +52,6 @@ body {
     color: var(--color-accent);
 }
 
-/* ===== Features ===== */
 .features {
     background-color: var(--color-bg);
     padding: 80px 0;
@@ -89,7 +74,6 @@ body {
     box-shadow: 0 8px 16px rgba(95, 111, 82, 0.25);
 }
 
-/* ===== CTA szekció ===== */
 .cta {
     background-color: var(--color-secondary);
     color: #fff;
@@ -117,7 +101,6 @@ body {
     border-color: #fff;
 }
 
-/* ===== Footer ===== */
 footer {
     background-color: var(--color-accent);
     color: #fefefe;

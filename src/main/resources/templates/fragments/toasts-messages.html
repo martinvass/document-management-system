@@ -1,7 +1,6 @@
 <div th:fragment="alert_success(message)"
      th:if="${message}"
-     class="toast-container position-fixed top-0 end-0 p-3"
-     style="z-index: 1080;">
+     class="toast-container position-fixed top-0 end-0 p-3 z-index-high">
 
     <div id="successToast"
          class="toast align-items-center toast-success-custom"
@@ -25,8 +24,7 @@
 
 <div th:fragment="alert_error(message)"
      th:if="${message}"
-     class="toast-container position-fixed top-0 end-0 p-3"
-     style="z-index: 1080;">
+     class="toast-container position-fixed top-0 end-0 p-3 z-index-high">
 
     <div id="errorToast"
          class="toast align-items-center toast-error-custom"

@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="hu">
 <head th:replace="~{fragments/header :: html_header(title='My Profile', additionalLinks=~{this::page_links})}">
     <th:block th:fragment="page_links">
+        <link rel="stylesheet" th:href="@{/css/components.css}">
         <link rel="stylesheet" th:href="@{/css/dashboard.css}">
         <link rel="stylesheet" th:href="@{/css/home.css}">
     </th:block>
@@ -10,20 +11,22 @@
 <nav th:replace="~{fragments/dashboard/navigation :: navigation_bar}"></nav>
 <div th:replace="~{fragments/dashboard/sidebar :: sidebar(content=~{::content})}">
     <div th:fragment="content" class="container-fluid py-4">
+        <a th:href="@{/home}" class="btn btn-outline-secondary mb-4">
+            <i class="fas fa-arrow-left me-1"></i> Back to Home
+        </a>
+
         <div class="mb-4">
             <h3 class="fw-bold mb-0">
-                <i class="fas fa-user-circle me-2"></i>
                 My Profile
             </h3>
-            <small class="text-muted">Manage your account information</small>
+            <small class="text-muted">Information about your profile</small>
         </div>
 
         <div class="row">
             <div class="col-lg-8">
                 <div class="card shadow-sm mb-4">
-                    <div class="card-header" style="background: linear-gradient(135deg, #A9B388 0%, #8fa172 100%);">
+                    <div class="card-header section-header-gradient" style="margin-bottom: 0 !important;">
                         <h5 class="mb-0 text-white">
-                            <i class="fas fa-id-card me-2"></i>
                             Personal Information
                         </h5>
                     </div>
@@ -31,31 +34,28 @@
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label class="form-label text-muted small fw-semibold">First Name</label>
-                                <p class="mb-0 fs-5" th:text="${user.profile.firstName}">John</p>
+                                <p class="mb-0 fs-5" th:text="${user.profile.firstName}"></p>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label text-muted small fw-semibold">Last Name</label>
-                                <p class="mb-0 fs-5" th:text="${user.profile.lastName}">Doe</p>
+                                <p class="mb-0 fs-5" th:text="${user.profile.lastName}"></p>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label text-muted small fw-semibold">Email</label>
                                 <p class="mb-0 fs-5">
-                                    <i class="fas fa-envelope me-2 text-muted"></i>
-                                    <span th:text="${user.profile.email}">john.doe@example.com</span>
+                                    <span th:text="${user.profile.email}"></span>
                                 </p>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label text-muted small fw-semibold">Username</label>
                                 <p class="mb-0 fs-5">
-                                    <i class="fas fa-user me-2 text-muted"></i>
-                                    <span th:text="${user.username}">johndoe</span>
+                                    <span th:text="${user.username}"></span>
                                 </p>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label text-muted small fw-semibold">Member Since</label>
                                 <p class="mb-0 fs-5">
-                                    <i class="fas fa-calendar me-2 text-muted"></i>
-                                    <span th:text="${#temporals.format(user.creationDate, 'MMMM dd, yyyy')}">January 01, 2025</span>
+                                    <span th:text="${#dates.format(user.creationDate, 'MMMM dd, yyyy')}"></span>
                                 </p>
                             </div>
                         </div>
@@ -63,24 +63,23 @@
                 </div>
 
                 <div class="card shadow-sm mb-4" th:if="${activeProfile != null}">
-                    <div class="card-header" style="background: linear-gradient(135deg, #A9B388 0%, #8fa172 100%);">
+                    <div class="card-header section-header-gradient" style="margin-bottom: 0 !important;">
                         <h5 class="mb-0 text-white">
-                            <i class="fas fa-building me-2"></i>
                             Current Workspace
                         </h5>
                     </div>
                     <div class="card-body">
                         <div class="d-flex align-items-center gap-3">
-                            <div style="width: 64px; height: 64px; border-radius: 12px; background: linear-gradient(135deg, #A9B388 0%, #8fa172 100%); display: flex; align-items: center; justify-content: center;">
-                                <span style="font-size: 28px; font-weight: 700; color: white;"
-                                      th:text="${#strings.substring(activeProfile.corporation.name, 0, 1)}">T</span>
+                            <div class="icon-box-gradient">
+                                <span class="fs-2 fw-bold text-white"
+                                      th:text="${#strings.substring(activeProfile.corporation.name, 0, 1)}"></span>
                             </div>
                             <div class="flex-grow-1">
-                                <h5 class="mb-1" th:text="${activeProfile.corporation.name}">Test Company</h5>
+                                <h5 class="mb-1" th:text="${activeProfile.corporation.name}"></h5>
                                 <p class="mb-0">
                                     <span class="badge"
                                           th:classappend="${activeProfile.role.name() == 'ADMIN' ? 'bg-danger' : 'bg-success'}"
-                                          th:text="${activeProfile.role}">ADMIN</span>
+                                          th:text="${activeProfile.role}"></span>
                                 </p>
                             </div>
                         </div>
@@ -90,11 +89,10 @@
 
             <div class="col-lg-4">
                 <div class="card shadow-sm mb-4">
-                    <div class="card-header bg-white border-bottom">
-                        <h6 class="mb-0 fw-semibold">
-                            <i class="fas fa-chart-simple me-2"></i>
-                            Quick Stats
-                        </h6>
+                    <div class="card-header section-header-gradient" style="margin-bottom: 0 !important;">
+                        <h5 class="mb-0 text-white">
+                            Stats
+                        </h5>
                     </div>
                     <div class="card-body">
                         <div class="mb-3 pb-3 border-bottom">
@@ -102,7 +100,7 @@
                                 <span class="text-muted">
                                     <i class="fas fa-building me-2"></i>Companies
                                 </span>
-                                <span class="badge bg-primary fs-6" th:text="${#lists.size(allProfiles)}">2</span>
+                                <span class="badge bg-primary fs-6" th:text="${#lists.size(allProfiles)}"></span>
                             </div>
                         </div>
                         <div class="mb-3 pb-3 border-bottom">
@@ -110,7 +108,7 @@
                                 <span class="text-muted">
                                     <i class="fas fa-shield-halved me-2"></i>Admin Roles
                                 </span>
-                                <span class="badge bg-danger fs-6" th:text="${adminCount}">1</span>
+                                <span class="badge bg-danger fs-6" th:text="${adminCount}"></span>
                             </div>
                         </div>
                         <div>
@@ -118,31 +116,30 @@
                                 <span class="text-muted">
                                     <i class="fas fa-user me-2"></i>Employee Roles
                                 </span>
-                                <span class="badge bg-success fs-6" th:text="${employeeCount}">1</span>
+                                <span class="badge bg-success fs-6" th:text="${employeeCount}"></span>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="card shadow-sm">
-                    <div class="card-header bg-white border-bottom">
-                        <h6 class="mb-0 fw-semibold">
-                            <i class="fas fa-briefcase me-2"></i>
+                    <div class="card-header section-header-gradient" style="margin-bottom: 0 !important;">
+                        <h5 class="mb-0 text-white">
                             All Companies
-                        </h6>
+                        </h5>
                     </div>
                     <div class="card-body p-2">
                         <div th:each="profile : ${allProfiles}"
                              class="p-2 border-bottom"
-                             th:classappend="${profile.id == activeProfile?.id ? 'bg-light' : ''}">
+                             th:classappend="${profile.id == activeProfile?.id ? 'bg-accent' : ''}">
                             <div class="d-flex align-items-center gap-2">
-                                <div style="width: 36px; height: 36px; border-radius: 8px; background: #A9B388; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                                    <span style="font-size: 16px; font-weight: 700; color: white;"
-                                          th:text="${#strings.substring(profile.corporation.name, 0, 1)}">C</span>
+                                <div class="icon-box-sm">
+                                    <span class="fw-bold text-white"
+                                          th:text="${#strings.substring(profile.corporation.name, 0, 1)}"></span>
                                 </div>
                                 <div class="flex-grow-1 min-w-0">
-                                    <div class="small fw-semibold text-truncate" th:text="${profile.corporation.name}">Company</div>
-                                    <div class="small text-muted" th:text="${profile.role}">ADMIN</div>
+                                    <div class="small fw-semibold text-truncate" th:text="${profile.corporation.name}"></div>
+                                    <div class="small text-muted" th:text="${profile.role}"></div>
                                 </div>
                                 <span th:if="${profile.id == activeProfile?.id}"
                                       class="badge bg-success">Active</span>

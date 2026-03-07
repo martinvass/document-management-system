@@ -1,40 +1,36 @@
-<div th:fragment="corpCreateModal(createDto)" class="modal fade" id="corpCreateModal" tabindex="-1"
+<div th:fragment="corpCreateModal(createDto)" class="modal-custom" id="create"
      aria-labelledby="createCorpModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content corporation-modal">
-            <div class="modal-header corporation-header">
-                <h5 class="modal-title fw-bold" id="createCorpModalLabel">Create Corporation</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <div class="modal-custom-content">
+        <div class="modal-custom-header">
+            <h5 class="modal-custom-title fw-bold" id="createCorpModalLabel">Create Corporation</h5>
+            <a class="modal-custom-close" href="#">
+                <i class="fa-solid fa-xmark"></i>
+            </a>
+        </div>
+
+        <form th:action="@{/corporation/create}" th:object="${createDto}" method="post" enctype="multipart/form-data"
+              class="needs-validation" novalidate>
+            <div class="mb-3">
+                <label for="name" class="form-label fw-bold">Name</label>
+                <input type="text"
+                       th:field="*{name}"
+                       id="name"
+                       class="form-control corporation-input"
+                       placeholder="e.g., Flexo2000 Kft."
+                       required>
+                <div class="invalid-feedback">Please enter a name!</div>
             </div>
 
-            <form th:action="@{/corporation/create}" th:object="${createDto}" method="post" enctype="multipart/form-data"
-                  class="needs-validation" novalidate>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="name" class="form-label fw-bold">Name</label>
-                        <input type="text"
-                               th:field="*{name}"
-                               id="name"
-                               class="form-control corporation-input"
-                               placeholder="e.g., Flexo2000 Kft."
-                               required>
-                        <div class="invalid-feedback">Please enter a name!</div>
-                    </div>
+            <div class="mb-3">
+                <label for="description" class="form-label fw-bold">Description</label>
+                <textarea th:field="*{description}"
+                          id="description"
+                          class="form-control corporation-input"
+                          rows="2"
+                          placeholder="Brief description of the corporation..."></textarea>
+            </div>
 
-                    <div class="mb-3">
-                        <label for="description" class="form-label fw-bold">Description</label>
-                        <textarea th:field="*{description}"
-                                  id="description"
-                                  class="form-control corporation-input"
-                                  rows="2"
-                                  placeholder="Brief description of the corporation..."></textarea>
-                    </div>
-                </div>
-
-                <div class="modal-footer corporation-footer">
-                    <button type="submit" class="btn submit-btn"><i class="fas fa-paper-plane"></i>&nbsp;Submit</button>
-                </div>
-            </form>
-        </div>
+            <button type="submit" class="btn submit-btn"><i class="fas fa-paper-plane"></i>&nbsp;Submit</button>
+        </form>
     </div>
 </div>

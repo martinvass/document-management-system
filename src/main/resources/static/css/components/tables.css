@@ -1,0 +1,63 @@
+.table-custom {
+    border: 1px solid var(--color-beige);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+}
+
+.table-custom thead {
+    background: var(--color-beige);
+}
+
+.table-custom thead th {
+    color: var(--color-accent);
+    font-weight: 600;
+    padding: 12px 16px;
+}
+
+.table-custom tbody {
+    background: white;
+}
+
+.table-custom tbody td {
+    padding: 12px 16px;
+}
+
+.table-custom tbody tr:hover {
+    background: var(--color-beige-light);
+}
+
+.table-text-accent {
+    color: var(--color-accent);
+}
+
+.table-text-muted {
+    color: var(--color-text-muted);
+}
+
+.table-text-strong {
+    color: var(--color-accent);
+    font-weight: 600;
+}
+
+.table-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.table-badge-read {
+    background: var(--color-green);
+    color: var(--color-accent);
+}
+
+.table-badge-edit {
+    background: var(--color-blue);
+    color: var(--color-accent);
+}
+
+.table-badge-admin {
+    background: var(--color-orange);
+    color: var(--color-accent);
+}

@@ -3,6 +3,7 @@
 <head th:replace="~{fragments/header :: html_header(title='DMS - Home', additionalLinks=~{this::page_links})}">
     <th:block th:fragment="page_links">
         <link rel="stylesheet" th:href="@{/css/home.css}">
+        <link rel="stylesheet" th:href="@{/css/components.css}">
         <link rel="stylesheet" th:href="@{/css/dashboard.css}">
     </th:block>
 </head>
@@ -23,10 +24,10 @@
                         <span th:text="${activeProfile.corporation.name}">Corporation Name</span>
                     </small>
                 </div>
-                <button class="btn btn-primary shadow-sm" data-bs-target="#createInviteModal" data-bs-toggle="modal">
+                <a class="btn btn-primary shadow-sm" href="#createInvite">
                     <i class="fas fa-square-plus me-1" aria-hidden="true"></i>
                     New Invitation
-                </button>
+                </a>
             </div>
 
             <div class="row g-3 mb-4">
@@ -60,8 +61,7 @@
                 <div class="row g-2 align-items-end">
                     <div class="col-auto">
                         <select name="status"
-                                class="form-select form-select-sm"
-                                style="width: 150px; background: #FEFAE0; border: 2px solid #E9E3C4; color: #5F6F52; font-weight: 500; background-image: url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 16 16%27%3e%3cpath fill=%27none%27 stroke=%27%235F6F52%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27 stroke-width=%272%27 d=%27M2 5l6 6 6-6%27/%3e%3c/svg%3e'); background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 16px 12px; padding-right: 2.5rem;">
+                                class="form-select form-select-sm form-select-custom-sm">
                             <option value="">All Status</option>
                             <option value="PENDING" th:selected="${param.status != null and param.status[0] == 'PENDING'}">Pending</option>
                             <option value="ACCEPTED" th:selected="${param.status != null and param.status[0] == 'ACCEPTED'}">Accepted</option>
@@ -71,8 +71,7 @@
 
                     <div class="col-auto">
                         <select name="role"
-                                class="form-select form-select-sm"
-                                style="width: 150px; background: #FEFAE0; border: 2px solid #E9E3C4; color: #5F6F52; font-weight: 500; background-image: url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 16 16%27%3e%3cpath fill=%27none%27 stroke=%27%235F6F52%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27 stroke-width=%272%27 d=%27M2 5l6 6 6-6%27/%3e%3c/svg%3e'); background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 16px 12px; padding-right: 2.5rem;">
+                                class="form-select form-select-sm form-select-custom-sm">
                             <option value="">All Roles</option>
                             <option value="ADMIN" th:selected="${param.role != null and param.role[0] == 'ADMIN'}">Admin</option>
                             <option value="EMPLOYEE" th:selected="${param.role != null and param.role[0] == 'EMPLOYEE'}">Employee</option>
@@ -139,10 +138,6 @@
                                             </form>
                                         </div>
 
-                                        <div th:case="'ACCEPTED'">
-                                            <button class="btn btn-sm btn-outline-info">View User</button>
-                                        </div>
-
                                         <div th:case="*">—</div>
                                     </div>
                                 </td>
@@ -183,49 +178,44 @@
                 </div>
             </div>
         </div>
-
-        <div aria-hidden="true" class="modal fade" id="createInviteModal" tabindex="-1">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Create New Invitation</h5>
-                        <button class="btn-close btn-close-white" data-bs-dismiss="modal" type="button"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form method="post"
-                              th:action="@{/corporation/admin/invitations/create}" th:object="${createInvitationDto}">
-
-                            <div class="mb-3">
-                                <label class="form-label fw-semibold">Email address</label>
-                                <input class="form-control" placeholder="user@domain.com" th:field="*{email}"
-                                       type="email">
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label fw-semibold">Role</label>
-                                <select class="form-select" th:field="*{role}">
-                                    <option value="">-- Select Role --</option>
-                                    <option th:each="r : ${availableRoles}" th:text="${r}" th:value="${r}"></option>
-                                </select>
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label fw-semibold">Expiration Date</label>
-                                <input class="form-control" required th:attr="min=${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}"
-                                       th:field="*{expiresAt}" type="date">
-                            </div>
-
-                            <button class="btn btn-primary w-100" type="submit">Generate Invitation</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 </div>
 
-<div th:replace="~{corporation/create-modal :: corpCreateModal(${createDto})}"></div>
-<div th:replace="~{corporation/join-modal :: corpJoinModal(${joinDto})}"></div>
+<div id="createInvite" class="modal-custom">
+    <div class="modal-custom-content">
+        <div class="modal-custom-header">
+            <h5 class="modal-custom-title">Create New Invitation</h5>
+            <a class="modal-custom-close" href="#">
+                <i class="fa-solid fa-xmark"></i>
+            </a>
+        </div>
+        <form method="post"
+              th:action="@{/corporation/admin/invitations/create}" th:object="${createInvitationDto}">
+
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Email address</label>
+                <input class="form-control" placeholder="user@domain.com" th:field="*{email}"
+                       type="email">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Role</label>
+                <select class="form-select" th:field="*{role}">
+                    <option value="">-- Select Role --</option>
+                    <option th:each="r : ${availableRoles}" th:text="${r}" th:value="${r}"></option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Expiration Date</label>
+                <input class="form-control" required th:attr="min=${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}"
+                       th:field="*{expiresAt}" type="date">
+            </div>
+
+            <button class="btn btn-primary w-100" type="submit">Generate Invitation</button>
+        </form>
+    </div>
+</div>
 
 <div th:replace="~{fragments/scripts :: footer_scripts}"></div>
 

@@ -1,0 +1,89 @@
+/**
+ * Settings Page CSS
+ * Corporation settings oldal specifikus stílusok
+ */
+
+/* ========================================
+   SECTIONS
+   ======================================== */
+.section-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: var(--color-accent-dark);
+}
+
+.section-desc {
+    font-size: 0.9rem;
+    color: rgba(0,0,0,0.6);
+    margin-bottom: 24px;
+}
+
+/* ========================================
+   RADIO GROUP
+   ======================================== */
+.radio-group {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 32px;
+}
+
+.radio-box {
+    background: var(--color-beige);
+    padding: 16px 20px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 500;
+    transition: all var(--transition-fast);
+}
+
+.radio-box:hover {
+    background: var(--color-beige-hover);
+}
+
+.radio-box input {
+    accent-color: var(--color-accent);
+}
+
+/* ========================================
+   AWS FIELDS
+   ======================================== */
+#aws-fields.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+/* ========================================
+   ACTIONS
+   ======================================== */
+.actions {
+    display: flex;
+    gap: 16px;
+    margin-top: 32px;
+}
+
+/* ========================================
+   CONNECTION STATUS
+   ======================================== */
+.connection-success {
+    display: none;
+    margin-top: 16px;
+    color: #2E7D32;
+    font-weight: 600;
+    font-size: 0.9rem;
+    align-items: center;
+    gap: 6px;
+}
+
+.connection-failed {
+    display: none;
+    margin-top: 16px;
+    color: #ff2b2b;
+    font-weight: 600;
+    font-size: 0.9rem;
+    align-items: center;
+    gap: 6px;
+}

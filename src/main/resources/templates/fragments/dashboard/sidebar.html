@@ -12,17 +12,13 @@
                     </div>
 
                     <div th:if="${activeProfile == null}">
-                        <a href="#"
-                           data-bs-toggle="modal"
-                           data-bs-target="#corpCreateModal"
+                        <a href="#create"
                            class="sidebar-btn sidebar-btn-primary">
                             <i class="fas fa-plus me-2"></i>
                             <span>Create Company</span>
                         </a>
 
-                        <a href="#"
-                           data-bs-toggle="modal"
-                           data-bs-target="#corpJoinModal"
+                        <a href="#join"
                            class="sidebar-btn sidebar-btn-primary">
                             <i class="fas fa-arrow-right-to-bracket me-2"></i>
                             <span>Join Company</span>
@@ -31,23 +27,23 @@
                 </div>
 
                 <div class="px-3 pb-3" th:if="${activeProfile}">
-                    <div class="mb-2" style="background: rgba(255,255,255,0.1); border-radius: 8px; padding: 12px;">
+                    <div class="mb-2 user-card-container">
                         <div class="d-flex align-items-center">
-                            <div style="width: 40px; height: 40px; border-radius: 50%; background: #5F6F52; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: bold; color: white; margin-right: 12px;">
+                            <div class="user-avatar">
                                 <span th:text="${#strings.substring(activeProfile.user.profile.firstName, 0, 1) + #strings.substring(activeProfile.user.profile.lastName, 0, 1)}"></span>
                             </div>
-                            <div style="flex: 1; min-width: 0;">
-                                <div style="font-weight: 600; color: white; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+                            <div class="flex-1 text-truncate">
+                                <div class="navbar-text-ellipsis"
                                      th:text="${activeProfile.user.profile.firstName + ' ' + activeProfile.user.profile.lastName}">
                                 </div>
-                                <div style="font-size: 11px; color: rgba(255,255,255,0.6); text-transform: uppercase;"
+                                <div class="small text-white-50 text-uppercase"
                                      th:text="${activeProfile.role}"></div>
                             </div>
                         </div>
                     </div>
 
                     <form th:action="@{/corporation/sign-out}" method="get">
-                        <button type="submit" class="btn btn-sm w-100 sidebar-logout-btn" style="background: transparent; border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.8); padding: 8px; border-radius: 6px; font-size: 13px; font-weight: 500; transition: all 0.2s;">
+                        <button type="submit" class="btn btn-sm w-100 sidebar-logout-btn">
                             <i class="fa-solid fa-right-from-bracket me-1"></i> Sign Out
                         </button>
                     </form>

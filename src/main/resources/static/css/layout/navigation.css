@@ -1,0 +1,159 @@
+.navbar-custom {
+    background: linear-gradient(135deg, var(--color-accent) 0%, #4e5e44 100%);
+    box-shadow: 0 4px 16px rgba(95, 111, 82, 0.2);
+    padding: 0;
+    position: sticky;
+    top: 0;
+    z-index: 1050;
+}
+
+.navbar-custom .navbar-brand {
+    color: white;
+    font-size: 1.75rem;
+    font-weight: 700;
+    padding: 1rem 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.navbar-custom .navbar-brand:hover {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.navbar-custom .navbar-brand i {
+    font-size: 2rem;
+}
+
+.navbar-custom .navbar-nav {
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.navbar-custom .nav-link {
+    color: rgba(255, 255, 255, 0.85);
+    font-weight: 500;
+    padding: 0.75rem 1.25rem;
+    border-radius: var(--radius-sm);
+    transition: all var(--transition);
+}
+
+.navbar-custom .nav-link:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.navbar-custom .nav-link.active {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    font-weight: 600;
+}
+
+.navbar-btn-light {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    border: none;
+    padding: 0.5rem 1.25rem;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    transition: all var(--transition);
+}
+
+.navbar-btn-light:hover {
+    background: rgba(255, 255, 255, 0.25);
+    color: white;
+}
+
+.navbar-btn-white {
+    background: white;
+    color: var(--color-accent);
+    border: none;
+    padding: 0.5rem 1.25rem;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    transition: all var(--transition);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-btn-white:hover {
+    background: var(--color-beige-light);
+    color: var(--color-accent);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* ========================================
+   NAVBAR DROPDOWN
+   ======================================== */
+.navbar-custom .dropdown-menu {
+    background: white;
+    border: none;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    border-radius: var(--radius-sm);
+    padding: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.navbar-custom .dropdown-item {
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius-sm);
+    color: var(--color-text);
+    transition: all var(--transition);
+}
+
+.navbar-custom .dropdown-item:hover {
+    background: var(--color-beige-light);
+    color: var(--color-accent);
+}
+
+.navbar-custom .dropdown-item:active {
+    background: var(--color-beige);
+}
+
+/* ========================================
+   NAVBAR USER BADGE
+   ======================================== */
+.navbar-user-badge {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    transition: all var(--transition);
+}
+
+.navbar-user-badge:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.navbar-user-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--color-card);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: bold;
+    color: white;
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+@media (max-width: 991px) {
+    .navbar-custom .navbar-collapse {
+        background: rgba(95, 111, 82, 0.95);
+        padding: 1rem;
+        border-radius: var(--radius-sm);
+        margin-top: 0.5rem;
+    }
+    
+    .navbar-custom .navbar-nav {
+        gap: 0.25rem;
+    }
+}

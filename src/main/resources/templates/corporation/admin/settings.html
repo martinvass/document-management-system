@@ -4,7 +4,8 @@
     <th:block th:fragment="page_links">
         <link rel="stylesheet" th:href="@{/css/dashboard.css}">
         <link rel="stylesheet" th:href="@{/css/home.css}">
-        <link rel="stylesheet" th:href="@{/css/company/settings.css}">
+        <link rel="stylesheet" th:href="@{/css/components.css}">
+        <link rel="stylesheet" th:href="@{/css/pages/settings.css}">
     </th:block>
 </head>
 <body>
@@ -22,7 +23,7 @@
                 <div class="settings-tab" data-tab="storage">Storage</div>
             </div>
 
-            <div class="tab-content active" id="tab-general">
+            <div class="settings-tab-content active" id="tab-general">
                 <form th:action="@{settings/general}" method="post" th:object="${general}">
                     <div class="section-title">General settings</div>
 
@@ -43,7 +44,7 @@
                 </form>
             </div>
 
-            <div class="tab-content" id="tab-storage">
+            <div class="settings-tab-content" id="tab-storage">
                 <form th:action="@{settings/storage}" method="post" th:object="${storage}">
                     <div class="section-title">Document storage</div>
                     <div class="section-desc">
@@ -90,9 +91,9 @@
                     </div>
 
                     <div class="actions">
-                        <button class="btn-primary" type="submit">Save changes</button>
+                        <button class="btn btn-primary" type="submit">Save changes</button>
 
-                        <button class="btn-secondary"
+                        <button class="btn btn-outline-light"
                                 type="submit"
                                 id="testConnectionBtn"
                                 th:formaction="@{settings/storage/test}"
@@ -119,7 +120,7 @@
 
 <script>
     const tabs = document.querySelectorAll('.settings-tab');
-    const contents = document.querySelectorAll('.tab-content');
+    const contents = document.querySelectorAll('.settings-tab-content');
 
     tabs.forEach(tab => {
         tab.addEventListener('click', () => {

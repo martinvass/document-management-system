@@ -1,0 +1,86 @@
+.permissions-section {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow);
+}
+
+.section-header-gradient {
+    background: linear-gradient(135deg, var(--color-card) 0%, #8fa172 100%);
+    padding: 16px 24px;
+    border-radius: var(--radius);
+    margin-bottom: 24px;
+}
+
+.section-header-gradient h5,
+.section-header-gradient .h5 {
+    color: white;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.section-title-custom {
+    color: var(--color-accent);
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.section-subtitle {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+
+.department-item {
+    background: var(--color-bg);
+    border: 1px solid var(--color-beige);
+    border-radius: var(--radius-sm);
+    margin-bottom: 8px;
+    padding: 16px;
+}
+
+.department-item-name {
+    color: var(--color-accent);
+    font-weight: 600;
+}
+
+.department-item-description {
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+}
+
+.nav-tabs-custom {
+    border-bottom: 2px solid var(--color-beige);
+    margin-bottom: 1.5rem;
+}
+
+.nav-tabs-custom .nav-link {
+    border: none;
+    font-weight: 600;
+    padding: 12px 24px;
+    background: transparent;
+    position: relative;
+    color: var(--color-text);
+    cursor: pointer;
+}
+
+.nav-tabs-custom .nav-link:hover {
+    background: rgba(95, 111, 82, 0.05);
+}
+
+.nav-tabs-custom .nav-link.active {
+    color: var(--color-accent);
+    background: transparent;
+}
+
+.nav-tabs-custom .nav-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--color-accent);
+}

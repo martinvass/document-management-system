@@ -2,6 +2,8 @@ package hu.martinvass.dms.user.controller;
 
 import hu.martinvass.dms.activity.service.ActivityService;
 import hu.martinvass.dms.annotations.ActiveUserProfile;
+import hu.martinvass.dms.corporation.dto.CreateCorporationDto;
+import hu.martinvass.dms.corporation.dto.JoinCorporationDto;
 import hu.martinvass.dms.department.service.DepartmentService;
 import hu.martinvass.dms.document.service.DocumentService;
 import hu.martinvass.dms.profile.CorporationProfile;
@@ -67,6 +69,9 @@ public class HomeController extends BaseController {
             model.addAttribute("totalStorage", totalStorage);
             model.addAttribute("totalStorageReadable", totalStorageReadable);
         }
+
+        model.addAttribute("createDto", new CreateCorporationDto());
+        model.addAttribute("joinDto", new JoinCorporationDto());
 
         return "home";
     }

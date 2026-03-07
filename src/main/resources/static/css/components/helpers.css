@@ -1,0 +1,145 @@
+.text-accent {
+    color: var(--color-accent) !important;
+}
+
+.text-muted {
+    color: var(--color-text-muted) !important;
+}
+
+.text-blue {
+    color: var(--color-blue) !important;
+}
+
+.filter-label {
+    color: var(--color-accent);
+    font-weight: 500;
+    cursor: pointer;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.navbar-text-ellipsis {
+    font-weight: 600;
+    color: white;
+    font-size: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.bg-beige {
+    background: var(--color-beige) !important;
+}
+
+.bg-cream {
+    background-color: var(--color-bg) !important;
+}
+
+.bg-white {
+    background: white !important;
+}
+
+.bg-accent {
+    background: var(--color-card) !important;
+}
+
+.icon-box-gradient {
+    width: 64px;
+    height: 64px;
+    border-radius: var(--radius);
+    background: linear-gradient(135deg, var(--color-card) 0%, #8fa172 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon-box-sm {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-sm);
+    background: var(--color-card);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--color-accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    margin-right: 12px;
+}
+
+.square-box {
+    aspect-ratio: 1;
+}
+
+.centered {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.flex-1 {
+    flex: 1;
+}
+
+.text-truncate {
+    min-width: 0;
+}
+
+.position-relative {
+    position: relative;
+}
+
+.z-index-high {
+    z-index: 1080;
+}
+
+.p-custom-md {
+    padding: 12px 24px;
+}
+
+.my-custom-spacing {
+    margin-top: 100px;
+    margin-bottom: 150px;
+}
+
+.nav-link-custom {
+    border: none !important;
+    font-weight: 600;
+    padding: 12px 24px;
+    background: transparent;
+    position: relative;
+}
+
+.user-card-container {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-sm);
+    padding: 12px;
+}
+
+.sidebar-logout-btn {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.8);
+    padding: 8px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all var(--transition-fast);
+}
+
+.sidebar-logout-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}

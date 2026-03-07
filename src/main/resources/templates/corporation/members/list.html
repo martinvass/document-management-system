@@ -2,6 +2,7 @@
 <html lang="hu" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/header :: html_header(title='DMS - Members', additionalLinks=~{this::page_links})}">
     <th:block th:fragment="page_links">
+        <link rel="stylesheet" th:href="@{/css/components.css}">
         <link rel="stylesheet" th:href="@{/css/dashboard.css}">
         <link rel="stylesheet" th:href="@{/css/home.css}">
     </th:block>
@@ -64,8 +65,7 @@
                 <div class="row g-2 align-items-end">
                     <div class="col-auto">
                         <select name="role"
-                                class="form-select form-select-sm"
-                                style="width: 150px; border: 2px solid #E9E3C4; color: #5F6F52; font-weight: 500; background: #FEFAE0 url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 16 16%27%3e%3cpath fill=%27none%27 stroke=%27%235F6F52%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27 stroke-width=%272%27 d=%27M2 5l6 6 6-6%27/%3e%3c/svg%3e') no-repeat right 0.75rem center;background-size: 16px 12px; padding-right: 2.5rem;">
+                                class="form-select form-select-sm form-select-custom-sm">
                             <option value="">All Roles</option>
                             <option value="ADMIN" th:selected="${param.role != null and param.role[0] == 'ADMIN'}">Admin</option>
                             <option value="EMPLOYEE" th:selected="${param.role != null and param.role[0] == 'EMPLOYEE'}">Employee</option>
@@ -74,8 +74,7 @@
 
                     <div class="col-auto">
                         <select name="departmentId"
-                                class="form-select form-select-sm"
-                                style="width: 180px; border: 2px solid #E9E3C4; color: #5F6F52; font-weight: 500; background: #FEFAE0 url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 16 16%27%3e%3cpath fill=%27none%27 stroke=%27%235F6F52%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27 stroke-width=%272%27 d=%27M2 5l6 6 6-6%27/%3e%3c/svg%3e') no-repeat right 0.75rem center;background-size: 16px 12px; padding-right: 2.5rem;">
+                                class="form-select form-select-sm form-select-custom-md">
                             <option value="">All Departments</option>
                             <option th:each="dept : ${departments}"
                                     th:value="${dept.id}"
@@ -201,9 +200,6 @@
         });
     }
 </script>
-
-<div th:replace="~{corporation/create-modal :: corpCreateModal(${createDto})}"></div>
-<div th:replace="~{corporation/join-modal :: corpJoinModal(${joinDto})}"></div>
 
 <div th:replace="~{fragments/scripts :: footer_scripts}"></div>
 

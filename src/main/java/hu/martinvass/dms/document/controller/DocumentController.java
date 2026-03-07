@@ -35,7 +35,7 @@ public class DocumentController extends BaseController {
     private final DocumentRepository documentRepository;
     private final DocumentService documentService;
     private final DepartmentService departmentService;
-    private DocumentPermissionService permissionService;
+    private final DocumentPermissionService permissionService;
     private final AuthService authService;
 
     public DocumentController(AppUserRepository userRepository, CorporationProfileRepository profileRepository, DocumentRepository documentRepository, DocumentService documentService, DepartmentService departmentService, DocumentPermissionService permissionService, AuthService authService) {

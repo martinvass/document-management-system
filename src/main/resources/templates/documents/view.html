@@ -4,158 +4,8 @@
     <th:block th:fragment="page_links">
         <link rel="stylesheet" th:href="@{/css/dashboard.css}">
         <link rel="stylesheet" th:href="@{/css/home.css}">
-        <link rel="stylesheet" th:href="@{/css/documents/documents-view.css}">
-        <style>
-            .doc-title-with-lock {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                gap: 16px;
-            }
-
-            .scroll-to-permissions-btn {
-                background: none;
-                border: 2px solid #6c757d;
-                color: #6c757d;
-                padding: 8px 12px;
-                border-radius: 6px;
-                cursor: pointer;
-                transition: all 0.2s;
-                font-size: 14px;
-            }
-
-            .scroll-to-permissions-btn:hover {
-                border-color: #495057;
-                color: #495057;
-                background: #f8f9fa;
-            }
-
-            .autocomplete-dropdown {
-                position: absolute;
-                background: white;
-                border: 1px solid #dee2e6;
-                border-radius: 4px;
-                max-height: 250px;
-                overflow-y: auto;
-                width: 100%;
-                z-index: 1000;
-                display: none;
-                box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-            }
-
-            .autocomplete-dropdown.show {
-                display: block;
-            }
-
-            .autocomplete-item {
-                padding: 10px 12px;
-                cursor: pointer;
-                border-bottom: 1px solid #f8f9fa;
-            }
-
-            .autocomplete-item:hover {
-                background-color: #f8f9fa;
-            }
-
-            .selected-user-display {
-                display: none;
-                margin-top: 8px;
-                padding: 8px 12px;
-                background-color: #e7f3ff;
-                border-radius: 4px;
-                border-left: 3px solid #0d6efd;
-            }
-
-            .selected-user-display.show {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-            }
-
-            .permission-tab {
-                color: #7A8471 !important;
-            }
-
-            .permission-tab.active {
-                color: #5F6F52 !important;
-                background: #FEFAE0 !important;
-                border-radius: 8px 8px 0 0 !important;
-            }
-
-            .permission-tab:hover {
-                background: rgba(169, 179, 136, 0.1) !important;
-                border-radius: 8px 8px 0 0;
-            }
-
-            .permission-tab.active::after {
-                content: '';
-                position: absolute;
-                bottom: -2px;
-                left: 0;
-                right: 0;
-                height: 3px;
-                background: #5F6F52;
-                border-radius: 2px;
-            }
-
-            .autocomplete-dropdown {
-                position: absolute;
-                background: white;
-                border: 2px solid #E9E3C4;
-                border-radius: 8px;
-                max-height: 250px;
-                overflow-y: auto;
-                width: 100%;
-                z-index: 1000;
-                display: none;
-                box-shadow: 0 4px 12px rgba(95, 111, 82, 0.15);
-                margin-top: 4px;
-            }
-
-            .autocomplete-dropdown.show {
-                display: block;
-            }
-
-            .autocomplete-item {
-                padding: 12px 16px;
-                cursor: pointer;
-                border-bottom: 1px solid #F5F1D8;
-                transition: all 0.2s;
-            }
-
-            .autocomplete-item:hover {
-                background-color: #FEFAE0;
-            }
-
-            .autocomplete-item:last-child {
-                border-bottom: none;
-            }
-
-            .selected-user-display {
-                display: none;
-                margin-top: 12px;
-                padding: 12px 16px;
-                background-color: #E9E3C4;
-                border-radius: 8px;
-                border-left: 4px solid #A9B388;
-            }
-
-            .selected-user-display.show {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-            }
-
-            .selected-user-display span {
-                color: #5F6F52;
-                font-weight: 600;
-            }
-
-            .btn:hover {
-                transform: translateY(-1px);
-                box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
-            }
-        </style>
+        <link rel="stylesheet" th:href="@{/css/components.css}">
+        <link rel="stylesheet" th:href="@{/css/pages/documents.css}">
     </th:block>
 </head>
 <body>
@@ -171,7 +21,7 @@
                 <div class="doc-big-icon">
                     <i th:class="${document.getIconClass()}"></i>
                 </div>
-                <div class="doc-title-info" style="flex: 1;">
+                <div class="doc-title-info flex-1">
                     <div class="doc-title-with-lock">
                         <div>
                             <div class="doc-title" id="docTitle" th:text="${document.originalFilename}">
@@ -179,10 +29,10 @@
                             </div>
                             <div>
                                 <span class="version-badge-large" th:text="'Version ' + ${document.version}">Version 1</span>
-                                <span th:if="${document.isLatestVersion()}" class="status-badge" style="background: #28a745; color: white;">
+                                <span th:if="${document.isLatestVersion()}" class="status-badge status-badge-success">
                                     Latest
                                 </span>
-                                <span th:unless="${document.isLatestVersion()}" class="status-badge" style="background: #ffc107; color: #000;">
+                                <span th:unless="${document.isLatestVersion()}" class="status-badge status-badge-warning">
                                     Old Version
                                 </span>
                             </div>
@@ -243,11 +93,11 @@
                 <a th:href="@{/documents/{id}/download(id=${document.id})}" class="action-btn">
                     <i class="fa-solid fa-download"></i> Download
                 </a>
-                <button class="action-btn action-btn-secondary"
+                <a class="action-btn action-btn-secondary"
                         th:if="${document.isLatestVersion()}"
-                        onclick="openVersionModal()">
+                        href="#newVersion">
                     <i class="fa-solid fa-upload"></i> Upload New Version
-                </button>
+                </a>
                 <button class="action-btn action-btn-warning"
                         th:if="${document.storageType != null and currentStorageType != null and document.storageType != currentStorageType}"
                         onclick="openMigrationModal()"
@@ -258,7 +108,7 @@
                     <i class="fa-solid fa-arrow-left-long"></i> Back to List
                 </a>
                 <form th:action="@{/documents/{id}/archive(id=${document.id})}"
-                      method="post" style="display: inline;">
+                      method="post" class="d-inline">
                     <button type="submit"
                             class="action-btn action-btn-danger"
                             onclick="return confirm('Archive this document?')">
@@ -304,27 +154,25 @@
         <div id="permissionsSection"
              class="card p-0 mt-4"
              th:if="${activeProfile.isCorporationAdmin() or document.uploadedBy.id == activeProfile.user.id}">
-            <div class="p-4 border-bottom" style="background: linear-gradient(135deg, #A9B388 0%, #8fa172 100%);">
+            <div class="p-4 border-bottom section-header-gradient">
                 <h5 class="fw-semibold mb-0 text-white">
                     <i class="fa-solid fa-lock me-2"></i>Permission Control
                 </h5>
             </div>
 
             <div class="p-4">
-                <ul class="nav nav-tabs mb-4" role="tablist" style="border-bottom: 2px solid #E9E3C4;">
+                <ul class="nav nav-tabs mb-4 nav-tabs-custom" role="tablist">
                     <li class="nav-item">
-                        <button class="nav-link active permission-tab"
+                        <button class="nav-link active permission-tab nav-link-custom"
                                 data-bs-toggle="tab"
-                                data-bs-target="#tab-departments"
-                                style="border: none; font-weight: 600; padding: 12px 24px; background: transparent; position: relative;">
+                                data-bs-target="#tab-departments">
                             <i class="fas fa-building me-1"></i> Departments
                         </button>
                     </li>
                     <li class="nav-item">
-                        <button class="nav-link permission-tab"
+                        <button class="nav-link permission-tab nav-link-custom"
                                 data-bs-toggle="tab"
-                                data-bs-target="#tab-users"
-                                style="border: none; font-weight: 600; padding: 12px 24px; background: transparent; position: relative;">
+                                data-bs-target="#tab-users">
                             <i class="fas fa-user me-1"></i> Individual Users
                         </button>
                     </li>
@@ -332,27 +180,25 @@
 
                 <div class="tab-content">
                     <div class="tab-pane fade show active" id="tab-departments">
-                        <div class="alert" style="background: #E9E3C4; border-left: 4px solid #A9B388; border-radius: 8px; padding: 12px 16px; color: #5F6F52;">
+                        <div class="alert alert-info-bordered">
                             <i class="fas fa-info-circle me-2"></i>
                             All members of these departments will automatically have READ access.
                         </div>
 
                         <div class="mb-4" th:if="${document.departments != null and !#lists.isEmpty(document.departments)}">
-                            <h6 class="fw-bold mb-3" style="color: #5F6F52;">Current Departments</h6>
+                            <h6 class="fw-bold mb-3 text-accent">Current Departments</h6>
                             <div class="list-group">
                                 <div th:each="dept : ${document.departments}"
-                                     class="list-group-item d-flex justify-content-between align-items-center"
-                                     style="background: #FEFAE0; border: 1px solid #E9E3C4; border-radius: 8px; margin-bottom: 8px; padding: 16px;">
+                                     class="list-group-item d-flex justify-content-between align-items-center department-item">
                                     <div>
-                                        <strong style="color: #5F6F52;" th:text="${dept.name}">IT Department</strong>
-                                        <small class="d-block" style="color: #7A8471;" th:text="${dept.description}">Description</small>
+                                        <strong class="text-accent" th:text="${dept.name}">IT Department</strong>
+                                        <small class="d-block text-muted" th:text="${dept.description}">Description</small>
                                     </div>
                                     <form th:action="@{/documents/{id}/permissions/remove-department(id=${document.id})}"
                                           method="post" class="d-inline">
                                         <input type="hidden" name="departmentId" th:value="${dept.id}"/>
                                         <button type="submit"
-                                                class="btn btn-sm"
-                                                style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); color: white; border: none; border-radius: 6px; padding: 6px 16px; font-weight: 500;"
+                                                class="btn btn-sm btn-gradient-danger"
                                                 onclick="return confirm('Remove department access?')">
                                             <i class="fas fa-times me-1"></i> Remove
                                         </button>
@@ -362,14 +208,12 @@
                         </div>
 
                         <div th:if="${allDepartments != null and !#lists.isEmpty(allDepartments)}">
-                            <h6 class="fw-bold mb-3" style="color: #5F6F52;">Add Department</h6>
+                            <h6 class="fw-bold mb-3 text-accent">Add Department</h6>
                             <form th:action="@{/documents/{id}/permissions/add-department(id=${document.id})}"
                                   method="post" class="row g-3">
                                 <div class="col-md-9">
                                     <select name="departmentId"
-                                            class="form-select"
-                                            style="background: #FEFAE0; border: 2px solid #E9E3C4; border-radius: 8px; padding: 10px 14px; color: #5F6F52; font-weight: 500; background-image: url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 16 16%27%3e%3cpath fill=%27none%27 stroke=%27%235F6F52%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27 stroke-width=%272%27 d=%27M2 5l6 6 6-6%27/%3e%3c/svg%3e'); background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 16px 12px; padding-right: 2.5rem;"
-                                            required>
+                                            class="form-select form-select-custom" required>
                                         <option value="">-- Select Department --</option>
                                         <option th:each="dept : ${allDepartments}"
                                                 th:value="${dept.id}"
@@ -380,8 +224,7 @@
                                 </div>
                                 <div class="col-md-3">
                                     <button type="submit"
-                                            class="btn w-100"
-                                            style="background: linear-gradient(135deg, #A9B388 0%, #8fa172 100%); color: white; border: none; border-radius: 8px; padding: 10px; font-weight: 600; box-shadow: 0 2px 8px rgba(95, 111, 82, 0.2);">
+                                            class="btn w-100 btn-gradient-primary">
                                         <i class="fas fa-plus me-1"></i> Add
                                     </button>
                                 </div>
@@ -391,40 +234,39 @@
 
                     <div class="tab-pane fade" id="tab-users">
                         <div class="mb-4" th:if="${permissions != null and !#lists.isEmpty(permissions)}">
-                            <h6 class="fw-bold mb-3" style="color: #5F6F52;">Current Permissions</h6>
+                            <h6 class="fw-bold mb-3 text-accent">Current Permissions</h6>
                             <div class="table-responsive">
-                                <table class="table table-hover align-middle mb-0" style="border: 1px solid #E9E3C4; border-radius: 8px; overflow: hidden;">
-                                    <thead style="background: #E9E3C4;">
+                                <table class="table table-hover align-middle mb-0 table-custom">
+                                    <thead class="bg-beige">
                                     <tr>
-                                        <th style="color: #5F6F52; font-weight: 600;">User</th>
-                                        <th style="color: #5F6F52; font-weight: 600;">Email</th>
-                                        <th style="color: #5F6F52; font-weight: 600;">Level</th>
-                                        <th style="color: #5F6F52; font-weight: 600;">Granted By</th>
-                                        <th style="color: #5F6F52; font-weight: 600;">Actions</th>
+                                        <th class="text-accent fw-semibold">User</th>
+                                        <th class="text-accent fw-semibold">Email</th>
+                                        <th class="text-accent fw-semibold">Level</th>
+                                        <th class="text-accent fw-semibold">Granted By</th>
+                                        <th class="text-accent fw-semibold">Actions</th>
                                     </tr>
                                     </thead>
-                                    <tbody style="background: white;">
+                                    <tbody class="bg-white">
                                     <tr th:each="perm : ${permissions}">
                                         <td>
-                                            <strong th:text="${perm.profile.user.profile.firstName + ' ' + perm.profile.user.profile.lastName}" style="color: #5F6F52;">
+                                            <strong th:text="${perm.profile.user.profile.firstName + ' ' + perm.profile.user.profile.lastName}" class="text-accent">
                                                 John Doe
                                             </strong>
                                         </td>
-                                        <td th:text="${perm.profile.user.profile.email}" style="color: #7A8471;">john@example.com</td>
+                                        <td th:text="${perm.profile.user.profile.email}" class="text-muted">john@example.com</td>
                                         <td>
                                         <span class="badge"
                                               th:classappend="${perm.permissionLevel.name() == 'ADMIN' ? 'bg-danger' :
                                                                 (perm.permissionLevel.name() == 'EDIT' ? 'bg-warning text-dark' : 'bg-success')}"
                                               th:text="${perm.permissionLevel}">READ</span>
                                         </td>
-                                        <td th:text="${perm.grantedBy.profile.username}" style="color: #7A8471;">admin</td>
+                                        <td th:text="${perm.grantedBy.profile.username}" class="text-muted">admin</td>
                                         <td>
                                             <form th:action="@{/documents/{id}/permissions/revoke-user(id=${document.id})}"
                                                   method="post" class="d-inline">
                                                 <input type="hidden" name="profileId" th:value="${perm.profile.id}"/>
                                                 <button type="submit"
-                                                        class="btn btn-sm"
-                                                        style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); color: white; border: none; border-radius: 6px; padding: 4px 12px;"
+                                                        class="btn btn-sm btn-gradient-danger-sm"
                                                         onclick="return confirm('Revoke permission?')">
                                                     <i class="fas fa-trash"></i>
                                                 </button>
@@ -437,16 +279,15 @@
                         </div>
 
                         <div>
-                            <h6 class="fw-bold mb-3" style="color: #5F6F52;">Grant Permission to User</h6>
+                            <h6 class="fw-bold mb-3 text-accent">Grant Permission to User</h6>
                             <form th:action="@{/documents/{id}/permissions/grant-user(id=${document.id})}"
                                   method="post" th:attr="data-doc-id=${document.id}">
                                 <div class="mb-3">
-                                    <label class="form-label" style="color: #5F6F52; font-weight: 600;">Search User</label>
-                                    <div style="position: relative;">
+                                    <label class="form-label text-accent fw-semibold">Search User</label>
+                                    <div class="position-relative">
                                         <input type="text"
                                                id="userSearch"
-                                               class="form-control"
-                                               style="background: #FEFAE0; border: 2px solid #E9E3C4; border-radius: 8px; padding: 10px 14px; color: #5F6F52;"
+                                               class="form-control form-input-custom"
                                                placeholder="Type name or email..."
                                                autocomplete="off">
                                         <div id="userAutocomplete" class="autocomplete-dropdown"></div>
@@ -454,8 +295,7 @@
                                     <div id="selectedUser" class="selected-user-display">
                                         <span id="selectedUserName"></span>
                                         <button type="button"
-                                                class="btn btn-sm"
-                                                style="background: #E9E3C4; color: #5F6F52; border: none; border-radius: 4px;"
+                                                class="btn btn-sm btn-beige"
                                                 onclick="clearUser()">
                                             <i class="fas fa-times"></i>
                                         </button>
@@ -464,10 +304,9 @@
                                 </div>
 
                                 <div class="mb-3">
-                                    <label class="form-label" style="color: #5F6F52; font-weight: 600;">Permission Level</label>
+                                    <label class="form-label text-accent fw-semibold">Permission Level</label>
                                     <select name="permissionLevel"
-                                            class="form-select"
-                                            style="background: #FEFAE0; border: 2px solid #E9E3C4; border-radius: 8px; padding: 10px 14px; color: #5F6F52; font-weight: 500; background-image: url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 16 16%27%3e%3cpath fill=%27none%27 stroke=%27%235F6F52%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27 stroke-width=%272%27 d=%27M2 5l6 6 6-6%27/%3e%3c/svg%3e'); background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 16px 12px; padding-right: 2.5rem;"
+                                            class="form-select form-select-custom"
                                             required>
                                         <option value="READ">READ - Can view and download</option>
                                         <option value="EDIT">EDIT - Can modify</option>
@@ -476,8 +315,7 @@
                                 </div>
 
                                 <button type="submit"
-                                        class="btn"
-                                        style="background: linear-gradient(135deg, #5F6F52 0%, #4e5e44 100%); color: white; border: none; border-radius: 8px; padding: 12px 24px; font-weight: 600; box-shadow: 0 2px 8px rgba(95, 111, 82, 0.3);">
+                                        class="btn btn-gradient-accent">
                                     <i class="fas fa-check me-2"></i> Grant Permission
                                 </button>
                             </form>
@@ -489,13 +327,13 @@
     </div>
 </div>
 
-<div id="versionModal" class="modal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h4 class="modal-title">Upload New Version</h4>
-            <button class="modal-close" onclick="closeVersionModal()">
+<div id="newVersion" class="modal-custom">
+    <div class="modal-custom-content">
+        <div class="modal-custom-header">
+            <h4 class="modal-custom-title">Upload New Version</h4>
+            <a class="modal-custom-close" href="#">
                 <i class="fa-solid fa-xmark"></i>
-            </button>
+            </a>
         </div>
         <form th:action="@{/documents/{id}/new-version(id=${document.id})}"
               method="post" enctype="multipart/form-data">
@@ -510,8 +348,8 @@
                 </div>
             </div>
             <div class="d-flex gap-2">
-                <button type="submit" class="action-btn action-btn-secondary">Upload</button>
-                <button type="button" class="action-btn action-btn-secondary" onclick="closeVersionModal()">Cancel</button>
+                <button type="submit" class="icon-btn p-custom-md">Upload</button>
+                <a href="#" class="icon-btn p-custom-md">Cancel</a>
             </div>
         </form>
     </div>
@@ -618,8 +456,6 @@
         });
     }
 
-    function openVersionModal() { document.getElementById('versionModal').classList.add('active'); }
-    function closeVersionModal() { document.getElementById('versionModal').classList.remove('active'); }
     function updateVersionFileName(input) {
         document.getElementById('versionFileName').textContent = input.files[0]?.name || 'Click to select a file';
     }

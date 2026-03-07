@@ -3,6 +3,7 @@
 <head th:replace="~{fragments/header :: html_header(title='DMS - Departments', additionalLinks=~{this::page_links})}">
     <th:block th:fragment="page_links">
         <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+        <link rel="stylesheet" th:href="@{/css/components.css}">
         <link rel="stylesheet" th:href="@{/css/home.css}">
     </th:block>
 </head>
@@ -23,9 +24,9 @@
                         Manage departments in <span th:text="${activeProfile.corporation.name}">Corporation</span>
                     </small>
                 </div>
-                <button class="btn btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#createDeptModal">
+                <a class="btn btn-primary shadow-sm" href="#create">
                     <i class="fas fa-plus me-1"></i> New Department
-                </button>
+                </a>
             </div>
 
             <div class="row g-3 mb-4">
@@ -74,11 +75,10 @@
                             <td th:text="${dept.createdBy?.profile?.username ?: '—'}">admin</td>
                             <td>
                                 <div class="d-flex gap-1">
-                                    <button class="btn btn-sm btn-outline-secondary"
-                                            data-bs-toggle="modal"
-                                            th:attr="data-bs-target='#editDeptModal' + ${dept.id}">
+                                    <a class="btn btn-sm btn-outline-secondary"
+                                       th:href="'#edit' + ${dept.id}">
                                         <i class="fas fa-edit"></i> Edit
-                                    </button>
+                                    </a>
                                     <form th:action="@{/corporation/admin/departments/{id}/archive(id=${dept.id})}"
                                           method="post" class="d-inline">
                                         <button type="submit" class="btn btn-sm btn-outline-danger"
@@ -124,63 +124,56 @@
                 </div>
             </div>
         </div>
+    </div>
+</div>
 
-        <div class="modal fade" id="createDeptModal" tabindex="-1">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title fw-bold">Create New Department</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <form th:action="@{/corporation/admin/departments/create}" method="post">
-                        <div class="modal-body">
-                            <div class="mb-3">
-                                <label class="form-label fw-semibold">Name</label>
-                                <input type="text" name="name" class="form-control" placeholder="e.g., IT Department" required>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label fw-semibold">Description (optional)</label>
-                                <textarea name="description" class="form-control" rows="3"
-                                          placeholder="Brief description of the department..."></textarea>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-plus me-1"></i> Create
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
+<div class="modal-custom" id="create">
+    <div class="modal-custom-content">
+        <div class="modal-custom-header">
+            <h5 class="modal-custom-title fw-bold">Create New Department</h5>
+            <a class="modal-custom-close" href="#">
+                <i class="fa-solid fa-xmark"></i>
+            </a>
         </div>
+        <form th:action="@{/corporation/admin/departments/create}" method="post">
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Name</label>
+                <input type="text" name="name" class="form-control" placeholder="e.g., IT Department" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Description (optional)</label>
+                <textarea name="description" class="form-control" rows="3"
+                          placeholder="Brief description of the department..."></textarea>
+            </div>
+            <a class="btn btn-outline-secondary" href="#">Cancel</a>
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-plus me-1"></i> Create
+            </button>
+        </form>
+    </div>
+</div>
 
-        <div th:each="dept : ${departments}"
-             class="modal fade"
-             th:id="'editDeptModal' + ${dept.id}"
-             tabindex="-1">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Edit Department</h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form method="post" th:action="@{'/corporation/admin/departments/' + ${dept.id} + '/update'}">
-                            <div class="mb-3">
-                                <label class="form-label fw-semibold">Department Name</label>
-                                <input type="text" class="form-control" name="name" th:value="${dept.name}" required>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label fw-semibold">Description</label>
-                                <textarea class="form-control" name="description" rows="3" th:text="${dept.description}"></textarea>
-                            </div>
-                            <button type="submit" class="btn btn-primary w-100">Update Department</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
+<div th:each="dept : ${departments}"
+     class="modal-custom"
+     th:id="'edit' + ${dept.id}">
+    <div class="modal-custom-content">
+        <div class="modal-custom-header">
+            <h5 class="modal-custom-title">Edit Department</h5>
+            <a class="modal-custom-close" href="#">
+                <i class="fa-solid fa-xmark"></i>
+            </a>
         </div>
+        <form method="post" th:action="@{'/corporation/admin/departments/' + ${dept.id} + '/update'}">
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Department Name</label>
+                <input type="text" class="form-control" name="name" th:value="${dept.name}" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Description</label>
+                <textarea class="form-control" name="description" rows="3" th:text="${dept.description}"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Update Department</button>
+        </form>
     </div>
 </div>
 
@@ -201,9 +194,6 @@
         });
     }
 </script>
-
-<div th:replace="~{corporation/create-modal :: corpCreateModal(${createDto})}"></div>
-<div th:replace="~{corporation/join-modal :: corpJoinModal(${joinDto})}"></div>
 
 <div th:replace="~{fragments/scripts :: footer_scripts}"></div>
 

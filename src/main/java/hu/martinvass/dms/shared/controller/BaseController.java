@@ -44,8 +44,5 @@ public abstract class BaseController {
 
         model.addAttribute("activeProfile", activeProfile);
         model.addAttribute("activeProfileId", activeProfile != null ? activeProfile.getId() : -1L);
-
-        model.addAttribute("createDto", new CreateCorporationDto());
-        model.addAttribute("joinDto", new JoinCorporationDto());
     }
 }
