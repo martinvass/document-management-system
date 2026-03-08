@@ -45,7 +45,7 @@ public class DepartmentController extends BaseController {
 
         var departments = departmentService.getDepartments(
                 activeProfile.getCorporation(),
-                PageRequest.of(page - 1, 1)
+                PageRequest.of(page - 1, 5)
         );
 
         model.addAttribute("departments", departments);

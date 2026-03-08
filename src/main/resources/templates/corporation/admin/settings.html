@@ -15,6 +15,9 @@
 <div th:replace="~{fragments/dashboard/sidebar :: sidebar(content=~{::content})}">
     <div th:fragment="content">
         <div class="container-fluid py-4">
+            <a th:href="@{/home}" class="btn btn-outline-secondary mb-4">
+                <i class="fas fa-arrow-left me-1"></i> Back to Home
+            </a>
 
             <h3 class="fw-bold mb-4">Settings</h3>
 

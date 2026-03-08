@@ -12,6 +12,10 @@
 <nav th:replace="~{fragments/dashboard/navigation :: navigation_bar}"></nav>
 <div th:replace="~{fragments/dashboard/sidebar :: sidebar(content=~{::content})}">
     <div th:fragment="content" class="container-fluid py-4">
+        <a th:href="@{/home}" class="btn btn-outline-secondary mb-4">
+            <i class="fas fa-arrow-left me-1"></i> Back to Home
+        </a>
+
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
                 <h3 class="fw-bold mb-0">Documents</h3>

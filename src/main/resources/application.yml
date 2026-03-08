@@ -1,0 +1,93 @@
+# Active profile
+spring.profiles.active: prod
+
+# Mail Configuration
+spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USER}
+    password: ${MAIL_PASS}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+  # File Upload
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+
+# Server
+server:
+  jetty:
+    max-http-form-post-size: 104857600
+
+---
+# DEV PROFILE
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+  # Database
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USER_DMS_APP}
+    password: ${DB_PASS_DMS_APP}
+
+  # JPA/Hibernate
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        default_schema: dms
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+# DMS Config
+dms:
+  crypto:
+    key-base64: ${DMS_CRYPTO_KEY}
+
+# App URL
+app:
+  base-url: http://localhost:8080
+
+---
+# PROD PROFILE
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+  # Database
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USER_DMS_APP}
+    password: ${DB_PASS_DMS_APP}
+
+  # JPA/Hibernate
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        default_schema: dms
+        format_sql: false
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+# DMS Config
+dms:
+  crypto:
+    key-base64: ${DMS_CRYPTO_KEY}
+
+# App URL
+app:
+  base-url: https://dms.lexium.dev

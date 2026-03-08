@@ -26,22 +26,7 @@ public class CorporationEventListener {
     public void onInvitationCreatedEvent(InvitationCreatedEvent event) {
         var invitation = event.getInvitation();
 
-        // Send email
-        emailService.sendEmail(
-                invitation.getInvitedEmail(),
-                String.format("You have been invited to join %s", invitation.getCorporation().getName()),
-                String.format("""
-                    Hello,
-
-                    You have been invited to join corporation: %s.
-                    Invitation code: %s
-                    Link: https://dms.lexium.dev/invite/%s
-                    This invitation expires on %s.
-                    """,
-                        invitation.getCorporation().getName(),
-                        invitation.getCode(),
-                        invitation.getCode(),
-                        invitation.getExpiresAt().toString())
-        );
+        emailService.sendInvitationEmail(invitation.getInvitedEmail(), invitation.getCode(),
+                invitation.getCorporation().getName(), invitation.getExpiresAt().toString());
     }
 }
