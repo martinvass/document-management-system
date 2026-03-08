@@ -8,6 +8,7 @@ import hu.martinvass.dms.user.domain.Profile;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -49,7 +50,17 @@ public class CorporationProfile {
     )
     private Set<Department> departments = new HashSet<>();
 
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
+
     public boolean isCorporationAdmin() {
         return role == CorporationRole.ADMIN;
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        if (createdAt == null) {
+            createdAt = LocalDateTime.now();
+        }
     }
 }

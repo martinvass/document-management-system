@@ -51,7 +51,13 @@
                 </div>
             </div>
 
-            <div class="card border-0 shadow-sm">
+            <div th:if="${departments.isEmpty()}"
+                 class="text-center py-5">
+                <i class="fas fa-envelope-open text-muted opacity-25" style="font-size: 4rem;"></i>
+                <h5 class="text-muted mt-3">No departments found</h5>
+            </div>
+
+            <div class="card border-0 shadow-sm" th:unless="${departments.isEmpty()}">
                 <div class="card-body">
                     <table class="table table-hover align-middle mb-0">
                         <thead>

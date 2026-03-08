@@ -12,6 +12,9 @@
 <nav th:replace="~{fragments/dashboard/navigation :: navigation_bar}"></nav>
 <div th:replace="~{fragments/dashboard/sidebar :: sidebar(content=~{::content})}">
     <div th:fragment="content" class="container-fluid py-4">
+        <a th:href="@{/documents}" class="btn btn-outline-secondary mb-4">
+            <i class="fas fa-arrow-left me-1"></i> Back to Documents
+        </a>
 
         <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
         <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
@@ -104,9 +107,6 @@
                         th:title="'Migrate from ' + ${document.storageType.name()} + ' to ' + ${currentStorageType.name()}">
                     <i class="fa-solid fa-arrow-right-arrow-left"></i> Migrate Storage
                 </button>
-                <a th:href="@{/documents}" class="action-btn action-btn-secondary">
-                    <i class="fa-solid fa-arrow-left-long"></i> Back to List
-                </a>
                 <form th:action="@{/documents/{id}/archive(id=${document.id})}"
                       method="post" class="d-inline">
                     <button type="submit"

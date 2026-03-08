@@ -1,7 +1,10 @@
 package hu.martinvass.dms.corporation.controller;
 
+import hu.martinvass.dms.auth.AuthService;
 import hu.martinvass.dms.corporation.dto.CreateCorporationDto;
+import hu.martinvass.dms.corporation.dto.JoinCorporationDto;
 import hu.martinvass.dms.corporation.service.CorporationService;
+import hu.martinvass.dms.invitation.service.InvitationService;
 import hu.martinvass.dms.profile.service.ProfileSessionService;
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
@@ -20,6 +23,8 @@ import java.security.Principal;
 public class CorporationController {
 
     private final CorporationService corporationService;
+    private final InvitationService invitationService;
+    private final AuthService authService;
     private final ProfileSessionService sessionService;
 
     @PostMapping("/create")
@@ -31,10 +36,24 @@ public class CorporationController {
             corporationService.createCorporation(dto, principal.getName(), session);
             redirectAttributes.addFlashAttribute("message", "Corporation created");
 
-            // TODO: redirect to company dashboard or something
             return "redirect:/home";
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/home";
+        }
+    }
+
+    @PostMapping("/join")
+    public String join(@ModelAttribute("joinDto") JoinCorporationDto dto, Principal principal, RedirectAttributes attributes, HttpSession session) {
+        try {
+            var user = authService.findByUsername(principal.getName());
+
+            invitationService.acceptInvitation(dto.getCode(), user);
+
+            attributes.addFlashAttribute("success", "Invitation successfully accepted");
+            return "redirect:/home";
+        } catch (Exception e) {
+            attributes.addFlashAttribute("error", e.getMessage());
             return "redirect:/home";
         }
     }

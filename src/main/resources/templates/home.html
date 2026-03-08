@@ -25,19 +25,15 @@
                 </p>
 
                 <div class="empty-state-actions">
-                    <button class="btn-action btn-action-primary"
-                            data-bs-toggle="modal"
-                            data-bs-target="#corpCreateModal">
+                    <a class="btn-action btn-action-primary" href="#create" style="text-decoration: none">
                         <i class="fas fa-plus me-2"></i>
                         Create Company
-                    </button>
+                    </a>
 
-                    <button class="btn-action btn-action-secondary"
-                            data-bs-toggle="modal"
-                            data-bs-target="#corpJoinModal">
+                    <a class="btn-action btn-action-secondary" href="#join" style="text-decoration: none">
                         <i class="fas fa-arrow-right-to-bracket me-2"></i>
                         Join Company
-                    </button>
+                    </a>
                 </div>
 
                 <div class="info-cards">
@@ -109,7 +105,7 @@
             <div class="d-flex flex-wrap gap-3 mb-5">
                 <a th:href="@{/documents}" class="qa-link qa-blue"><i class="fas fa-folder-open me-2"></i>All Documents</a>
                 <a th:href="@{/documents(myUploads='on')}" class="qa-link qa-green"><i class="fas fa-user me-2"></i>My Uploads</a>
-                <a href="#" class="qa-link qa-orange"><i class="fas fa-chart-simple me-2"></i>Statistics</a>
+                <a th:if="${activeProfile.isCorporationAdmin()}" th:href="@{/corporation/admin/statistics}" class="qa-link qa-orange"><i class="fas fa-chart-simple me-2"></i>Statistics</a>
             </div>
 
             <div class="row g-5">

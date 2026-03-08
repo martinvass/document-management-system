@@ -40,4 +40,25 @@ public interface CorporationProfileRepository extends JpaRepository<CorporationP
             @Param("corporation") Corporation corporation,
             @Param("startDate") LocalDateTime startDate
     );
+
+    /**
+     * Get profiles created within a date range
+     */
+    @Query("SELECT cp.createdAt, cp.id " +
+            "FROM CorporationProfile cp " +
+            "WHERE cp.corporation.id = :corporationId " +
+            "AND cp.createdAt >= :fromDate " +
+            "ORDER BY cp.createdAt ASC")
+    List<Object[]> getProfilesForGrowth(@Param("corporationId") Long corporationId,
+                                        @Param("fromDate") LocalDateTime fromDate);
+
+    /**
+     * Count profiles created BEFORE a certain date
+     */
+    @Query("SELECT COUNT(cp) " +
+            "FROM CorporationProfile cp " +
+            "WHERE cp.corporation.id = :corporationId " +
+            "AND cp.createdAt < :beforeDate")
+    Long countProfilesBeforeDate(@Param("corporationId") Long corporationId,
+                                 @Param("beforeDate") LocalDateTime beforeDate);
 }

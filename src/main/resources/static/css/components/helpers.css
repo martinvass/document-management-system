@@ -40,7 +40,8 @@
 }
 
 .bg-accent {
-    background: var(--color-card) !important;
+    background: var(--color-beige-light) !important;
+    border-radius: 10px;
 }
 
 .icon-box-gradient {

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="hu">
+<head th:replace="~{fragments/header :: html_header(title='Statistics', additionalLinks=~{this::page_links})}">
+    <th:block th:fragment="page_links">
+        <link rel="stylesheet" th:href="@{/css/home.css}">
+        <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+        <link rel="stylesheet" th:href="@{/css/components.css}">
+        <link rel="stylesheet" th:href="@{/css/pages/statistics.css}">
+    </th:block>
+</head>
+<body>
+<nav th:replace="~{fragments/dashboard/navigation :: navigation_bar}"></nav>
+<div th:replace="~{fragments/dashboard/sidebar :: sidebar(content=~{::content})}">
+    <div th:fragment="content" class="container-fluid py-4">
+        <a th:href="@{/home}" class="btn btn-outline-secondary mb-4">
+            <i class="fas fa-arrow-left me-1"></i> Back to Home
+        </a>
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h3 class="fw-bold mb-0">
+                    <i class="fas fa-chart-line me-2"></i>
+                    Statistics
+                </h3>
+                <small class="text-muted">Analytics and insights for your company</small>
+            </div>
+        </div>
+
+        <div class="row g-3 mb-4">
+            <div class="col-md-4">
+                <div class="card shadow-sm">
+                    <div class="card-body text-center">
+                        <h6 class="text-muted mb-1">Total Documents</h6>
+                        <h2 class="fw-bold text-warning mb-0" th:text="${totalDocuments}">0</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card shadow-sm">
+                    <div class="card-body text-center">
+                        <h6 class="text-muted mb-1">Team Members</h6>
+                        <h2 class="fw-bold text-success mb-0" th:text="${totalMembers}">0</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card shadow-sm">
+                    <div class="card-body text-center">
+                        <h6 class="text-muted mb-1">Departments</h6>
+                        <h2 class="fw-bold text-danger mb-0" th:text="${totalDepartments}">0</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <ul class="nav nav-tabs-custom mb-4" id="statisticsTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="documents-tab" data-bs-toggle="tab"
+                        data-bs-target="#documents" type="button" role="tab">
+                    <i class="fas fa-file-alt me-2"></i>Documents
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="team-tab" data-bs-toggle="tab"
+                        data-bs-target="#team" type="button" role="tab">
+                    <i class="fas fa-users me-2"></i>Team
+                </button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="statisticsTabContent">
+            <div class="tab-pane fade show active" id="documents" role="tabpanel">
+                <div class="row g-4">
+                    <div class="col-lg-8">
+                        <div class="chart-card">
+                            <div class="chart-header">
+                                <h5 class="chart-title">
+                                    <i class="fas fa-chart-line me-2"></i>
+                                    Document Upload Trends
+                                </h5>
+                                <small class="text-muted">Last 30 days</small>
+                            </div>
+                            <div class="chart-body">
+                                <canvas id="documentTrendsChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <div class="chart-card">
+                            <div class="chart-header">
+                                <h5 class="chart-title">
+                                    <i class="fas fa-chart-pie me-2"></i>
+                                    File Types
+                                </h5>
+                            </div>
+                            <div class="chart-body">
+                                <canvas id="fileTypesChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <div class="chart-card">
+                            <div class="chart-header">
+                                <h5 class="chart-title">
+                                    <i class="fas fa-trophy me-2"></i>
+                                    Top Uploaders
+                                </h5>
+                            </div>
+                            <div class="chart-body">
+                                <canvas id="topUploadersChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <div class="chart-card">
+                            <div class="chart-header">
+                                <h5 class="chart-title">
+                                    <i class="fas fa-folder me-2"></i>
+                                    Documents by Department
+                                </h5>
+                            </div>
+                            <div class="chart-body">
+                                <canvas id="docsByDepartmentChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="team" role="tabpanel">
+                <div class="row g-4">
+                    <div class="col-lg-8">
+                        <div class="chart-card">
+                            <div class="chart-header">
+                                <h5 class="chart-title">
+                                    <i class="fas fa-chart-area me-2"></i>
+                                    Team Growth
+                                </h5>
+                                <small class="text-muted">Last 30 days</small>
+                            </div>
+                            <div class="chart-body">
+                                <canvas id="teamGrowthChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <div class="chart-card">
+                            <div class="chart-header">
+                                <h5 class="chart-title">
+                                    <i class="fas fa-users-cog me-2"></i>
+                                    Department Sizes
+                                </h5>
+                            </div>
+                            <div class="chart-body">
+                                <canvas id="deptMembersChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/scripts :: footer_scripts}"></div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script th:src="@{/js/statistics.js}"></script>
+</body>
+</html>

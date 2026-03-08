@@ -27,4 +27,15 @@ public interface DepartmentRepository extends JpaRepository<Department, Long> {
             @Param("search") String search,
             Pageable pageable
     );
+
+    /**
+     * Get member count by department
+     */
+    @Query("SELECT d.name, COUNT(cp) " +
+            "FROM CorporationProfile cp " +
+            "RIGHT JOIN cp.departments d " +
+            "WHERE d.corporation.id = :corporationId " +
+            "GROUP BY d.id, d.name " +
+            "ORDER BY COUNT(cp) DESC")
+    List<Object[]> getDepartmentMemberDistribution(@Param("corporationId") Long corporationId);
 }

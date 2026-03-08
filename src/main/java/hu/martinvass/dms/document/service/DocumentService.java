@@ -14,6 +14,8 @@ import hu.martinvass.dms.storage.StorageRouter;
 import hu.martinvass.dms.user.domain.AppUser;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.Subquery;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -410,18 +412,12 @@ public class DocumentService {
             Pageable pageable
     ) {
         Specification<Document> spec = (root, query, cb) -> {
-            var predicates = new ArrayList<>();
+            var predicates = new ArrayList<Predicate>();
 
-            // 1. Corporation filter (ALWAYS required)
             predicates.add(cb.equal(root.get("corporation"), corporation));
-
-            // 2. Status filter (ACTIVE only)
             predicates.add(cb.equal(root.get("status"), DocumentStatus.ACTIVE));
-
-            // 3. Latest version only
             predicates.add(cb.equal(root.get("latestVersion"), root));
 
-            // 4. Search by filename (optional)
             if (search != null && !search.trim().isEmpty()) {
                 predicates.add(
                         cb.like(
@@ -431,13 +427,11 @@ public class DocumentService {
                 );
             }
 
-            // 5. Department filter (optional)
             if (departmentId != null) {
                 var departmentsJoin = root.join("departments", JoinType.INNER);
                 predicates.add(cb.equal(departmentsJoin.get("id"), departmentId));
             }
 
-            // 6. File type filter (optional)
             if (fileType != null && !fileType.trim().isEmpty()) {
                 var type = fileType.toLowerCase().trim();
                 switch (type) {
@@ -456,12 +450,20 @@ public class DocumentService {
                 }
             }
 
-            // 7. My Uploads filter (optional)
             if (Boolean.TRUE.equals(myUploads)) {
-                predicates.add(cb.equal(root.get("uploadedBy"), currentUser));
+                Subquery<Long> subquery = query.subquery(Long.class);
+                Root<Document> subRoot = subquery.from(Document.class);
+
+                subquery.select(subRoot.get("id"))
+                        .where(
+                                cb.equal(subRoot.get("latestVersion"), root.get("latestVersion")),
+                                cb.equal(subRoot.get("version"), 1),
+                                cb.equal(subRoot.get("uploadedBy"), currentUser)
+                        );
+
+                predicates.add(cb.exists(subquery));
             }
 
-            // Combine all predicates with AND
             return cb.and(predicates.toArray(new Predicate[0]));
         };
 
