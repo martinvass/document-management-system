@@ -289,12 +289,11 @@ public class DocumentService {
         var savedNewVersion = documentRepository.save(newVersion);
 
         savedNewVersion.setLatestVersion(savedNewVersion);
-        currentDocument.setLatestVersion(savedNewVersion);
+        documentRepository.updateLatestVersionForAll(currentDocument, savedNewVersion);
 
         permissionService.copyPermissions(currentDocument, newVersion);
 
         documentRepository.save(savedNewVersion);
-        documentRepository.save(currentDocument);
 
         activityService.log(
                 corporation,

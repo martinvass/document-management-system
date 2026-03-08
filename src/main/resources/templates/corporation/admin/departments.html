@@ -95,31 +95,10 @@
                         </tbody>
                     </table>
 
-                    <div class="floating-pagination-modern">
-                        <ul class="pagination-modern">
-                            <li th:classappend="${departments.first} ? 'disabled'">
-                                <a th:if="${!departments.first}"
-                                   th:href="@{/corporation/admin/departments(page=${currentPage - 1})}">
-                                    prev
-                                </a>
-                                <span th:if="${departments.first}">prev</span>
-                            </li>
-
-                            <li th:each="pageNum : ${#numbers.sequence(1, departments.totalPages)}"
-                                th:classappend="${pageNum == currentPage} ? 'active'">
-                                <a th:text="${pageNum}"
-                                   th:href="@{/corporation/admin/departments(page=${pageNum})}">
-                                </a>
-                            </li>
-
-                            <li th:classappend="${departments.last} ? 'disabled'">
-                                <a th:if="${!departments.last}"
-                                   th:href="@{/corporation/admin/departments(page=${currentPage + 1})}">
-                                    next
-                                </a>
-                                <span th:if="${departments.last}">next</span>
-                            </li>
-                        </ul>
+                    <div th:replace="~{fragments/pagination :: pagination(
+                                page=${departments},
+                                baseUrl='/corporation/admin/departments'
+                            )}">
                     </div>
                 </div>
             </div>

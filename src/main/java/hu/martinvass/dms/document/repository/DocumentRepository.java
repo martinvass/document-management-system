@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -83,6 +84,12 @@ public interface DocumentRepository
      */
     @Query("SELECT d.latestVersion FROM Document d WHERE d.id = :docId")
     Optional<Document> findLatestVersion(@Param("docId") Long documentId);
+
+    @Modifying
+    @Query("UPDATE Document d SET d.latestVersion = :newLatest " +
+            "WHERE d = :current OR d.latestVersion = :current")
+    void updateLatestVersionForAll(@Param("current") Document current,
+                                   @Param("newLatest") Document newLatest);
 
     long countByUploadedByAndCorporationAndStatus(
             AppUser uploadedBy,

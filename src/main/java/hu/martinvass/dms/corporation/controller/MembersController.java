@@ -90,6 +90,7 @@ public class MembersController extends BaseController {
         model.addAttribute("members", members);
         model.addAttribute("departments", allDepartments);
         model.addAttribute("currentPage", page);
+        model.addAttribute("membersCount", profileRepository.countByCorporation(activeProfile.getCorporation()));
         model.addAttribute("adminsCount", adminsCount);
         model.addAttribute("employeesCount", employeesCount);
         model.addAttribute("joinedThisMonthCount", joinedThisMonthCount);

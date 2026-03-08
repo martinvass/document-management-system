@@ -31,7 +31,7 @@
                     <div class="card shadow-sm">
                         <div class="card-body text-center">
                             <h6 class="text-muted mb-1">Total Members</h6>
-                            <h2 class="fw-bold text-primary mb-0" th:text="${members.totalElements}">0</h2>
+                            <h2 class="fw-bold text-primary mb-0" th:text="${membersCount}">0</h2>
                         </div>
                     </div>
                 </div>
@@ -151,31 +151,10 @@
                         </tbody>
                     </table>
 
-                    <div class="floating-pagination-modern">
-                        <ul class="pagination-modern">
-                            <li th:classappend="${members.first} ? 'disabled'">
-                                <a th:if="${!members.first}"
-                                   th:href="@{/corporation/members(page=${currentPage - 1})}">
-                                    prev
-                                </a>
-                                <span th:if="${members.first}">prev</span>
-                            </li>
-
-                            <li th:each="pageNum : ${#numbers.sequence(1, members.totalPages)}"
-                                th:classappend="${pageNum == currentPage} ? 'active'">
-                                <a th:text="${pageNum}"
-                                   th:href="@{/corporation/members(page=${pageNum})}">
-                                </a>
-                            </li>
-
-                            <li th:classappend="${members.last} ? 'disabled'">
-                                <a th:if="${!members.last}"
-                                   th:href="@{/corporation/members(page=${currentPage + 1})}">
-                                    next
-                                </a>
-                                <span th:if="${members.last}">next</span>
-                            </li>
-                        </ul>
+                    <div th:replace="~{fragments/pagination :: pagination(
+                                page=${members},
+                                baseUrl='/corporation/members'
+                            )}">
                     </div>
                 </div>
             </div>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="pagination(page, baseUrl)"
+     th:if="${page != null and page.totalPages > 1}">
+    <div class="floating-pagination-modern">
+        <ul class="pagination-modern">
+            <!-- Previous -->
+            <li th:classappend="${page.first} ? 'disabled'">
+                <a th:if="${!page.first}"
+                   th:href="@{${baseUrl}(page=${page.number})}">
+                    prev
+                </a>
+                <span th:if="${page.first}">prev</span>
+            </li>
+
+            <!-- Pages -->
+            <li th:each="pageNum : ${#numbers.sequence(1, page.totalPages)}"
+                th:classappend="${pageNum == (page.number + 1)} ? 'active'">
+                <a th:text="${pageNum}"
+                   th:href="@{${baseUrl}(page=${pageNum})}">
+                </a>
+            </li>
+
+            <!-- Next -->
+            <li th:classappend="${page.last} ? 'disabled'">
+                <a th:if="${!page.last}"
+                   th:href="@{${baseUrl}(page=${page.number + 2})}">
+                    next
+                </a>
+                <span th:if="${page.last}">next</span>
+            </li>
+        </ul>
+    </div>
+</div>
+</body>
+</html>

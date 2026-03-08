@@ -172,33 +172,11 @@
             </div>
         </div>
 
-        <div class="floating-pagination-modern">
-            <ul class="pagination-modern">
-                <li th:classappend="${documents.first} ? 'disabled'">
-                    <a th:if="${!documents.first}"
-                       th:href="@{/documents(page=${currentPage - 1}, search=${param.search}, fileType=${param.fileType}, storage=${param.storage})}">
-                        prev
-                    </a>
-                    <span th:if="${documents.first}">prev</span>
-                </li>
-
-                <li th:each="pageNum : ${#numbers.sequence(1, documents.totalPages)}"
-                    th:classappend="${pageNum == currentPage} ? 'active'">
-                    <a th:text="${pageNum}"
-                       th:href="@{/documents(page=${pageNum}, search=${param.search}, fileType=${param.fileType}, storage=${param.storage})}">
-                    </a>
-                </li>
-
-                <li th:classappend="${documents.last} ? 'disabled'">
-                    <a th:if="${!documents.last}"
-                       th:href="@{/documents(page=${currentPage + 1}, search=${param.search}, fileType=${param.fileType}, storage=${param.storage})}">
-                        next
-                    </a>
-                    <span th:if="${documents.last}">next</span>
-                </li>
-            </ul>
+        <div th:replace="~{fragments/pagination :: pagination(
+                                page=${documents},
+                                baseUrl='/documents'
+                            )}">
         </div>
-
     </div>
 </div>
 
