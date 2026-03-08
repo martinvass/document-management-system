@@ -1,7 +1,5 @@
 package hu.martinvass.dms.shared.controller;
 
-import hu.martinvass.dms.corporation.dto.CreateCorporationDto;
-import hu.martinvass.dms.corporation.dto.JoinCorporationDto;
 import hu.martinvass.dms.profile.CorporationProfile;
 import hu.martinvass.dms.profile.repository.CorporationProfileRepository;
 import hu.martinvass.dms.user.repository.AppUserRepository;

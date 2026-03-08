@@ -12,11 +12,11 @@ public class AppConfig {
     private String baseUrl;
 
     public String getVerificationUrl(String token) {
-        return baseUrl + "/verify?token=" + token;
+        return baseUrl + "/auth/verify?token=" + token;
     }
 
     public String getInvitationAcceptUrl(String token) {
-        return baseUrl + "/invite/accept?token=" + token;
+        return baseUrl + "/invite/" + token;
     }
 
     public void setBaseUrl(String baseUrl) {

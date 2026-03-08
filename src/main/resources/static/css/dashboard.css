@@ -31,11 +31,10 @@ small.text-muted {
 .table {
     border-collapse: collapse;
     width: 100%;
-    background-color: #E9E3C4;
+    background-color: var(--color-card);
     --bs-table-bg: #E9E3C4;
     border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 3px 10px rgba(95, 111, 82, 0.1);
 }
 
 .table thead th {
