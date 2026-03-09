@@ -1,0 +1,19 @@
+<div th:fragment="migrateDocument(document)" id="migrate" class="modal-custom">
+    <div class="modal-custom-content">
+        <div class="modal-custom-header">
+            <h4 class="modal-custom-title">Migrate Storage</h4>
+            <a class="modal-custom-close" href="#">
+                <i class="fa-solid fa-xmark"></i>
+            </a>
+        </div>
+        <p>This will migrate the document storage.</p>
+        <form id="migrationForm" th:action="@{/documents/{id}/migrate(id=${document.id})}" method="post">
+            <div class="d-flex gap-2">
+                <button type="submit" class="action-btn action-btn-warning">
+                    <i class="fa-solid fa-arrow-right-arrow-left"></i> Migrate
+                </button>
+                <a class="action-btn action-btn-secondary" href="#">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>

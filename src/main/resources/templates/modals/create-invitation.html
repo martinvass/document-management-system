@@ -1,0 +1,35 @@
+<div th:fragment="createInvitation(createInvitationDto, availableRoles)" id="createInvite" class="modal-custom">
+    <div class="modal-custom-content">
+        <div class="modal-custom-header">
+            <h5 class="modal-custom-title">Create New Invitation</h5>
+            <a class="modal-custom-close" href="#">
+                <i class="fa-solid fa-xmark"></i>
+            </a>
+        </div>
+        <form method="post"
+              th:action="@{/corporation/admin/invitations/create}" th:object="${createInvitationDto}">
+
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Email address</label>
+                <input class="form-control" placeholder="user@domain.com" th:field="*{email}"
+                       type="email">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Role</label>
+                <select class="form-select" th:field="*{role}">
+                    <option value="">-- Select Role --</option>
+                    <option th:each="r : ${availableRoles}" th:text="${r}" th:value="${r}"></option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Expiration Date</label>
+                <input class="form-control" required th:attr="min=${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}"
+                       th:field="*{expiresAt}" type="date">
+            </div>
+
+            <button class="btn btn-primary w-100" type="submit">Generate Invitation</button>
+        </form>
+    </div>
+</div>

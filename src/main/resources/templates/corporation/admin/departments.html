@@ -116,55 +116,8 @@
     </div>
 </div>
 
-<div class="modal-custom" id="create">
-    <div class="modal-custom-content">
-        <div class="modal-custom-header">
-            <h5 class="modal-custom-title fw-bold">Create New Department</h5>
-            <a class="modal-custom-close" href="#">
-                <i class="fa-solid fa-xmark"></i>
-            </a>
-        </div>
-        <form th:action="@{/corporation/admin/departments/create}" method="post">
-            <div class="mb-3">
-                <label class="form-label fw-semibold">Name</label>
-                <input type="text" name="name" class="form-control" placeholder="e.g., IT Department" required>
-            </div>
-            <div class="mb-3">
-                <label class="form-label fw-semibold">Description (optional)</label>
-                <textarea name="description" class="form-control" rows="3"
-                          placeholder="Brief description of the department..."></textarea>
-            </div>
-            <a class="btn btn-outline-secondary" href="#">Cancel</a>
-            <button type="submit" class="btn btn-primary">
-                <i class="fas fa-plus me-1"></i> Create
-            </button>
-        </form>
-    </div>
-</div>
-
-<div th:each="dept : ${departments}"
-     class="modal-custom"
-     th:id="'edit' + ${dept.id}">
-    <div class="modal-custom-content">
-        <div class="modal-custom-header">
-            <h5 class="modal-custom-title">Edit Department</h5>
-            <a class="modal-custom-close" href="#">
-                <i class="fa-solid fa-xmark"></i>
-            </a>
-        </div>
-        <form method="post" th:action="@{'/corporation/admin/departments/' + ${dept.id} + '/update'}">
-            <div class="mb-3">
-                <label class="form-label fw-semibold">Department Name</label>
-                <input type="text" class="form-control" name="name" th:value="${dept.name}" required>
-            </div>
-            <div class="mb-3">
-                <label class="form-label fw-semibold">Description</label>
-                <textarea class="form-control" name="description" rows="3" th:text="${dept.description}"></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary w-100">Update Department</button>
-        </form>
-    </div>
-</div>
+<div th:replace="~{modals/create-department :: createDepartmentModal}"></div>
+<div th:replace="~{modals/edit-department   :: editDepartment(${departments})}"></div>
 
 <script>
     function filterDepartments() {

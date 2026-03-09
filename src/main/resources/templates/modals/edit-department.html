@@ -1,0 +1,23 @@
+<div th:fragment="editDepartment(departments)" th:each="dept : ${departments}"
+     class="modal-custom"
+     th:id="'edit' + ${dept.id}">
+    <div class="modal-custom-content">
+        <div class="modal-custom-header">
+            <h5 class="modal-custom-title">Edit Department</h5>
+            <a class="modal-custom-close" href="#">
+                <i class="fa-solid fa-xmark"></i>
+            </a>
+        </div>
+        <form method="post" th:action="@{'/corporation/admin/departments/' + ${dept.id} + '/update'}">
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Department Name</label>
+                <input type="text" class="form-control" name="name" th:value="${dept.name}" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Description</label>
+                <textarea class="form-control" name="description" rows="3" th:text="${dept.description}"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Update Department</button>
+        </form>
+    </div>
+</div>
