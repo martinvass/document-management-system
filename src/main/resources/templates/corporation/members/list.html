@@ -166,22 +166,16 @@
     </div>
 </div>
 
+<script th:src="@{/js/table-filter.js}"></script>
 <script>
-    function filterMembers() {
-        const searchValue = document.getElementById('searchInput').value.toLowerCase();
-        const rows = document.querySelectorAll('#membersTableBody tr[data-name]');
-
-        rows.forEach(row => {
-            const name = row.getAttribute('data-name')?.toLowerCase() || '';
-            const email = row.getAttribute('data-email')?.toLowerCase() || '';
-
-            if (name.includes(searchValue) || email.includes(searchValue)) {
-                row.style.display = '';
-            } else {
-                row.style.display = 'none';
-            }
-        });
-    }
+    document.addEventListener('DOMContentLoaded', function() {
+        initializeFilter(
+            'searchInput',
+            '#membersTableBody',
+            'tr[data-name]',
+            ['data-name', 'data-email']
+        );
+    });
 </script>
 
 <div th:replace="~{fragments/scripts :: footer_scripts}"></div>

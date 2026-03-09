@@ -119,22 +119,16 @@
 <div th:replace="~{modals/create-department :: createDepartmentModal}"></div>
 <div th:replace="~{modals/edit-department   :: editDepartment(${departments})}"></div>
 
+<script th:src="@{/js/table-filter.js}"></script>
 <script>
-    function filterDepartments() {
-        const searchValue = document.getElementById('searchInput').value.toLowerCase();
-        const rows = document.querySelectorAll('#departmentsTableBody tr[data-name]');
-
-        rows.forEach(row => {
-            const name = row.getAttribute('data-name')?.toLowerCase() || '';
-            const desc = row.getAttribute('data-desc')?.toLowerCase() || '';
-
-            if (name.includes(searchValue) || desc.includes(searchValue)) {
-                row.style.display = '';
-            } else {
-                row.style.display = 'none';
-            }
-        });
-    }
+    document.addEventListener('DOMContentLoaded', function() {
+        initializeFilter(
+            'searchInput',
+            '#departmentsTableBody',
+            'tr[data-name]',
+            ['data-name', 'data-desc']
+        );
+    });
 </script>
 
 <div th:replace="~{fragments/scripts :: footer_scripts}"></div>
