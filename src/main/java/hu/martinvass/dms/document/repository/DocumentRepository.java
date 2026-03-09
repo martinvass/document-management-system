@@ -95,11 +95,12 @@ public interface DocumentRepository
     /**
      * Get document upload trend for last N days
      */
-    @Query("SELECT d.uploadedAt, d.id " +
+    @Query("SELECT DATE(d.uploadedAt), COUNT(d) " +
             "FROM Document d " +
             "WHERE d.corporation.id = :corporationId " +
             "AND d.uploadedAt >= :fromDate " +
-            "ORDER BY d.uploadedAt ASC")
+            "GROUP BY DATE(d.uploadedAt) " +
+            "ORDER BY DATE(d.uploadedAt) ASC")
     List<Object[]> getUploadTrendsByDays(@Param("corporationId") Long corporationId,
                                          @Param("fromDate") LocalDateTime fromDate);
 

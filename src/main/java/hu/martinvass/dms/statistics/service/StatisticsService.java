@@ -38,17 +38,10 @@ public class StatisticsService {
                 fromDate
         );
 
-        var countByDate = results.stream()
-                .collect(Collectors.groupingBy(
-                        row -> convertToLocalDate(row[0]),
-                        TreeMap::new,
-                        Collectors.counting()
-                ));
-
-        return countByDate.entrySet().stream()
-                .map(entry -> new StatisticsDto.DocumentTrendDto(
-                        entry.getKey(),
-                        entry.getValue()
+        return results.stream()
+                .map(row -> new StatisticsDto.DocumentTrendDto(
+                        convertToLocalDate(row[0]),
+                        ((Number) row[1]).longValue()
                 ))
                 .collect(Collectors.toList());
     }
@@ -179,6 +172,10 @@ public class StatisticsService {
             return LocalDate.now();
         }
 
+        if (dateObj instanceof LocalDateTime) {
+            return ((LocalDateTime) dateObj).toLocalDate();
+        }
+        
         if (dateObj instanceof Date) {
             return ((Date) dateObj).toLocalDate();
         }
