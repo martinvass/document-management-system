@@ -120,7 +120,7 @@ public class DepartmentService {
                 requester.getCorporation(),
                 requester.getUser(),
                 ActivityType.USER_ADDED_TO_DEPT,
-                department.getName() + " - " + profile.getUser().getProfile().getUsername(),
+                department.getName() + " - " + profile.getUser().getUsername(),
                 department.getId()
         );
     }
@@ -146,7 +146,7 @@ public class DepartmentService {
                 requester.getCorporation(),
                 requester.getUser(),
                 ActivityType.USER_REMOVED_FROM_DEPT,
-                department.getName() + " - " + profile.getUser().getProfile().getUsername(),
+                department.getName() + " - " + profile.getUser().getUsername(),
                 department.getId()
         );
     }

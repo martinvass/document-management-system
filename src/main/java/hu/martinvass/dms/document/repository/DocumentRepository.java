@@ -139,11 +139,11 @@ public interface DocumentRepository
     /**
      * Get top document uploaders
      */
-    @Query("SELECT u.profile.username, COUNT(d) " +
+    @Query("SELECT u.username, COUNT(d) " +
             "FROM Document d " +
             "JOIN d.uploadedBy u " +
             "WHERE d.corporation.id = :corporationId " +
-            "GROUP BY u.profile.username " +
+            "GROUP BY u.username " +
             "ORDER BY COUNT(d) DESC " +
             "LIMIT :limit")
     List<Object[]> getTopUploaders(@Param("corporationId") Long corporationId, @Param("limit") int limit);

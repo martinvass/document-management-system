@@ -47,7 +47,7 @@ public class CorporationProfileController {
             Principal principal,
             Model model
     ) {
-        var user = userRepository.findByProfile_Username(principal.getName())
+        var user = userRepository.findByUsername(principal.getName())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         var allProfiles = profileRepository.findByUserId(user.getId());

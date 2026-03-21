@@ -23,7 +23,7 @@ public class UserEventListener {
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void onUserRegistered(UserRegisteredEvent event) {
         var user = event.getUser();
-        var email = user.getProfile().getEmail();
+        var email = user.getEmail();
 
         // Send activation link through email
         var token = new VerificationToken(user);

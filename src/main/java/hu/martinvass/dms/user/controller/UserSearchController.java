@@ -38,18 +38,18 @@ public class UserSearchController {
                 .stream()
                 .filter(p -> !p.getId().equals(activeProfile.getId())) // Exclude current user
                 .filter(p -> {
-                    var fullName = (p.getUser().getProfile().getFirstName() + " " +
-                            p.getUser().getProfile().getLastName()).toLowerCase();
-                    var email = p.getUser().getProfile().getEmail().toLowerCase();
+                    var fullName = (p.getUser().getFirstName() + " " +
+                            p.getUser().getLastName()).toLowerCase();
+                    var email = p.getUser().getEmail().toLowerCase();
 
                     return fullName.contains(searchTerm) || email.contains(searchTerm);
                 })
                 .limit(10) // Max 10 results
                 .map(p -> new UserSearchDto(
                         p.getId(),
-                        p.getUser().getProfile().getFirstName(),
-                        p.getUser().getProfile().getLastName(),
-                        p.getUser().getProfile().getEmail()
+                        p.getUser().getFirstName(),
+                        p.getUser().getLastName(),
+                        p.getUser().getEmail()
                 ))
                 .toList();
 

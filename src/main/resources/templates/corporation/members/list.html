@@ -124,12 +124,12 @@
                         </thead>
                         <tbody id="membersTableBody">
                         <tr th:each="member : ${members}"
-                            th:attr="data-name=${member.user.profile.firstName + ' ' + member.user.profile.lastName}, data-email=${member.user.profile.email}">
+                            th:attr="data-name=${member.user.firstName + ' ' + member.user.lastName}, data-email=${member.user.email}">
                             <td>
-                                <span th:text="${member.user.profile.firstName + ' ' + member.user.profile.lastName}">John Doe</span>
+                                <span th:text="${member.user.firstName + ' ' + member.user.lastName}">John Doe</span>
                             </td>
-                            <td th:text="${member.user.profile.email}">john@example.com</td>
-                            <td th:text="${member.user.profile.username}">johndoe</td>
+                            <td th:text="${member.user.email}">john@example.com</td>
+                            <td th:text="${member.user.username}">johndoe</td>
                             <td>
                                 <span class="badge"
                                       th:classappend="${member.role.name() == 'ADMIN' ? 'bg-danger' : (member.role.name() == 'EMPLOYEE' ? 'bg-success' : 'bg-secondary')}"

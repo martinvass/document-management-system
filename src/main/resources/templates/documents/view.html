@@ -249,18 +249,18 @@
                                     <tbody class="bg-white">
                                     <tr th:each="perm : ${permissions}">
                                         <td>
-                                            <strong th:text="${perm.profile.user.profile.firstName + ' ' + perm.profile.user.profile.lastName}" class="text-accent">
+                                            <strong th:text="${perm.profile.user.firstName + ' ' + perm.profile.user.lastName}" class="text-accent">
                                                 John Doe
                                             </strong>
                                         </td>
-                                        <td th:text="${perm.profile.user.profile.email}" class="text-muted">john@example.com</td>
+                                        <td th:text="${perm.profile.user.email}" class="text-muted">john@example.com</td>
                                         <td>
                                         <span class="badge"
                                               th:classappend="${perm.permissionLevel.name() == 'ADMIN' ? 'bg-danger' :
                                                                 (perm.permissionLevel.name() == 'EDIT' ? 'bg-warning text-dark' : 'bg-success')}"
                                               th:text="${perm.permissionLevel}">READ</span>
                                         </td>
-                                        <td th:text="${perm.grantedBy.profile.username}" class="text-muted">admin</td>
+                                        <td th:text="${perm.grantedBy.username}" class="text-muted">admin</td>
                                         <td>
                                             <form th:action="@{/documents/{id}/permissions/revoke-user(id=${document.id})}"
                                                   method="post" class="d-inline">

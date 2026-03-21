@@ -21,9 +21,8 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public interface CorporationProfileRepository extends JpaRepository<CorporationProfile, Long>, JpaSpecificationExecutor<CorporationProfile> {
 
-    Optional<CorporationProfile> findByIdAndUser_Profile_Username(Long id, String username);
+    Optional<CorporationProfile> findByIdAndUser_Username(Long id, String username);
     List<CorporationProfile> findByUserId(Long userId);
-    List<CorporationProfile> findByProfileId(Long profileId);
     List<CorporationProfile> findByCorporation(Corporation corporationId);
     Page<CorporationProfile> findByCorporation(Corporation corporation, Pageable pageable);
     List<CorporationProfile> findByDepartmentsContaining(Department department);

@@ -102,7 +102,7 @@ public class InvitationService {
         Invitation invitation = findByCode(code);
 
         // Validation
-        if (!invitation.getInvitedEmail().equalsIgnoreCase(user.getProfile().getEmail())) {
+        if (!invitation.getInvitedEmail().equalsIgnoreCase(user.getEmail())) {
             throw new SecurityException("This invitation is not addressed to your email address.");
         }
 
@@ -117,7 +117,6 @@ public class InvitationService {
         // Create corporation profile
         var profile = new CorporationProfile();
         profile.setUser(user);
-        profile.setProfile(user.getProfile());
         profile.setCorporation(invitation.getCorporation());
         profile.setRole(invitation.getRole());
         profilesRepository.save(profile);

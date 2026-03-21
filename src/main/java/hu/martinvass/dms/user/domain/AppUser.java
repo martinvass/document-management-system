@@ -40,9 +40,17 @@ public class AppUser implements UserDetails {
     )
     private Long id;
 
-    @OneToOne(optional = false, cascade = CascadeType.ALL)
-    @JoinColumn(name = "profile_id", nullable = false, unique = true)
-    private Profile profile = new Profile();
+    @Column(nullable = false, unique = true)
+    private String username;
+
+    @Column(name = "first_name", nullable = false)
+    private String firstName;
+
+    @Column(name = "last_name", nullable = false)
+    private String lastName;
+
+    @Column(nullable = false, unique = true)
+    private String email;
 
     @Column(nullable = false)
     private String password;
@@ -81,7 +89,7 @@ public class AppUser implements UserDetails {
 
     @Override
     public String getUsername() {
-        return profile.getUsername();
+        return username;
     }
 
     @Override

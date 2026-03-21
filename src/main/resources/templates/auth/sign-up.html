@@ -14,10 +14,10 @@
     <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
 
     <form th:action="@{/auth/sign-up}" method="post" th:object="${user}">
-        <input type="text" th:field="*{profile.username}" placeholder="Username" class="form-control" required>
-        <input type="text" th:field="*{profile.firstName}" placeholder="First name" class="form-control" required>
-        <input type="text" th:field="*{profile.lastName}" placeholder="Last name" class="form-control" required>
-        <input type="email" th:field="*{profile.email}" placeholder="Email" class="form-control" required>
+        <input type="text" th:field="*{username}" placeholder="Username" class="form-control" required>
+        <input type="text" th:field="*{firstName}" placeholder="First name" class="form-control" required>
+        <input type="text" th:field="*{lastName}" placeholder="Last name" class="form-control" required>
+        <input type="email" th:field="*{email}" placeholder="Email" class="form-control" required>
         <input type="password" th:field="*{password}" placeholder="Password" class="form-control" required>
         <button id="signUpBtn" type="submit" class="btn-primary">Sign Up</button>
     </form>

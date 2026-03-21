@@ -4,7 +4,6 @@ import hu.martinvass.dms.corporation.domain.Corporation;
 import hu.martinvass.dms.corporation.domain.CorporationRole;
 import hu.martinvass.dms.department.domain.Department;
 import hu.martinvass.dms.user.domain.AppUser;
-import hu.martinvass.dms.user.domain.Profile;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -13,7 +12,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "user_corp_profiles")
+@Table(name = "company_membership")
 @Getter
 @Setter
 @Builder
@@ -22,8 +21,8 @@ import java.util.Set;
 public class CorporationProfile {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_profile_seq")
-    @SequenceGenerator(name = "user_profile_seq", sequenceName = "user_profile_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "company_membership_seq")
+    @SequenceGenerator(name = "company_membership_seq", sequenceName = "company_membership_seq", allocationSize = 1)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -31,15 +30,11 @@ public class CorporationProfile {
     private AppUser user;
 
     @ManyToOne()
-    @JoinColumn(name = "profile_id", nullable = false)
-    private Profile profile;
-
-    @ManyToOne()
     @JoinColumn(name = "corporation_id")
     private Corporation corporation;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "role_in_corp")
+    @Column(name = "role")
     private CorporationRole role;
 
     @ManyToMany

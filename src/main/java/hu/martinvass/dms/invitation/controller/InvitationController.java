@@ -67,7 +67,7 @@ public class InvitationController {
             var expired = invitationService.isExpired(invitation);
             var user = authService.findByUsername(principal.getName());
 
-            if (!invitation.getInvitedEmail().equalsIgnoreCase(user.getProfile().getEmail())) {
+            if (!invitation.getInvitedEmail().equalsIgnoreCase(user.getEmail())) {
                 return "redirect:/";
             }
 

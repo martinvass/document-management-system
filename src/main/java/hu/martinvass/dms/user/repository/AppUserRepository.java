@@ -15,8 +15,8 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public interface AppUserRepository extends JpaRepository<AppUser, Long> {
 
-    Optional<AppUser> findByProfile_Email(String email);
-    Optional<AppUser> findByProfile_Username(String username);
+    Optional<AppUser> findByEmail(String email);
+    Optional<AppUser> findByUsername(String username);
 
-    boolean existsByProfile_Email(String email);
+    boolean existsByEmail(String email);
 }

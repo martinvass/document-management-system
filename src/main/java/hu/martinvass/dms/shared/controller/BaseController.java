@@ -29,7 +29,7 @@ public abstract class BaseController {
             Principal principal
     ) {
         if (principal != null) {
-            var user = userRepository.findByProfile_Username(principal.getName())
+            var user = userRepository.findByUsername(principal.getName())
                     .orElse(null);
 
             if (user != null) {

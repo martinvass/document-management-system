@@ -67,7 +67,7 @@ public class ActivityLog {
      * Get formatted activity message
      */
     public String getFormattedMessage() {
-        String userName = user.getProfile().getUsername();
+        String userName = user.getUsername();
         String action = type.getDisplayText();
 
         if (entityName != null) {

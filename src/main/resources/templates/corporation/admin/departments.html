@@ -82,7 +82,7 @@
                                       th:text="${dept.memberCount ?: 0} + ' members'">0 members</span>
                             </td>
                             <td th:text="${#temporals.format(dept.createdAt, 'yyyy-MM-dd')}">2025-01-15</td>
-                            <td th:text="${dept.createdBy?.profile?.username ?: '—'}">admin</td>
+                            <td th:text="${dept.createdBy?.username ?: '—'}">admin</td>
                             <td>
                                 <div class="d-flex gap-1">
                                     <a class="btn btn-sm btn-outline-secondary"

@@ -35,7 +35,7 @@ public class CorporationService {
             throw new RuntimeException("Corporation with name '" + dto.getName() + "' already exists."); // Specifikusabb kivétel
         }
 
-        var creatorUser = appUserRepository.findByProfile_Username(username)
+        var creatorUser = appUserRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User '" + username + "' not found."));
 
         var profile = createCorpInternal(dto, creatorUser);
@@ -56,7 +56,6 @@ public class CorporationService {
 
         var profile = CorporationProfile.builder()
                 .user(creatorUser)
-                .profile(creatorUser.getProfile())
                 .corporation(corp)
                 .role(CorporationRole.ADMIN)
                 .build();

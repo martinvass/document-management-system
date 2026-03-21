@@ -30,10 +30,10 @@ public class CorporationProfileService {
 
     @Transactional(readOnly = true)
     public void switchActiveProfile(Long userProfileId, String username, HttpSession session) {
-        var appUser = userRepository.findByProfile_Username(username)
+        var appUser = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
 
-        var toActivate = profileRepository.findByIdAndUser_Profile_Username(userProfileId, username)
+        var toActivate = profileRepository.findByIdAndUser_Username(userProfileId, username)
                 .orElseThrow(() -> new RuntimeException("Profile ID " + userProfileId + " is not available for user " + username));
 
         appUser.setActiveProfile(toActivate);

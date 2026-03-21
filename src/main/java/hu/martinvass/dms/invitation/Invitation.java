@@ -4,7 +4,7 @@ import hu.martinvass.dms.corporation.domain.Corporation;
 import hu.martinvass.dms.corporation.domain.CorporationRole;
 import hu.martinvass.dms.invitation.dto.CreateInvitationDto;
 import hu.martinvass.dms.profile.CorporationProfile;
-import hu.martinvass.dms.user.domain.Profile;
+import hu.martinvass.dms.user.domain.AppUser;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -40,7 +40,7 @@ public class Invitation {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "invited_by", nullable = false)
-    private Profile invitedBy;
+    private AppUser invitedBy;
 
     @Enumerated(EnumType.STRING)
     private CorporationRole role;
@@ -67,7 +67,7 @@ public class Invitation {
 
         invitation.setCorporation(profile.getCorporation());
         invitation.setInvitedEmail(data.getEmail());
-        invitation.setInvitedBy(profile.getProfile());
+        invitation.setInvitedBy(profile.getUser());
         invitation.setRole(data.getRole());
         invitation.setCode(UUID.randomUUID().toString().substring(0, 8).toUpperCase());
         invitation.setStatus(InvitationStatus.PENDING);

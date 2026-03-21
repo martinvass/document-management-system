@@ -78,7 +78,7 @@ public class AuthService implements UserDetailsService {
      */
     @Transactional(readOnly = true)
     public AppUser findByUsername(String username) {
-        return appUserRepository.findByProfile_Username(username)
+        return appUserRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
     }
 
@@ -87,14 +87,14 @@ public class AuthService implements UserDetailsService {
      */
     @Transactional(readOnly = true)
     public AppUser findByEmail(String email) {
-        return appUserRepository.findByProfile_Email(email)
+        return appUserRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
     }
 
     @Transactional(readOnly = true)
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return appUserRepository.findByProfile_Username(username)
+        return appUserRepository.findByUsername(username)
                 .orElseThrow(() ->
                         new UsernameNotFoundException(
                                 String.format(USER_NOT_FOUND_MSG, username)));
@@ -103,11 +103,11 @@ public class AuthService implements UserDetailsService {
     @Transactional(readOnly = true)
     public void validateUser(AppUser user) throws UserAlreadyExistsException {
         var userExistsByEmail = appUserRepository
-                .findByProfile_Email(user.getProfile().getEmail())
+                .findByEmail(user.getEmail())
                 .isPresent();
 
         var userExistsByUsername = appUserRepository
-                .findByProfile_Username(user.getUsername())
+                .findByUsername(user.getUsername())
                 .isPresent();
 
         if (userExistsByEmail || userExistsByUsername) {
